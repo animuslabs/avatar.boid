@@ -6,6 +6,13 @@
             "type": "promptString",
             "default": "[mytestsuite]",
             "description": "Enter test suite key (Example: \"[MyTestSuite]\""
+        },
+        {
+          "type": "pickString",
+          "id": "chainSelect",
+          "description": "On which chain do you want to deploy?",
+          "options": ["eos", "kylin", "wax", "jungle", "telosTest"],
+          "default": "jungle"
         }
     ],
     "tasks": [
@@ -78,7 +85,7 @@
       {
         "label": "Deploy",
         "type": "shell",
-        "command": "node -v",
+        "command": "node ./util/deploy ${input:chainSelect}",
         "group": {
           "kind": "build",
           "isDefault": true

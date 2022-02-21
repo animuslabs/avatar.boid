@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "dev": "cd util && nodemon --watch ../ -e .cpp,.hpp  build.js debug"
+  },
+  "dependencies": {
+    "@deltalabs/eos-utils": "^3.0.3",
+    "@greymass/eosio": "^0.4.6",
+    "child-process-promise": "^2.2.1",
+    "dotenv": "^10.0.0",
+    "eosjs": "^21.0.3",
+    "fs-extra": "^10.0.0",
+    "node-fetch": "^2.6.1"
+  }
+}
