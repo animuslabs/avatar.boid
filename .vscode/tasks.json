@@ -55,6 +55,7 @@
             }
         }
       },
+
       {
           "label": "testspecific",
           "type": "shell",
@@ -70,7 +71,27 @@
                   "tooltip": "Invoke Cltester on a specific test suite"
               }
           }
-      }
+      },
+
+
+
+      {
+        "label": "Deploy",
+        "type": "shell",
+        "command": "node -v",
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "options": {
+            "statusbar": {
+                "label" : "$(diff-insert) Deploy",
+                "tooltip": "deploy contract and abi"
+            }
+        }
+      },
+
+
     ]
   }
   
