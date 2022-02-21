@@ -11,6 +11,6 @@ module.exports = {
     jungle: "avatar.boid",
     eos: "avatar.boid"
   },
-  contractName: 'avatar',
-  cppName: 'avatar'
+  contractName: 'avatarmk',
+  cppName: 'avatarmk'
 }

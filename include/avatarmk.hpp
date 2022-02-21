@@ -24,13 +24,14 @@ namespace avatarmk
       eosio::name creator; //creator of the template
       eosio::checksum256 identifier; //checksum from sorted vector containing all part_template_ids
       std::string ipfs_hash; //link to image for easy access
+      uint8_t rarity;
       uint32_t mint; //how many are minted
       uint32_t max_mint; //added for convenience
 
       uint64_t primary_key() const { return id; }
       eosio::checksum256 by_idf() const { return identifier; }
    };
-   EOSIO_REFLECT(avatars, id, template_id, creator, identifier, ipfs_hash, mint, max_mint)
+   EOSIO_REFLECT(avatars, id, template_id, creator, identifier, ipfs_hash, rarity, mint, max_mint)
    typedef eosio::multi_index<"avatars"_n, avatars,
       eosio::indexed_by<"byidf"_n, eosio::const_mem_fun<avatars, eosio::checksum256, &avatars::by_idf>>
    >avatars_table;
@@ -47,8 +48,8 @@ namespace avatarmk
       private:
       void assemble(eosio::name& creator, std::vector<int32_t>& part_template_ids);
       //internal accounting
-      // void add_balance(const uint64_t& pubkey_id, eosio::extended_asset& value);
-      // void sub_balance(const uint64_t& pubkey_id, const eosio::extended_asset& value);
+      // void add_balance(eosio::name& accountname, eosio::extended_asset& value);
+      // void sub_balance(eosio::name& accountname, const eosio::extended_asset& value);
 
 
    };

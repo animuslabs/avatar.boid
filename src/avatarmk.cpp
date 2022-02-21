@@ -1,12 +1,12 @@
 #include <eosio/asset.hpp>
 #include <eosio/eosio.hpp>
 //https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/core/eosio/crypto.hpp
-#include <eosio/crypto.hpp>
+// #include <eosio/crypto.hpp>
 #include <token/token.hpp>
 #include <eosio/bytes.hpp>
-
-
 #include "avatarmk.hpp"
+#include "functions.cpp"
+
 
 
 
