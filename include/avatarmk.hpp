@@ -67,6 +67,7 @@ namespace avatarmk {
                   "avatarmk"_n,                           //
                   action(setconfig, cfg),                 //
                   action(withdraw, owner, value),         //
+                  action(open, owner, token, ram_payer),  //
                   notify(eosio::any_contract, transfer),  //
                   notify(atomic_contract, logtransfer)    //
 

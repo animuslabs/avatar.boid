@@ -31,6 +31,7 @@ namespace avatarmk {
     void avatarmk_c::withdraw(const eosio::name& owner, const eosio::extended_asset& value)
     {
         require_auth(owner);
+        eosio::check(value.quantity.amount > 0, "Withdraw amount must be possitive.");
         sub_balance(owner, value);
         token::actions::transfer{value.contract, get_self()}.send(get_self(), owner, value.quantity, "withdraw");
     }
