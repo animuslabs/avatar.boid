@@ -40,7 +40,7 @@ namespace avatarmk {
     {
         //can make ram_payer optional
         require_auth(ram_payer);
-        eosio::check(is_account(owner), "Owner isn't associated with an account.");
+        eosio::check(is_account(owner), "Owner isn't associated with an on-chain account.");
         add_balance(owner, eosio::extended_asset(0, token), ram_payer);
     }
 
