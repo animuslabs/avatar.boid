@@ -18,6 +18,13 @@ namespace avatarmk
    typedef eosio::singleton<"config"_n, config
    > config_table;
 
+   struct deposits {
+      eosio::asset balance;
+      uint64_t primary_key() const { return balance.symbol.code().raw(); }
+   };
+   EOSIO_REFLECT(deposits, balance)
+   typedef eosio::multi_index<"deposits"_n, deposits> deposits_table;
+
    struct avatars {
       uint64_t id;//this can hold the template_id so that the int32_t isn't needed however atomic assets uses type int32_t so need to cast in that case
       int32_t template_id; //atomic assets template_id
@@ -44,12 +51,15 @@ namespace avatarmk
       // void notify_transfer(eosio::name from, eosio::name to, const eosio::asset& quantity, std::string memo);
       
       void setconfig(std::optional<config> cfg);
+      void mintavatar(eosio::name& minter, uint64_t& avatar_id);
       
       private:
-      void assemble(eosio::name& creator, std::vector<int32_t>& part_template_ids);
+      void assemble(const eosio::name& creator, std::vector<int32_t>& part_template_ids);
+      eosio::asset calculate_mint_price(const avatars& avatar);
       //internal accounting
-      // void add_balance(eosio::name& accountname, eosio::extended_asset& value);
-      // void sub_balance(eosio::name& accountname, const eosio::extended_asset& value);
+      void add_balance( const eosio::name& owner, const eosio::asset& value);
+      void sub_balance( const eosio::name& owner, const eosio::asset& value);
+
 
 
    };
