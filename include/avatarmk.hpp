@@ -3,6 +3,7 @@
 #include <eosio/eosio.hpp>
 #include <eosio/singleton.hpp>
 #include <eosio/system.hpp>
+#include <eosio/crypto.hpp>
 
 namespace avatarmk {
 
@@ -10,9 +11,16 @@ namespace avatarmk {
     inline constexpr eosio::extended_symbol extended_core_symbol{core_symbol, "eosio.token"_n};
     inline constexpr auto atomic_contract = "atomicassets"_n;
 
+    struct body_part {
+        int32_t template_id;
+        uint8_t des_rarity;
+        std::string des_type;
+    };
+
     struct config {
         bool freeze = false;
         eosio::asset base_mint_price{1, core_symbol};
+        eosio::name collection_name;
     };
     EOSIO_REFLECT(config, freeze, base_mint_price)
     typedef eosio::singleton<"config"_n, config> config_table;
@@ -23,6 +31,7 @@ namespace avatarmk {
         uint64_t primary_key() const { return id; }
         uint128_t by_contr_sym() const { return (uint128_t{balance.contract.value} << 64) | balance.quantity.symbol.raw(); }
     };
+
     EOSIO_REFLECT(deposits, id, balance)
     typedef eosio::multi_index<"deposits"_n, deposits, eosio::indexed_by<"bycontrsym"_n, eosio::const_mem_fun<deposits, uint128_t, &deposits::by_contr_sym>>> deposits_table;
 
@@ -52,11 +61,13 @@ namespace avatarmk {
         void open(const eosio::name& owner, eosio::extended_symbol& token, const eosio::name& ram_payer);
 
         //notifications
+
         void notify_transfer(eosio::name from, eosio::name to, const eosio::asset& quantity, std::string memo);
         void notify_logtransfer(eosio::name collection_name, eosio::name from, eosio::name to, std::vector<uint64_t> asset_ids, std::string memo);
 
        private:
         void assemble(const eosio::name& creator, std::vector<int32_t>& part_template_ids);
+        std::optional<std::vector<body_part>> validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner);
         eosio::extended_asset calculate_mint_price(const avatars& avatar);
         //internal accounting
         void add_balance(const eosio::name& owner, const eosio::extended_asset& value, const eosio::name& ram_payer = eosio::name(0));

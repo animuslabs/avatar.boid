@@ -1,7 +1,7 @@
 // #pragma once
-// #include <eosio/eosio.hpp>
-#include <eosio/crypto.hpp>
 #include "avatarmk.hpp"
+#include "atomicassets.hpp"
+#include "atomicdata.hpp"
 
 namespace avatarmk {
     void avatarmk_c::assemble(const eosio::name& creator, std::vector<int32_t>& part_template_ids)
@@ -88,5 +88,30 @@ namespace avatarmk {
             });
         }
     }
+
+    std::optional<std::vector<body_part>> avatarmk_c::validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner)
+    {
+        // struct comp {
+        //     bool operator()(atomicassets::assets_s const& a, atomicassets::assets_s const& b) { return a.template_id > b.template_id; }
+        // };
+        // std::set<atomicassets::assets_s, comp> assemble_set;
+        bool is_valid_set = false;
+        std::vector<body_part> set;
+
+        auto receiver_assets = atomicassets::get_assets(owner);
+
+        for (uint64_t asset_id : asset_ids) {
+            auto asset = receiver_assets.find(asset_id);
+            static_cast<void>(asset);
+            // atomicassets::schemas_t collection_schemas = atomicassets::get_schemas(asset.collection_name);
+            // const auto asset_schema = collection_schemas.get(asset.schema_name.value, "Asset Schema not found");
+            // auto mdata = atomicdata::deserialize(asset.mutable_serialized_data, asset_schema.format);
+
+            // eosio::check(assemble_set.insert(asset).second, "Duplicate body part from same template detected.");
+        }
+
+        if (is_valid_set) return set;
+        return std::nullopt;
+    };
 
 }  // namespace avatarmk

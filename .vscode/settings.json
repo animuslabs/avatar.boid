@@ -105,5 +105,6 @@
     [
         "-Wall",
         "-Wextra"
-    ]
+    ],
+    "C_Cpp.errorSquiggles": "Disabled"
 }

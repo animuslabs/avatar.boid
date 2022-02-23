@@ -8,3 +8,4 @@ BreakBeforeBraces: Stroustrup
 BreakConstructorInitializers: 'BeforeComma'
 BreakBeforeBinaryOperators: All
 BreakBeforeTernaryOperators: true
+AllowShortIfStatementsOnASingleLine: Always

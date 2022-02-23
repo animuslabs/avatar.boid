@@ -71,6 +71,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${ARTIFACTS_DIR})
 #     help expose memory bugs that eosio-contract-simple-malloc hides.
 #     The downsides of eosio-contract-full-malloc are that contracts
 #     will be larger and slower.
+
+# Generate compile_commands.json during build to enable
+# symbol lookup in some editors
+set(CMAKE_EXPORT_COMPILE_COMMANDS on)
+
+
 add_executable(${PROJ} ${SOURCELIST} ${RICARDIANLIST})
 target_include_directories(${PROJ} PRIVATE ${INCLUDE_DIRS})
 target_link_libraries(${PROJ} eosio-contract-simple-malloc)
@@ -121,6 +127,4 @@ add_test(
 execute_process(COMMAND ln -sf ${clsdk_DIR} ${CMAKE_CURRENT_BINARY_DIR}/clsdk)
 execute_process(COMMAND ln -sf ${WASI_SDK_PREFIX} ${CMAKE_CURRENT_BINARY_DIR}/wasi-sdk)
 
-# Generate compile_commands.json during build to enable
-# symbol lookup in some editors
-set(CMAKE_EXPORT_COMPILE_COMMANDS on)
+
