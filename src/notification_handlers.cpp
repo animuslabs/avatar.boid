@@ -30,7 +30,10 @@ namespace avatarmk {
         //incoming transfers
         if (to == get_self()) {
             if (memo == std::string("assemble")) {
-                //expects one body part of each template_id
+                auto assemble_set = validate_assemble_set(asset_ids, to);
+                if (assemble_set) {
+                    assemble(from, assemble_set.value());
+                }
             }
         }
     }

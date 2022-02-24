@@ -60,6 +60,7 @@ namespace atomicassets {
         string name;
         string type;
     };
+    EOSIO_REFLECT(FORMAT, name, type)
 
     struct collections_s {
         name collection_name;
@@ -72,7 +73,7 @@ namespace atomicassets {
 
         uint64_t primary_key() const { return collection_name.value; };
     };
-
+    EOSIO_REFLECT(collections_s, collection_name, author, allow_notify, authorized_accounts, notify_accounts, market_fee, serialized_data)
     typedef multi_index<name("collections"), collections_s> collections_t;
 
     //Scope: collection_name
@@ -82,7 +83,7 @@ namespace atomicassets {
 
         uint64_t primary_key() const { return schema_name.value; }
     };
-
+    EOSIO_REFLECT(schemas_s, schema_name, format)
     typedef multi_index<name("schemas"), schemas_s> schemas_t;
 
     //Scope: collection_name

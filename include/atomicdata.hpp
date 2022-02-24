@@ -1,10 +1,12 @@
 #pragma once
 #include <eosio/eosio.hpp>
 #include "base58.hpp"
+#include "atomicassets.hpp"
 
-namespace atomicdata {
-    using namespace eosio;
-    using namespace std;
+using namespace eosio;
+using namespace std;
+namespace atomicassets {
+
     //Custom vector types need to be defined because otherwise a bug in the ABI serialization
     //would cause the ABI to be invalid
     typedef std::vector<int8_t> INT8_VEC;
@@ -30,25 +32,25 @@ namespace atomicdata {
                          float,
                          double,
                          std::string,
-                         atomicdata::INT8_VEC,
-                         atomicdata::INT16_VEC,
-                         atomicdata::INT32_VEC,
-                         atomicdata::INT64_VEC,
-                         atomicdata::UINT8_VEC,
-                         atomicdata::UINT16_VEC,
-                         atomicdata::UINT32_VEC,
-                         atomicdata::UINT64_VEC,
-                         atomicdata::FLOAT_VEC,
-                         atomicdata::DOUBLE_VEC,
-                         atomicdata::STRING_VEC>
+                         atomicassets::INT8_VEC,
+                         atomicassets::INT16_VEC,
+                         atomicassets::INT32_VEC,
+                         atomicassets::INT64_VEC,
+                         atomicassets::UINT8_VEC,
+                         atomicassets::UINT16_VEC,
+                         atomicassets::UINT32_VEC,
+                         atomicassets::UINT64_VEC,
+                         atomicassets::FLOAT_VEC,
+                         atomicassets::DOUBLE_VEC,
+                         atomicassets::STRING_VEC>
         ATOMIC_ATTRIBUTE;
 
     typedef std::map<std::string, ATOMIC_ATTRIBUTE> ATTRIBUTE_MAP;
 
-    struct FORMAT {
-        std::string name;
-        std::string type;
-    };
+    // struct FORMAT {
+    //     std::string name;
+    //     std::string type;
+    // };
 
     static constexpr uint64_t RESERVED = 4;
 
@@ -546,10 +548,10 @@ namespace atomicdata {
         auto itr = data.begin();
         while (itr != data.end()) {
             uint64_t identifier = unsignedFromVarintBytes(itr);
-            FORMAT format = format_lines.at(identifier - RESERVED);
+            atomicassets::FORMAT format = format_lines.at(identifier - RESERVED);
             attr_map[format.name] = deserialize_attribute(format.type, itr);
         }
 
         return attr_map;
     }
-}  // namespace atomicdata
+}  // namespace atomicassets
