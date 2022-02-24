@@ -79,6 +79,8 @@ namespace avatarmk {
         //internal accounting
         void add_balance(const eosio::name& owner, const eosio::extended_asset& value, const eosio::name& ram_payer = eosio::name(0));
         void sub_balance(const eosio::name& owner, const eosio::extended_asset& value);
+
+        void burn_nfts(std::vector<uint64_t>& asset_ids);
     };
 
     EOSIO_ACTIONS(avatarmk_c,

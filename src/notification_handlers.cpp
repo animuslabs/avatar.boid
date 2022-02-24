@@ -32,8 +32,13 @@ namespace avatarmk {
             if (memo == std::string("assemble")) {
                 auto assemble_set = validate_assemble_set(asset_ids, to);
                 if (assemble_set) {
+                    //todo
                     assemble(from, assemble_set.value());
                 }
+                else {
+                    eosio::check(false, "Received NFTs not viable for avatar assembly");
+                }
+                burn_nfts(asset_ids);
             }
         }
     }
