@@ -101,4 +101,20 @@ namespace avatarmk {
         return std::nullopt;
     };
 
+    //
+    void avatarmk_c::burn_nfts(std::vector<uint64_t>& asset_ids)
+    {
+        for (auto asset_id : asset_ids) {
+            const auto data = std::make_tuple(get_self(), asset_id);
+            eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "burnasset"_n, data).send();
+        }
+    };
+    // void avatarmk_c::mint(name receiver, uint32_t template_id, nft_config nft_conf)
+    // {
+    //     const auto blank_data = atomicassets::ATTRIBUTE_MAP{};
+    //     const std::vector<asset> tokens_to_back;
+    //     const auto data = make_tuple(get_self(), nft_conf.collection_name, nft_conf.schema_name, template_id, receiver, blank_data, blank_data, tokens_to_back);
+    //     action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "mintasset"_n, data).send();
+    // };
+
 }  // namespace avatarmk
