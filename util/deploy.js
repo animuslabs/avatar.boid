@@ -30,7 +30,7 @@ const methods = {
       await sleep(2000)
       await pushWasm(chain, eosjs, wasmData)
     }
-    console.log(`${conf.explorer[chain]}account/${conf.accountName[chain]}`);
+    console.log(`${conf.explorer[chain]}/account/${conf.accountName[chain]}`);
   }
 }
 

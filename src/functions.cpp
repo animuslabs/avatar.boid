@@ -23,7 +23,7 @@ namespace avatarmk {
         auto idx = _deposits.get_index<"bycontrsym"_n>();
         uint128_t composite_id = (uint128_t{value.contract.value} << 64) | value.quantity.symbol.raw();
         const auto& itr = idx.get(composite_id, "No balance with this symbol and contract.");
-        eosio::check(itr.balance >= value, "Overdrawn balance. " + owner.to_string() + " only owns " + value.to_string());
+        eosio::check(itr.balance >= value, "Overdrawn balance. " + owner.to_string() + " only owns " + itr.balance.to_string());
 
         if (owner != get_self() && itr.balance == value) {
             //auto close account if balance is zero
