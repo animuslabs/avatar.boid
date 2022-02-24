@@ -1,15 +1,20 @@
 module.exports = {
-  chains: ['eos', 'kylin', 'wax', 'jungle', 'telosTest'],
+  chains: ['eos', 'kylin', 'wax', 'jungle', 'telosTest', 'waxtest'],
   endpoints: {
     eos: ['https://eos.greymass.com', 'https://eos.eosn.io', 'https://eos.dfuse.eosnation.io/'],
     kylin: ['https://kylin.eosn.io', 'https://kylin.eossweden.org'],
     jungle: ['https://jungle3.cryptolions.io', 'https://jungle3.greymass.com'],
-    telosTest: ['https://testnet.telos.caleos.io']
+    telosTest: ['https://testnet.telos.caleos.io'],
+    waxtest: ['https://testnet.waxsweden.org']
   },
   accountName: {
     telosTest: "avatar.boid",
     jungle: "avatar.boid",
-    eos: "avatar.boid"
+    eos: "avatar.boid",
+    waxtest: "waxcontract1"
+  },
+  explorer:{
+    waxtest: "https://wax-test.bloks.io"
   },
   contractName: 'avatarmk',
   cppName: 'avatarmk'

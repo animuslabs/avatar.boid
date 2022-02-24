@@ -60,12 +60,12 @@ namespace avatarmk {
 
         //actions
         void setconfig(std::optional<config> cfg);
-        void mintavatar(eosio::name& minter, uint64_t& avatar_id);
         void withdraw(const eosio::name& owner, const eosio::extended_asset& value);
         void open(const eosio::name& owner, eosio::extended_symbol& token, const eosio::name& ram_payer);
 
         void assemble(const eosio::name& creator, assemble_set& set_data);
         void finalize(eosio::checksum256& identifier, std::string& ipfs_hash, uint32_t& template_id);
+        void mintavatar(eosio::name& minter, uint64_t& avatar_id);
         using assemble_action = eosio::action_wrapper<"assemble"_n, &avatarmk_c::assemble>;
 
         //notifications

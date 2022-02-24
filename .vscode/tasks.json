@@ -11,8 +11,8 @@
           "type": "pickString",
           "id": "chainSelect",
           "description": "On which chain do you want to deploy?",
-          "options": ["eos", "kylin", "wax", "jungle", "telosTest"],
-          "default": "jungle"
+          "options": ["eos", "kylin", "wax", "jungle", "telosTest", "waxtest"],
+          "default": "waxtest"
         }
     ],
     "tasks": [

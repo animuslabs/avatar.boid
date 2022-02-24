@@ -1,9 +1,7 @@
 module.exports = {
-  defaultChain: 'jungle',
-  keys: {
-    telosTest: ["5HqyNisrdk9Wa9hW4..."],
-    waxTest: ["5JAPJHkTRJ9..."],
-    jungle: ["5HqyNisrdk9..."],
-    eos: ["5KkETSYPdR..."]
-  }
+    keys: {
+        jungle: ["5JJp4oPsm8sBa5xQ8AzFpbDpmW1hxweKdqabSrgrDQRtpjtaPYT"],
+        waxtest: ["5JYKenBWBQr5NguFqyjreFPMnEzLyqyzi6wi5JHkt1C6iGc9YSm"]
+    },
+    defaultChain: "waxtest"
 }
