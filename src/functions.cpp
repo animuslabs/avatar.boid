@@ -58,25 +58,24 @@ namespace avatarmk {
         }
     }
 
-    std::optional<assemble_set> avatarmk_c::validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner)
+    std::optional<assemble_set> avatarmk_c::validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner, eosio::name collection_name, eosio::name schema_name)
     {
         assemble_set result;
         std::vector<uint8_t> rarities;
         std::vector<std::string> test_types;
 
-        eosio::name collection_name = "bname"_n;  //!!!!!!!!!!
-        eosio::name schema_name = "ghjjghj"_n;    //!!!!!!!!!!
-
         auto receiver_assets = atomicassets::get_assets(owner);
 
         auto collection_schemas = atomicassets::get_schemas(collection_name);
         auto schema = collection_schemas.get(schema_name.value, "Schema with name not found");
+        auto templates = atomicassets::get_templates(collection_name);
 
         for (uint64_t asset_id : asset_ids) {
             auto asset = receiver_assets.get(asset_id, "Asset not found");
-            auto des_data = atomicassets::deserialize(asset.immutable_serialized_data, schema.format);
+            auto t = templates.get(asset.template_id, "Template not found");
+            auto des_data = atomicassets::deserialize(t.immutable_serialized_data, schema.format);
 
-            std::string body_type = get<string>(des_data["type"]);
+            auto body_type = std::get<std::string>(des_data["type"]);
 
             if (std::find(test_types.begin(), test_types.end(), body_type) != test_types.end()) {
                 eosio::check(false, "Duplicate body part type");

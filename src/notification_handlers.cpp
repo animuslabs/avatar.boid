@@ -25,16 +25,17 @@ namespace avatarmk {
     {
         if (get_first_receiver() != atomic_contract) return;
         config_table _config(get_self(), get_self().value);
-        const auto cfg = _config.get();
+        const auto cfg = _config.get_or_create(get_self(), config());
         if (collection_name != cfg.collection_name) return;
 
         //incoming transfers
         if (to == get_self()) {
             if (memo == std::string("assemble")) {
-                auto assemble_set = validate_assemble_set(asset_ids, to);
+                auto assemble_set = validate_assemble_set(asset_ids, to, cfg.collection_name, cfg.parts_schema);
                 if (assemble_set) {
                     //todo
-                    assemble(from, assemble_set.value());
+                    eosio::check(false, "fffffffffff");
+                    // assemble(from, assemble_set.value());
                 }
                 else {
                     eosio::check(false, "Received NFTs not viable for avatar assembly");

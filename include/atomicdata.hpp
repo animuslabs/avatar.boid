@@ -549,6 +549,7 @@ namespace atomicassets {
         while (itr != data.end()) {
             uint64_t identifier = unsignedFromVarintBytes(itr);
             atomicassets::FORMAT format = format_lines.at(identifier - RESERVED);
+
             attr_map[format.name] = deserialize_attribute(format.type, itr);
         }
 

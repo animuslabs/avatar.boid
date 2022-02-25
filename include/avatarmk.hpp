@@ -23,7 +23,9 @@ namespace avatarmk {
     struct config {
         bool freeze = false;
         eosio::asset base_mint_price{1, core_symbol};
-        eosio::name collection_name;
+        eosio::name collection_name = "avatars1235a"_n;
+        eosio::name parts_schema = "bodyparts123"_n;
+        eosio::name avatar_schema = "avatarschema"_n;
     };
     EOSIO_REFLECT(config, freeze, base_mint_price)
     typedef eosio::singleton<"config"_n, config> config_table;
@@ -74,7 +76,7 @@ namespace avatarmk {
         void notify_logtransfer(eosio::name collection_name, eosio::name from, eosio::name to, std::vector<uint64_t> asset_ids, std::string memo);
 
        private:
-        std::optional<assemble_set> validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner);
+        std::optional<assemble_set> validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner, eosio::name collection_name, eosio::name schema_name);
         eosio::extended_asset calculate_mint_price(const avatars& avatar);
         //internal accounting
         void add_balance(const eosio::name& owner, const eosio::extended_asset& value, const eosio::name& ram_payer = eosio::name(0));
@@ -84,14 +86,14 @@ namespace avatarmk {
     };
 
     EOSIO_ACTIONS(avatarmk_c,
-                  "avatarmk"_n,                                          //
-                  action(setconfig, cfg),                                //
-                  action(withdraw, owner, value),                        //
-                  action(open, owner, token, ram_payer),                 //
-                  action(assemble, creator, set_data),                   //
-                  action(finalize, identifier, ipfs_hash, template_id),  //
-                  notify(eosio::any_contract, transfer),                 //
-                  notify(atomic_contract, logtransfer)                   //
+                  "avatarmk"_n,                           //
+                  action(setconfig, cfg),                 //
+                  action(withdraw, owner, value),         //
+                  action(open, owner, token, ram_payer),  //
+                  action(assemble, creator, set_data),    //
+                  action(finalize, identifier, ipfs_hash, template_id),
+                  notify("eosio.token"_n, transfer),    //
+                  notify(atomic_contract, logtransfer)  //
 
     )
 
