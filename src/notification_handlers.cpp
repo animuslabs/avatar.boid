@@ -33,9 +33,10 @@ namespace avatarmk {
             if (memo == std::string("assemble")) {
                 auto assemble_set = validate_assemble_set(asset_ids, to, cfg.collection_name, cfg.parts_schema);
                 if (assemble_set) {
-                    //todo
-                    eosio::check(false, "fffffffffff");
-                    // assemble(from, assemble_set.value());
+                    //trigger inline assemble, this needs to be caught on the server which calls the finalize action
+                    //after creating a new template for the assembled avatar.
+                    const auto data = std::make_tuple(from, assemble_set.value());
+                    eosio::action(eosio::permission_level{get_self(), "active"_n}, get_self(), "assemble"_n, data).send();
                 }
                 else {
                     eosio::check(false, "Received NFTs not viable for avatar assembly");
