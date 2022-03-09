@@ -26,7 +26,10 @@ namespace avatarmk {
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
 
-        sub_balance(minter, calculate_mint_price(*itr, cfg));  //not needed to pass in full config
+        //for now 100% of fee goes to template owner
+        eosio::extended_asset fee = calculate_mint_price(*itr, cfg);  //not needed to pass in full config
+        sub_balance(minter, fee);
+        add_balance(itr->creator, fee, get_self());  //let self pay for ram if new table entry?
 
         _avatars.modify(itr, eosio::same_payer, [&](auto& n) {
             n.mint += 1;
@@ -48,6 +51,7 @@ namespace avatarmk {
 
         eosio::check(idx.find(set_data.identifier) == idx.end(), "Avatar with these body parts already available to mint.");
 
+        //todo: this function must catch abusive words
         validate_avatar_name(avatar_name);
 
         //add new avatar to table

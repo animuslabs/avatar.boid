@@ -44,7 +44,7 @@ namespace avatarmk {
         auto itr = idx.find(composite_id);
 
         if (itr == idx.end()) {
-            //warning dust attack possible need to assert here
+            //new table entry
             eosio::check(ram_payer.value, owner.to_string() + " doesn't have a deposit account for this token yet. Use open action first.");
             _deposits.emplace(ram_payer, [&](auto& n) {
                 n.id = _deposits.available_primary_key();
