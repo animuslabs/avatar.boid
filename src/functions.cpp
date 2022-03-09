@@ -108,6 +108,15 @@ namespace avatarmk {
             eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "burnasset"_n, data).send();
         }
     };
+
+    void avatarmk_c::validate_avatar_name(std::string& avatar_name)
+    {
+        //implement blacklist here?
+        int l = avatar_name.size();
+        eosio::check(l >= 3, "Avatar name must have a minimum of 3 characters");
+        eosio::check(l <= 20, "Avatar name can't have more then 20 characters");
+    }
+
     // void avatarmk_c::mint(name receiver, uint32_t template_id, nft_config nft_conf)
     // {
     //     const auto blank_data = atomicassets::ATTRIBUTE_MAP{};

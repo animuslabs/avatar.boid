@@ -42,6 +42,7 @@ namespace avatarmk {
 
     struct avatars {
         uint64_t id;
+        std::string avatar_name;
         uint32_t template_id;           //atomic assets template_id
         eosio::name creator;            //creator of the template
         eosio::checksum256 identifier;  //checksum from sorted vector containing all part_template_ids
@@ -65,7 +66,7 @@ namespace avatarmk {
         void withdraw(const eosio::name& owner, const eosio::extended_asset& value);
         void open(const eosio::name& owner, eosio::extended_symbol& token, const eosio::name& ram_payer);
 
-        void assemble(const eosio::name& creator, assemble_set& set_data);
+        void assemble(const eosio::name& creator, assemble_set& set_data, std::string& avatar_name);
         void finalize(eosio::checksum256& identifier, std::string& ipfs_hash, uint32_t& template_id);
         void mintavatar(eosio::name& minter, uint64_t& avatar_id);
         using assemble_action = eosio::action_wrapper<"assemble"_n, &avatarmk_c::assemble>;
@@ -78,6 +79,7 @@ namespace avatarmk {
        private:
         std::optional<assemble_set> validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner, eosio::name collection_name, eosio::name schema_name);
         eosio::extended_asset calculate_mint_price(const avatars& avatar);
+        void validate_avatar_name(std::string& avatar_name);
         //internal accounting
         void add_balance(const eosio::name& owner, const eosio::extended_asset& value, const eosio::name& ram_payer = eosio::name(0));
         void sub_balance(const eosio::name& owner, const eosio::extended_asset& value);

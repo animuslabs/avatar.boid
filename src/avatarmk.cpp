@@ -33,7 +33,7 @@ namespace avatarmk {
         //atomic mint action
     }
 
-    void avatarmk_c::assemble(const eosio::name& creator, assemble_set& set_data)
+    void avatarmk_c::assemble(const eosio::name& creator, assemble_set& set_data, std::string& avatar_name)
     {
         require_auth(get_self());
 
@@ -42,9 +42,12 @@ namespace avatarmk {
 
         eosio::check(idx.find(set_data.identifier) == idx.end(), "Avatar with these body parts already available to mint.");
 
+        validate_avatar_name(avatar_name);
+
         //add new avatar to table
         _avatars.emplace(get_self(), [&](auto& n) {
             n.id = _avatars.available_primary_key();
+            n.avatar_name = avatar_name;
             n.rarity = set_data.rarity_score;
             n.creator = creator;
             n.identifier = set_data.identifier;
