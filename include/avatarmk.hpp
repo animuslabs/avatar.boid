@@ -72,13 +72,12 @@ namespace avatarmk {
         using assemble_action = eosio::action_wrapper<"assemble"_n, &avatarmk_c::assemble>;
 
         //notifications
-
         void notify_transfer(eosio::name from, eosio::name to, const eosio::asset& quantity, std::string memo);
         void notify_logtransfer(eosio::name collection_name, eosio::name from, eosio::name to, std::vector<uint64_t> asset_ids, std::string memo);
 
        private:
         std::optional<assemble_set> validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner, eosio::name collection_name, eosio::name schema_name);
-        eosio::extended_asset calculate_mint_price(const avatars& avatar);
+        eosio::extended_asset calculate_mint_price(const avatars& avatar, const config& cfg);
         void validate_avatar_name(std::string& avatar_name);
         //internal accounting
         void add_balance(const eosio::name& owner, const eosio::extended_asset& value, const eosio::name& ram_payer = eosio::name(0));

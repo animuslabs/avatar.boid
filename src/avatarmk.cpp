@@ -23,14 +23,20 @@ namespace avatarmk {
         auto itr = _avatars.require_find(avatar_id, "Avatar with this id doesn't exist.");
         eosio::check(itr->template_id > 0 && !itr->ipfs_hash.empty(), "Avatar not finalized yet. Try again later.");
 
-        sub_balance(minter, calculate_mint_price(*itr));
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+
+        sub_balance(minter, calculate_mint_price(*itr, cfg));  //not needed to pass in full config
 
         _avatars.modify(itr, eosio::same_payer, [&](auto& n) {
             n.mint += 1;
             n.modified = eosio::time_point_sec(eosio::current_time_point());
         });
-
         //atomic mint action
+        const auto blank_data = atomicassets::ATTRIBUTE_MAP{};
+        const std::vector<eosio::asset> tokens_to_back;
+        const auto data = make_tuple(get_self(), cfg.collection_name, cfg.avatar_schema, itr->template_id, minter, blank_data, blank_data, tokens_to_back);
+        eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "mintasset"_n, data).send();
     }
 
     void avatarmk_c::assemble(const eosio::name& creator, assemble_set& set_data, std::string& avatar_name)

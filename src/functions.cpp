@@ -5,10 +5,10 @@
 
 namespace avatarmk {
 
-    eosio::extended_asset avatarmk_c::calculate_mint_price(const avatars& avatar)
+    eosio::extended_asset avatarmk_c::calculate_mint_price(const avatars& avatar, const config& cfg)
     {
-        config_table _config(get_self(), get_self().value);
-        auto const cfg = _config.get_or_create(get_self(), config());
+        // config_table _config(get_self(), get_self().value);
+        // auto const cfg = _config.get_or_create(get_self(), config());
         int core_precision_pow = pow(10, core_symbol.precision());
         //this is subject to change
         double p = (cfg.base_mint_price.amount * avatar.rarity) / avatar.mint;
@@ -115,14 +115,6 @@ namespace avatarmk {
         int l = avatar_name.size();
         eosio::check(l >= 3, "Avatar name must have a minimum of 3 characters");
         eosio::check(l <= 20, "Avatar name can't have more then 20 characters");
-    }
-
-    // void avatarmk_c::mint(name receiver, uint32_t template_id, nft_config nft_conf)
-    // {
-    //     const auto blank_data = atomicassets::ATTRIBUTE_MAP{};
-    //     const std::vector<asset> tokens_to_back;
-    //     const auto data = make_tuple(get_self(), nft_conf.collection_name, nft_conf.schema_name, template_id, receiver, blank_data, blank_data, tokens_to_back);
-    //     action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "mintasset"_n, data).send();
-    // };
+    };
 
 }  // namespace avatarmk
