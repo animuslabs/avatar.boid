@@ -7,8 +7,7 @@ namespace avatarmk {
 
     eosio::extended_asset avatarmk_c::calculate_mint_price(const avatars& avatar, const config& cfg)
     {
-        // config_table _config(get_self(), get_self().value);
-        // auto const cfg = _config.get_or_create(get_self(), config());
+        //auto sec_passed = (eosio::current_time_point() - avatar.created).to_seconds();
         int core_precision_pow = pow(10, core_symbol.precision());
         //this is subject to change
         double p = (cfg.base_mint_price.amount * avatar.rarity) / avatar.mint;

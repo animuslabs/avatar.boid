@@ -80,6 +80,7 @@ namespace avatarmk {
             n.template_id = template_id;
             n.ipfs_hash = ipfs_hash;
             n.modified = eosio::time_point_sec(eosio::current_time_point());
+            n.created = eosio::time_point_sec(eosio::current_time_point());
         });
     }
 

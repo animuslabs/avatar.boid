@@ -50,6 +50,7 @@ namespace avatarmk {
         uint8_t rarity;
         uint32_t mint;      //how many are minted
         uint32_t max_mint;  //added for convenience
+        eosio::time_point_sec created;
         eosio::time_point_sec modified;
 
         uint64_t primary_key() const { return id; }
