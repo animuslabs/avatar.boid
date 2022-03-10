@@ -96,7 +96,17 @@ namespace avatarmk {
         //can make ram_payer optional
         require_auth(ram_payer);
         eosio::check(is_account(owner), "Owner isn't associated with an on-chain account.");
-        add_balance(owner, eosio::extended_asset(0, token), ram_payer);
+
+        deposits_table _deposits(get_self(), owner.value);
+        auto idx = _deposits.get_index<"bycontrsym"_n>();
+        uint128_t composite_id = (uint128_t{token.contract.value} << 64) | token.get_symbol().raw();
+        auto itr = idx.find(composite_id);
+        eosio::check(itr == idx.end(), "Owner already has an open account for token");
+
+        _deposits.emplace(ram_payer, [&](auto& n) {
+            n.id = _deposits.available_primary_key();
+            n.balance = eosio::extended_asset(0, token);
+        });
     }
 
 }  // namespace avatarmk

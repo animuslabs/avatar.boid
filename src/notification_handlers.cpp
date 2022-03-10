@@ -43,6 +43,11 @@ namespace avatarmk {
                 }
                 burn_nfts(asset_ids);
             }
+            if (memo == std::string("potion")) {
+                //check if received nfts are 1x avatar + potion nfts
+                //trigger inline "log" action that the server can intercept to render new nft
+                //burn received assets
+            }
         }
     }
 

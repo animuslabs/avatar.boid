@@ -99,11 +99,11 @@
         "slist": "cpp",
         "cfenv": "cpp",
         "cinttypes": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "__memory": "cpp"
     },
     "clang-tidy.buildPath": "build",
-    "clang-tidy.compilerArgsBefore":
-    [
+    "clang-tidy.compilerArgsBefore": [
         "-Wall",
         "-Wextra"
     ],
