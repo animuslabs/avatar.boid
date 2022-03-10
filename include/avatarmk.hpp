@@ -36,9 +36,12 @@ namespace avatarmk {
         uint64_t primary_key() const { return id; }
         uint128_t by_contr_sym() const { return (uint128_t{balance.contract.value} << 64) | balance.quantity.symbol.raw(); }
     };
-
     EOSIO_REFLECT(deposits, id, balance)
-    typedef eosio::multi_index<"deposits"_n, deposits, eosio::indexed_by<"bycontrsym"_n, eosio::const_mem_fun<deposits, uint128_t, &deposits::by_contr_sym>>> deposits_table;
+    // clang-format off
+    typedef eosio::multi_index<"deposits"_n, deposits, 
+    eosio::indexed_by<"bycontrsym"_n, eosio::const_mem_fun<deposits, uint128_t, &deposits::by_contr_sym>>
+    > deposits_table;
+    // clang-format on
 
     struct avatars {
         uint64_t id;
@@ -54,10 +57,16 @@ namespace avatarmk {
         eosio::time_point_sec modified;
 
         uint64_t primary_key() const { return id; }
+        uint64_t by_creator() const { return creator.value; }
         eosio::checksum256 by_idf() const { return identifier; }
     };
     EOSIO_REFLECT(avatars, id, template_id, creator, identifier, ipfs_hash, rarity, mint, max_mint)
-    typedef eosio::multi_index<"avatars"_n, avatars, eosio::indexed_by<"byidf"_n, eosio::const_mem_fun<avatars, eosio::checksum256, &avatars::by_idf>>> avatars_table;
+    // clang-format off
+    typedef eosio::multi_index<"avatars"_n,avatars,
+    eosio::indexed_by<"bycreator"_n, eosio::const_mem_fun<avatars, uint64_t, &avatars::by_creator>>,
+    eosio::indexed_by<"byidf"_n, eosio::const_mem_fun<avatars, eosio::checksum256, &avatars::by_idf>>
+    >avatars_table;
+    // clang-format on
 
     struct avatarmk_c : public eosio::contract {
         using eosio::contract::contract;
