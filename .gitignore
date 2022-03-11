@@ -18,3 +18,7 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 *project-prefix
+node_modules
+.env*
+util/images/**
+
