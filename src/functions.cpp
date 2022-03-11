@@ -5,15 +5,33 @@
 
 namespace avatarmk {
 
-    eosio::extended_asset avatarmk_c::calculate_mint_price(const avatars& avatar, const config& cfg)
+    avatar_mint_fee avatarmk_c::calculate_mint_price(const avatars& avatar, const config& cfg)
     {
-        //auto sec_passed = (eosio::current_time_point() - avatar.created).to_seconds();
-        int core_precision_pow = pow(10, core_symbol.precision());
-        //this is subject to change
-        double p = (cfg.base_mint_price.amount * avatar.rarity) / avatar.mint;
-        eosio::asset mint_price{static_cast<int64_t>(p * core_precision_pow), core_symbol};
-        eosio::extended_asset extended_mint_price(mint_price, extended_core_symbol.get_contract());
-        return extended_mint_price;
+        //this is untested code!!!!!!!!!!
+        //still need to thinker more
+        avatar_mint_fee result;
+        // int core_precision_pow = pow(10, core_symbol.precision());
+        auto sec_passed = (eosio::current_time_point() - avatar.modified).to_seconds();
+        auto days_passed = floor(sec_passed / day_sec);
+
+        //current mint price calculation
+        double r = 0.02;  //decay 2% each day
+        uint64_t p = (uint64_t)(avatar.base_price.amount * pow(1 - r, days_passed));
+        eosio::asset mint_price{static_cast<int64_t>(p), core_symbol};
+        mint_price = mint_price >= cfg.floor_mint_price ? mint_price : cfg.floor_mint_price;
+        result.fee = {mint_price, extended_core_symbol.get_contract()};
+
+        //set new base_price
+        if (days_passed == 0) {
+            //base price increases by 10% each time a mint happens before a day passes from the previous mint
+            double nbp = avatar.base_price.amount * 1.10;
+            result.next_base_price = {static_cast<int64_t>(nbp), core_symbol};
+        }
+        else {
+            result.next_base_price = avatar.base_price;
+        }
+
+        return result;
     }
 
     void avatarmk_c::sub_balance(const eosio::name& owner, const eosio::extended_asset& value)

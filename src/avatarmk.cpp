@@ -27,13 +27,14 @@ namespace avatarmk {
         auto const cfg = _config.get_or_create(get_self(), config());
 
         //for now 100% of fee goes to template owner
-        eosio::extended_asset fee = calculate_mint_price(*itr, cfg);  //not needed to pass in full config
-        sub_balance(minter, fee);
-        add_balance(itr->creator, fee, get_self());  //let self pay for ram if new table entry?
+        avatar_mint_fee amf = calculate_mint_price(*itr, cfg);  //not needed to pass in full config
+        sub_balance(minter, amf.fee);
+        add_balance(itr->creator, amf.fee, get_self());  //let self pay for ram if new table entry?
 
         _avatars.modify(itr, eosio::same_payer, [&](auto& n) {
             n.mint += 1;
             n.modified = eosio::time_point_sec(eosio::current_time_point());
+            n.base_price = amf.next_base_price;
         });
         //atomic mint action
         const auto blank_data = atomicassets::ATTRIBUTE_MAP{};
@@ -54,6 +55,9 @@ namespace avatarmk {
         //todo: this function must catch abusive words
         validate_avatar_name(avatar_name);
 
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+
         //add new avatar to table
         _avatars.emplace(get_self(), [&](auto& n) {
             n.id = _avatars.available_primary_key();
@@ -61,7 +65,7 @@ namespace avatarmk {
             n.rarity = set_data.rarity_score;
             n.creator = creator;
             n.identifier = set_data.identifier;
-            n.modified = eosio::time_point_sec(eosio::current_time_point());
+            n.base_price = cfg.floor_mint_price * set_data.rarity_score;
             //this data needs to be added by the server in response to the assemble action
             // n.template_id
             // n.ipfs_hash;
@@ -80,7 +84,6 @@ namespace avatarmk {
             n.template_id = template_id;
             n.ipfs_hash = ipfs_hash;
             n.modified = eosio::time_point_sec(eosio::current_time_point());
-            n.created = eosio::time_point_sec(eosio::current_time_point());
         });
     }
 
