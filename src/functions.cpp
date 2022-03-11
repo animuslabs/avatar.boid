@@ -28,7 +28,7 @@ namespace avatarmk {
             result.next_base_price = {static_cast<int64_t>(nbp), core_symbol};
         }
         else {
-            result.next_base_price = avatar.base_price;
+            result.next_base_price = cfg.floor_mint_price * avatar.rarity;
         }
 
         return result;
