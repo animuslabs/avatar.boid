@@ -1,5 +1,5 @@
-const conf = require('../eosioConfig')
-const env = require('../.env.js')
+const conf = require('./eosioConfig')
+const env = require('./.env.js')
 const activeChain = process.env.CHAIN || env.defaultChain
 const { api, tapos, doAction, getFullTable } = require('./lib/eosjs')()
 const contractAccount = conf.accountName[activeChain]

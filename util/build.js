@@ -1,5 +1,5 @@
 var spawn = require('child-process-promise').spawn
-const conf = require('../eosioConfig')
+const conf = require('./eosioConfig')
 const fs = require('fs-extra')
 
 /**

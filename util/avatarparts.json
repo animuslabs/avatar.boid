@@ -1,0 +1,2043 @@
+[
+  {
+    "type": "eyes",
+    "filepath": "boid_1pack_0000s_0000_eyes_spawn.png",
+    "offset": {
+      "x": 876.5,
+      "y": -695,
+      "width": 521,
+      "height": 508
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_1pack_0000s_0001_eyes_scientist.png",
+    "offset": {
+      "x": 899,
+      "y": -708,
+      "width": 546,
+      "height": 184
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_1pack_0000s_0002_eyes_queen.png",
+    "offset": {
+      "x": 840.5,
+      "y": -699.5,
+      "width": 331,
+      "height": 141
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_1pack_0000s_0003_eyes_king.png",
+    "offset": {
+      "x": 840.5,
+      "y": -699.5,
+      "width": 331,
+      "height": 141
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_1pack_0000s_0004_eyes_elvis.png",
+    "offset": {
+      "x": 903,
+      "y": -718,
+      "width": 516,
+      "height": 188
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_1pack_0000s_0005_eyes_barbarian.png",
+    "offset": {
+      "x": 840.5,
+      "y": -668.5,
+      "width": 331,
+      "height": 203
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_1pack_0000s_0006_eyes_superhero.png",
+    "offset": {
+      "x": 1009,
+      "y": -731,
+      "width": 736,
+      "height": 396
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_1pack_0000s_0007_eyes_wizard.png",
+    "offset": {
+      "x": 840.5,
+      "y": -699.5,
+      "width": 331,
+      "height": 141
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_1pack_0000s_0008_eyes_zombie.png",
+    "offset": {
+      "x": 840.5,
+      "y": -699.5,
+      "width": 331,
+      "height": 141
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_1pack_0001s_0000_mouth_scientist.png",
+    "offset": {
+      "x": 837.5,
+      "y": -854.5,
+      "width": 183,
+      "height": 55
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_1pack_0001s_0001_mouth_queen.png",
+    "offset": {
+      "x": 799,
+      "y": -856.5,
+      "width": 106,
+      "height": 91
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_1pack_0001s_0002_mouth_king.png",
+    "offset": {
+      "x": 803.5,
+      "y": -858,
+      "width": 209,
+      "height": 178
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_1pack_0001s_0003_mouth_elvis.png",
+    "offset": {
+      "x": 807,
+      "y": -853.5,
+      "width": 110,
+      "height": 133
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_1pack_0001s_0004_mouth_barbarian.png",
+    "offset": {
+      "x": 837.5,
+      "y": -854.5,
+      "width": 183,
+      "height": 55
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_1pack_0001s_0005_mouth_superhero.png",
+    "offset": {
+      "x": 837.5,
+      "y": -854.5,
+      "width": 183,
+      "height": 55
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_1pack_0001s_0006_mouth_wizard.png",
+    "offset": {
+      "x": 883,
+      "y": -1016,
+      "width": 502,
+      "height": 540
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_1pack_0001s_0007_mouth_zombie.png",
+    "offset": {
+      "x": 856,
+      "y": -834.5,
+      "width": 376,
+      "height": 125
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_1pack_0002s_0000_hair_scientist.png",
+    "offset": {
+      "x": 953,
+      "y": -534,
+      "width": 668,
+      "height": 698
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_1pack_0002s_0001_hair_queen.png",
+    "offset": {
+      "x": 969.5,
+      "y": -478.5,
+      "width": 711,
+      "height": 953
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_1pack_0002s_0002_hair_king.png",
+    "offset": {
+      "x": 942,
+      "y": -585.5,
+      "width": 686,
+      "height": 845
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_1pack_0002s_0003_hair_elvis.png",
+    "offset": {
+      "x": 927,
+      "y": -538.5,
+      "width": 610,
+      "height": 679
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_1pack_0002s_0004_hair_barbarian.png",
+    "offset": {
+      "x": 1209,
+      "y": -670.5,
+      "width": 1154,
+      "height": 901
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_1pack_0002s_0005_hair_superhero.png",
+    "offset": {
+      "x": 942.5,
+      "y": -461,
+      "width": 649,
+      "height": 530
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_1pack_0002s_0006_hair_wizard.png",
+    "offset": {
+      "x": 934,
+      "y": -415,
+      "width": 868,
+      "height": 830
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_1pack_0002s_0007_hair_zombie.png",
+    "offset": {
+      "x": 989.5,
+      "y": -757.5,
+      "width": 777,
+      "height": 907
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_1pack_0003s_0000_head_spawn.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_1pack_0003s_0001_head_scientist.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_1pack_0003s_0002_head_queen.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_1pack_0003s_0003_head_king.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_1pack_0003s_0004_head_ellvis.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_1pack_0003s_0005_head_barbarian.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_1pack_0003s_0006_head_astronaut.png",
+    "offset": {
+      "x": 929,
+      "y": -693.5,
+      "width": 692,
+      "height": 651
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_1pack_0003s_0007_headsuperhero.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_1pack_0003s_0008_head_wizard.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_1pack_0003s_0009_head_zombie.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_1pack_0004s_0000_top_spawn.png",
+    "offset": {
+      "x": 969,
+      "y": -1116.5,
+      "width": 702,
+      "height": 929
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_1pack_0004s_0001_top_scientist.png",
+    "offset": {
+      "x": 988.5,
+      "y": -1169,
+      "width": 741,
+      "height": 684
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_1pack_0004s_0002_top_queen.png",
+    "offset": {
+      "x": 926,
+      "y": -1105.5,
+      "width": 656,
+      "height": 557
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_1pack_0004s_0003_top_king.png",
+    "offset": {
+      "x": 931,
+      "y": -1176.5,
+      "width": 626,
+      "height": 699
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_1pack_0004s_0004_top_elvis.png",
+    "offset": {
+      "x": 929.5,
+      "y": -1113,
+      "width": 629,
+      "height": 572
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_1pack_0004s_0005_top_barbarian.png",
+    "offset": {
+      "x": 956,
+      "y": -1175,
+      "width": 676,
+      "height": 696
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_1pack_0004s_0006_top_astronaut.png",
+    "offset": {
+      "x": 931,
+      "y": -1105.5,
+      "width": 626,
+      "height": 557
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_1pack_0004s_0007_top_superhero.png",
+    "offset": {
+      "x": 1121.5,
+      "y": -1105.5,
+      "width": 1007,
+      "height": 557
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_1pack_0004s_0008_top_wizard.png",
+    "offset": {
+      "x": 1061.5,
+      "y": -1188.5,
+      "width": 887,
+      "height": 723
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_1pack_0004s_0009_top_zombie.png",
+    "offset": {
+      "x": 931,
+      "y": -1105.5,
+      "width": 626,
+      "height": 557
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_1pack_0005s_0000_bottom_spawn.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_1pack_0005s_0001_bottom_scientist.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_1pack_0005s_0002_bottom_qeen.png",
+    "offset": {
+      "x": 932.5,
+      "y": -1422.5,
+      "width": 495,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_1pack_0005s_0003_bottom_KING.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_1pack_0005s_0004_bottom_elvis.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_1pack_0005s_0005_bottom_barbarian.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_1pack_0005s_0006_bottom_astronaut.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_1pack_0005s_0007_bottom_SUPERHERO.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_1pack_0005s_0008_bottom_wizard.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_1pack_0005s_0009_bottom_zombie.png",
+    "offset": {
+      "x": 971.5,
+      "y": -1417.5,
+      "width": 639,
+      "height": 521
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_1pack_0006s_0000_big-wings_spawn.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -928,
+      "width": 1901,
+      "height": 526
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_1pack_0006s_0001_big-wings_scientist.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -928,
+      "width": 1901,
+      "height": 526
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_1pack_0006s_0002_big-wings_queen.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -928,
+      "width": 1901,
+      "height": 526
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_1pack_0006s_0003_big-wings_king.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -928,
+      "width": 1901,
+      "height": 526
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_1pack_0006s_0004_big-wings_elvis.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -928,
+      "width": 1901,
+      "height": 526
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_1pack_0006s_0005_big-wings_barbarian.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -928,
+      "width": 1901,
+      "height": 526
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_1pack_0006s_0006_big-wings_astronaut.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -864.5,
+      "width": 1901,
+      "height": 653
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_1pack_0006s_0007_big-wings-superhero.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -928,
+      "width": 1901,
+      "height": 526
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_1pack_0006s_0008_big-wings.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -928,
+      "width": 1901,
+      "height": 526
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_1pack_0006s_0009_big-wings_zombie.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -928,
+      "width": 1901,
+      "height": 526
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_1pack_0007s_0000_small-wings_spawn.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_1pack_0007s_0001_small-wings_scientist.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_1pack_0007s_0002_small-wings_queen.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_1pack_0007s_0003_small-wings_king.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_1pack_0007s_0004_small-wings_elvis.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_1pack_0007s_0005_small-wings_barbarian.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_1pack_0007s_0006_small-wings_astronaut.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_1pack_0007s_0007_small-wings_superhero.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_1pack_0007s_0008_small-wings_wizard.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_1pack_0007s_0009_small-wings_zombie.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_1pack_0008s_0000_eyes.png",
+    "offset": {
+      "x": 841,
+      "y": -699.5,
+      "width": 332,
+      "height": 141
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_2pack__0000s_0000_hair_10.png",
+    "offset": {
+      "x": 971,
+      "y": -626,
+      "width": 706,
+      "height": 690
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_2pack__0000s_0001_hair_9.png",
+    "offset": {
+      "x": 931.5,
+      "y": -517.5,
+      "width": 555,
+      "height": 619
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_2pack__0000s_0002_hair_8.png",
+    "offset": {
+      "x": 955,
+      "y": -737,
+      "width": 652,
+      "height": 864
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_2pack__0000s_0003_hair_7.png",
+    "offset": {
+      "x": 946.5,
+      "y": -540,
+      "width": 791,
+      "height": 754
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_2pack__0000s_0004_hair_6.png",
+    "offset": {
+      "x": 890.5,
+      "y": -730.5,
+      "width": 673,
+      "height": 831
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_2pack__0000s_0005_hair_5.png",
+    "offset": {
+      "x": 978,
+      "y": -661,
+      "width": 756,
+      "height": 630
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_2pack__0000s_0006_hair_4.png",
+    "offset": {
+      "x": 935.5,
+      "y": -666,
+      "width": 635,
+      "height": 722
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_2pack__0000s_0007_hair_3.png",
+    "offset": {
+      "x": 947.5,
+      "y": -610,
+      "width": 675,
+      "height": 696
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_2pack__0000s_0008_hair_2.png",
+    "offset": {
+      "x": 953.5,
+      "y": -647.5,
+      "width": 811,
+      "height": 921
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "hair",
+    "filepath": "boid_2pack__0000s_0009_hair_1.png",
+    "offset": {
+      "x": 937.5,
+      "y": -507,
+      "width": 589,
+      "height": 688
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_2pack__0001s_0000_mouth_10.png",
+    "offset": {
+      "x": 825,
+      "y": -761,
+      "width": 282,
+      "height": 352
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_2pack__0001s_0001_mouth_9.png",
+    "offset": {
+      "x": 894.5,
+      "y": -836,
+      "width": 529,
+      "height": 312
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_2pack__0001s_0002_mouth_8.png",
+    "offset": {
+      "x": 875,
+      "y": -947,
+      "width": 360,
+      "height": 240
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_2pack__0001s_0003_mouth_7.png",
+    "offset": {
+      "x": 845.5,
+      "y": -899,
+      "width": 183,
+      "height": 144
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_2pack__0001s_0004_mouth_6.png",
+    "offset": {
+      "x": 845.5,
+      "y": -854.5,
+      "width": 183,
+      "height": 55
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_2pack__0001s_0005_mouth_5.png",
+    "offset": {
+      "x": 845.5,
+      "y": -854.5,
+      "width": 183,
+      "height": 55
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_2pack__0001s_0006_mouth_4.png",
+    "offset": {
+      "x": 876.5,
+      "y": -787.5,
+      "width": 343,
+      "height": 189
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_2pack__0001s_0007_mouth_3.png",
+    "offset": {
+      "x": 845.5,
+      "y": -854.5,
+      "width": 183,
+      "height": 55
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_2pack__0001s_0008_mouth_2.png",
+    "offset": {
+      "x": 845.5,
+      "y": -854.5,
+      "width": 183,
+      "height": 55
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "mouth",
+    "filepath": "boid_2pack__0001s_0009_mouth_1.png",
+    "offset": {
+      "x": 837.5,
+      "y": -912,
+      "width": 183,
+      "height": 156
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_2pack__0002s_0000_eyes_10.png",
+    "offset": {
+      "x": 840.5,
+      "y": -699.5,
+      "width": 331,
+      "height": 141
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_2pack__0002s_0001_eyes_9.png",
+    "offset": {
+      "x": 840.5,
+      "y": -699.5,
+      "width": 331,
+      "height": 141
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_2pack__0002s_0002_eyes8.png",
+    "offset": {
+      "x": 919.5,
+      "y": -692.5,
+      "width": 577,
+      "height": 215
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_2pack__0002s_0003_eyes_7.png",
+    "offset": {
+      "x": 840.5,
+      "y": -739,
+      "width": 331,
+      "height": 220
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_2pack__0002s_0004_eyes_6.png",
+    "offset": {
+      "x": 840.5,
+      "y": -699.5,
+      "width": 331,
+      "height": 141
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_2pack__0002s_0005_eyes_5.png",
+    "offset": {
+      "x": 840.5,
+      "y": -699.5,
+      "width": 331,
+      "height": 141
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_2pack__0002s_0006_eyes_4.png",
+    "offset": {
+      "x": 840.5,
+      "y": -699.5,
+      "width": 331,
+      "height": 141
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_2pack__0002s_0007_eyes_3.png",
+    "offset": {
+      "x": 867.5,
+      "y": -789,
+      "width": 385,
+      "height": 338
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_2pack__0002s_0008_eyes_2.png",
+    "offset": {
+      "x": 881,
+      "y": -707,
+      "width": 530,
+      "height": 348
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_2pack__0002s_0009_eyes1.png",
+    "offset": {
+      "x": 920,
+      "y": -681,
+      "width": 676,
+      "height": 224
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_2pack__0003s_0000_head_10.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_2pack__0003s_0001_head_9.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_2pack__0003s_0002_head_8.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_2pack__0003s_0003_head_7.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_2pack__0003s_0004_head_6.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_2pack__0003s_0005_head_5.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_2pack__0003s_0006_head_4.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_2pack__0003s_0007_head_3.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_2pack__0003s_0008_head_2.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "head",
+    "filepath": "boid_2pack__0003s_0009_head_1.png",
+    "offset": {
+      "x": 941.5,
+      "y": -685.5,
+      "width": 619,
+      "height": 631
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_2pack__0004s_0000_top_10.png",
+    "offset": {
+      "x": 931,
+      "y": -1105.5,
+      "width": 626,
+      "height": 557
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_2pack__0004s_0001_top_9.png",
+    "offset": {
+      "x": 944,
+      "y": -1095,
+      "width": 656,
+      "height": 578
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_2pack__0004s_0002_top_8.png",
+    "offset": {
+      "x": 931,
+      "y": -1105.5,
+      "width": 626,
+      "height": 557
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_2pack__0004s_0003_top_7.png",
+    "offset": {
+      "x": 931,
+      "y": -1105.5,
+      "width": 626,
+      "height": 557
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_2pack__0004s_0004_top_6.png",
+    "offset": {
+      "x": 931,
+      "y": -1105.5,
+      "width": 626,
+      "height": 557
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_2pack__0004s_0005_top_5.png",
+    "offset": {
+      "x": 945,
+      "y": -1146,
+      "width": 654,
+      "height": 638
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_2pack__0004s_0006_top4.png",
+    "offset": {
+      "x": 931,
+      "y": -1105.5,
+      "width": 626,
+      "height": 557
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_2pack__0004s_0007_top3.png",
+    "offset": {
+      "x": 937.5,
+      "y": -1129,
+      "width": 665,
+      "height": 608
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_2pack__0004s_0008_top_2.png",
+    "offset": {
+      "x": 931,
+      "y": -1109,
+      "width": 626,
+      "height": 550
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "top",
+    "filepath": "boid_2pack__0004s_0009_top_1.png",
+    "offset": {
+      "x": 921,
+      "y": -1105.5,
+      "width": 646,
+      "height": 557
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_2pack__0005s_0000_Group-8.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_2pack__0005s_0001_bottom_9.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_2pack__0005s_0002_bottom_8.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_2pack__0005s_0003_bottom_7.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_2pack__0005s_0004_bottom_6.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_2pack__0005s_0005_bottom_5.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_2pack__0005s_0006_bottom_4.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_2pack__0005s_0007_bottom_3.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_2pack__0005s_0008_bottom_2.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "bottom",
+    "filepath": "boid_2pack__0005s_0009_bottom_1.png",
+    "offset": {
+      "x": 927,
+      "y": -1422.5,
+      "width": 484,
+      "height": 511
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_2pack__0006s_0000_big_wings_10.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -928,
+      "width": 1901,
+      "height": 526
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_2pack__0006s_0001_big_wings_9.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -927.5,
+      "width": 1901,
+      "height": 527
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_2pack__0006s_0002_big_wings_8.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -928,
+      "width": 1901,
+      "height": 526
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_2pack__0006s_0003_big_wings_7.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -925.5,
+      "width": 1901,
+      "height": 531
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_2pack__0006s_0004_big_wings_6.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -903.5,
+      "width": 1901,
+      "height": 611
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_2pack__0006s_0005_big_wings_5.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -893,
+      "width": 1901,
+      "height": 596
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_2pack__0006s_0006_big_wings_4.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -928,
+      "width": 1901,
+      "height": 526
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_2pack__0006s_0007_big_wings_3.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -928,
+      "width": 1901,
+      "height": 526
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_2pack__0006s_0008_big_wings_2.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -932.5,
+      "width": 1901,
+      "height": 537
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "big-wings",
+    "filepath": "boid_2pack__0006s_0009_big_wings_1.png",
+    "offset": {
+      "x": 1030.5,
+      "y": -912,
+      "width": 1901,
+      "height": 558
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_2pack__0007s_0000_small_wings_10.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_2pack__0007s_0001_small_wings_9.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_2pack__0007s_0002_small_wings_8.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_2pack__0007s_0003_small_wings_7.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1218,
+      "width": 1085,
+      "height": 292
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_2pack__0007s_0004_small_wings_6.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_2pack__0007s_0005_small_wings_5.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_2pack__0007s_0006_small_wings_4.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_2pack__0007s_0007_small_wings_3.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_2pack__0007s_0008_small_wings_2.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "small-wings",
+    "filepath": "boid_2pack__0007s_0009_small_wings_1.png",
+    "offset": {
+      "x": 967.5,
+      "y": -1217.5,
+      "width": 1085,
+      "height": 291
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  },
+  {
+    "type": "eyes",
+    "filepath": "boid_2pack__0008s_0000_eyes.png",
+    "offset": {
+      "x": 841,
+      "y": -699.5,
+      "width": 332,
+      "height": 141
+    },
+    "schema_name": "testschema",
+    "template_id": 0,
+    "rarity": 0
+  }
+]
