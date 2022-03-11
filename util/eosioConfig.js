@@ -1,5 +1,5 @@
 module.exports = {
-  chains: ['eos', 'kylin', 'wax', 'jungle', 'telosTest', 'waxtest'],
+  chains: ['eos', 'kylin', 'wax', 'jungle', 'telosTest', 'waxTest'],
   endpoints: {
     eos: ['https://eos.greymass.com', 'https://eos.eosn.io', 'https://eos.dfuse.eosnation.io/'],
     kylin: ['https://kylin.eosn.io', 'https://kylin.eossweden.org'],
