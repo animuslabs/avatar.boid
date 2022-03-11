@@ -66,6 +66,7 @@ namespace avatarmk {
             n.creator = creator;
             n.identifier = set_data.identifier;
             n.base_price = cfg.floor_mint_price * set_data.rarity_score;
+            n.modified = eosio::time_point_sec(eosio::current_time_point());
             //this data needs to be added by the server in response to the assemble action
             // n.template_id
             // n.ipfs_hash;
