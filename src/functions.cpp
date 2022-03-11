@@ -15,8 +15,9 @@ namespace avatarmk {
         auto days_passed = floor(sec_passed / day_sec);
 
         //current mint price calculation
-        double r = 0.02;  //decay 2% each day
-        uint64_t p = (uint64_t)(avatar.base_price.amount * pow(1 - r, days_passed));
+        double r = 0.01 * (5 / avatar.rarity); //rare avatars will decay slower
+        auto decay_step = days_passed <= 7 ? 0 : days_passed - 7;  //start decay after 1 week
+        uint64_t p = (uint64_t)(avatar.base_price.amount * pow(1 - r, decay_step));
         eosio::asset mint_price{static_cast<int64_t>(p), core_symbol};
         mint_price = mint_price >= cfg.floor_mint_price ? mint_price : cfg.floor_mint_price;
         result.fee = {mint_price, extended_core_symbol.get_contract()};
