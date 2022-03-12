@@ -29,8 +29,8 @@ namespace avatarmk {
     struct config {
         bool freeze = false;
         eosio::asset floor_mint_price{1, core_symbol};
-        eosio::name collection_name = "avatars1235a"_n;
-        eosio::name parts_schema = "bodyparts123"_n;
+        eosio::name collection_name = "boidavatars1"_n;
+        eosio::name parts_schema = "cartoonparts"_n;
         eosio::name avatar_schema = "avatarschema"_n;
     };
     EOSIO_REFLECT(config, freeze, floor_mint_price)

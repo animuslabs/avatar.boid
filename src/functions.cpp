@@ -94,14 +94,14 @@ namespace avatarmk {
             auto t = templates.get(asset.template_id, "Template not found");
             auto des_data = atomicassets::deserialize(t.immutable_serialized_data, schema.format);
 
-            auto body_type = std::get<std::string>(des_data["type"]);
+            auto body_type = std::get<std::string>(des_data["bodypart"]);  //type
 
             if (std::find(test_types.begin(), test_types.end(), body_type) != test_types.end()) {
-                eosio::check(false, "Duplicate body part type");
+                eosio::check(false, "Duplicate body part type " + body_type);
             }
             else {
                 result.template_ids.push_back(asset.template_id);
-                rarities.push_back(get<uint8_t>(des_data["rarity"]));
+                rarities.push_back(get<uint8_t>(des_data["rarityScore"]));
             }
         }
 
