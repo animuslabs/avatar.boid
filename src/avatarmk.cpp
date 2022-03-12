@@ -67,11 +67,11 @@ namespace avatarmk {
             n.identifier = set_data.identifier;
             n.base_price = cfg.floor_mint_price * set_data.rarity_score;
             n.modified = eosio::time_point_sec(eosio::current_time_point());
+            n.bodyparts = set_data.template_ids;
             //this data needs to be added by the server in response to the assemble action
             // n.template_id
             // n.ipfs_hash;
-            // n.mint;
-            //n.max_mint = 0; //this can be calculated in the contract and added to set_data
+            // n.max_mint = 0; //this can be calculated in the contract and added to set_data
         });
     }
     void avatarmk_c::finalize(eosio::checksum256& identifier, std::string& ipfs_hash, uint32_t& template_id)
