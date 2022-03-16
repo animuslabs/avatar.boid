@@ -5,7 +5,7 @@ let minLen = 4
 let maxLen = 12
 const range = (OldValue, OldMin, OldMax, NewMin, NewMax) => (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
 function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.substring(1);
+  return str.charAt(0).toUpperCase() + str.substring(1)
 }
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
@@ -39,7 +39,7 @@ async function random(test) {
       await writeImage(name, rawArt, tempArt, file, rawPart.type, frontArt, backArt)
       rawPart['name'] = name.toLowerCase()
       rawPart.rarity = rarity
-      console.log(rawPart);
+      console.log(rawPart)
       if (test) return
       partsList.push(rawPart)
     }
@@ -147,7 +147,7 @@ function determinOffset(type) {
 async function renderAllConfigured() {
   const partsList = await fs.readJson('./images/partsList.json')
   for (const part of partsList) {
-    console.log(part);
+    console.log(part)
     await configured(part.name)
   }
 }

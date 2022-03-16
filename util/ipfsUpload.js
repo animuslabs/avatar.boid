@@ -9,9 +9,9 @@ async function init() {
     let newList = []
     for (const image of imageList) {
       const file = await fs.readFile('./images/output/' + image.name + '.png')
-      console.log(file);
+      console.log(file)
       const result = await ipfs.add(file)
-      console.log(result);
+      console.log(result)
       image.ipfsCard = result.cid
       newList.push(image)
     }

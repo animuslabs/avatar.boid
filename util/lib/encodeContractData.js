@@ -1,4 +1,4 @@
-const fs = require(`fs`)
+const fs = require('fs')
 const path = require(`path`)
 const crypto = require(`crypto`)
 const { Serialize, Api } = require(`eosjs`)
@@ -68,7 +68,7 @@ function setAbiAction(abiFile, authorization) {
     abi = JSON.parse(contents.toString(`utf8`))
   } catch (error) {
     throw new Error(
-      `Cannot parse contents of ABI file ${path.resolve(account.abi)}:\n\t${error.message}`,
+      `Cannot parse contents of ABI file`,
     )
   }
   const serializedAbi = jsonToRawAbi(abi).toString(`hex`)

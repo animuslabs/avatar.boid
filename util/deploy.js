@@ -3,7 +3,7 @@ const conf = require('./eosioConfig')
 const fs = require('fs-extra')
 const env = require('./.env.js')
 const activeChain = process.env.CHAIN
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 const tapos = { blocksBehind: 20, expireSeconds: 60 }
 async function pushAbi(chain, eosjs, data) {
   await eosjs.api.transact(data, tapos)
@@ -20,7 +20,7 @@ const methods = {
   async default(chain, target) {
     const eosjs = require('./lib/eosjs')(env.keys[chain], conf.endpoints[chain][0])
     const authorization = [{ actor: conf.accountName[chain], permission: 'active' }]
-    console.log('Deploying to:', chain);
+    console.log('Deploying to:', chain)
     let abiData = { actions: [setAbiAction(`build/artifacts/${conf.contractName}.abi`, authorization)] }
     let wasmData = { actions: [setCodeAction(`build/artifacts/${conf.contractName}.wasm`, authorization)] }
     if (target == 'abi') return pushAbi(chain, eosjs, abiData)
@@ -30,13 +30,13 @@ const methods = {
       await sleep(2000)
       await pushWasm(chain, eosjs, wasmData)
     }
-    console.log(`${conf.explorer[chain]}/account/${conf.accountName[chain]}`);
+    console.log(`${conf.explorer[chain]}/account/${conf.accountName[chain]}`)
   }
 }
 
 if (require.main == module) {
   const chain = process.argv[2] || activeChain
-  console.log(chain);
+  console.log(chain)
   let target = process.argv[3]
   if (!methods[chain]) {
     if (conf.chains.find(el => el == chain)) {
