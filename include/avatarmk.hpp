@@ -53,7 +53,7 @@ typedef std::map<std::string, ATOMIC_ATTRIBUTE> ATTRIBUTE_MAP;
 
 namespace avatarmk {
 
-    inline constexpr eosio::symbol core_symbol{"EOS", 4};
+    inline constexpr eosio::symbol core_symbol{"WAX", 8};
     inline constexpr eosio::extended_symbol extended_core_symbol{core_symbol, "eosio.token"_n};
     inline constexpr auto atomic_contract = "atomicassets"_n;
     inline constexpr int day_sec = 86400;
@@ -197,6 +197,7 @@ namespace avatarmk {
                 action(open, owner, token, ram_payer),
                 action(assemble, creator, set_data),
                 action(finalize, identifier, ipfs_hash),
+                action(mintavatar, minter, avatar_id),
                 notify("eosio.token"_n, transfer),
                 notify(atomic_contract, logtransfer),
                 notify(atomic_contract, lognewtempl)

@@ -32,11 +32,14 @@ namespace avatarmk {
             n.modified = eosio::time_point_sec(eosio::current_time_point());
             n.base_price = amf.next_base_price;
         });
+
         //atomic mint action
         const auto blank_data = atomicassets::ATTRIBUTE_MAP{};
+        auto immutable_data = atomicassets::ATTRIBUTE_MAP{};
+        immutable_data["mint"] = itr->mint;
 
         const std::vector<eosio::asset> tokens_to_back;
-        const auto data = make_tuple(get_self(), cfg.collection_name, cfg.avatar_schema, itr->template_id, minter, blank_data, blank_data, tokens_to_back);
+        const auto data = make_tuple(get_self(), cfg.collection_name, cfg.avatar_schema, itr->template_id, minter, immutable_data, blank_data, tokens_to_back);
         eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "mintasset"_n, data).send();
     }
 
