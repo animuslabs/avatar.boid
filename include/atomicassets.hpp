@@ -19,6 +19,17 @@ namespace atomicassets {
 
     //Custom vector types need to be defined because otherwise a bug in the ABI serialization
     //would cause the ABI to be invalid
+    typedef std::vector<int8_t> INT8_VEC;
+    typedef std::vector<int16_t> INT16_VEC;
+    typedef std::vector<int32_t> INT32_VEC;
+    typedef std::vector<int64_t> INT64_VEC;
+    typedef std::vector<uint8_t> UINT8_VEC;
+    typedef std::vector<uint16_t> UINT16_VEC;
+    typedef std::vector<uint32_t> UINT32_VEC;
+    typedef std::vector<uint64_t> UINT64_VEC;
+    typedef std::vector<float> FLOAT_VEC;
+    typedef std::vector<double> DOUBLE_VEC;
+    typedef std::vector<std::string> STRING_VEC;
 
     typedef std::variant<int8_t,
                          int16_t,
