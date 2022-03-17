@@ -11,6 +11,8 @@
 
 #define DEBUG
 
+//for some reason it's not possible to include atomicassets.hpp in avatarmk.hpp.
+//hence the typedefs for ATTRIBUTE_MAP here.
 typedef std::vector<int8_t> INT8_VEC;
 typedef std::vector<int16_t> INT16_VEC;
 typedef std::vector<int32_t> INT32_VEC;
@@ -97,7 +99,6 @@ namespace avatarmk {
         uint32_t template_id;           //atomic assets template_id
         eosio::name creator;            //creator of the template
         eosio::checksum256 identifier;  //checksum from sorted vector containing all part_template_ids
-        std::string ipfs_hash;          //link to image for easy access
         uint8_t rarity;
         uint32_t mint;                   //how many are minted
         uint32_t max_mint;               //added for convenience
@@ -109,13 +110,37 @@ namespace avatarmk {
         uint64_t by_creator() const { return creator.value; }
         eosio::checksum256 by_idf() const { return identifier; }
     };
-    EOSIO_REFLECT(avatars, id, avatar_name, template_id, creator, identifier, ipfs_hash, rarity, mint, max_mint, modified, base_price, bodyparts)
+    EOSIO_REFLECT(avatars, id, avatar_name, template_id, creator, identifier, rarity, mint, max_mint, modified, base_price, bodyparts)
     // clang-format off
     typedef eosio::multi_index<"avatars"_n, avatars,
     eosio::indexed_by<"bycreator"_n, eosio::const_mem_fun<avatars, uint64_t, &avatars::by_creator>>,
     eosio::indexed_by<"byidf"_n, eosio::const_mem_fun<avatars, eosio::checksum256, &avatars::by_idf>>
     >avatars_table;
     // clang-format on
+
+    ///////
+    struct queue {
+        uint64_t id;
+        std::string avatar_name;
+        uint32_t template_id;           //atomic assets template_id
+        eosio::name creator;            //creator of the template
+        eosio::checksum256 identifier;  //checksum from sorted vector containing all part_template_ids
+        uint8_t rarity;
+        uint32_t mint;                   //how many are minted
+        uint32_t max_mint;               //added for convenience
+        eosio::time_point_sec modified;  //timestamp that gets updated each time the row gets modified (assemble, finalize, mint)
+        eosio::asset base_price;
+        std::vector<uint32_t> bodyparts;
+
+        uint64_t primary_key() const { return id; }
+        eosio::checksum256 by_idf() const { return identifier; }
+    };
+    EOSIO_REFLECT(queue, id, avatar_name, template_id, creator, identifier, rarity, mint, max_mint, modified, base_price, bodyparts)
+    // clang-format off
+    typedef eosio::multi_index<"queue"_n, queue,
+    eosio::indexed_by<"byidf"_n, eosio::const_mem_fun<queue, eosio::checksum256, &queue::by_idf>>
+    >queue_table;
+    //////
 
     struct avatarmk_c : public eosio::contract {
         using eosio::contract::contract;
@@ -148,6 +173,7 @@ namespace avatarmk {
 
        private:
         std::optional<assemble_set> validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner, eosio::name collection_name, eosio::name schema_name);
+        eosio::checksum256 calculateIdentifier(std::vector<uint32_t>& template_ids);
         avatar_mint_fee calculate_mint_price(const avatars& avatar, const config& cfg);
         void validate_avatar_name(std::string& avatar_name);
         //internal accounting

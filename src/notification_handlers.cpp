@@ -61,6 +61,16 @@ namespace avatarmk {
                                         atomicassets::ATTRIBUTE_MAP immutable_data)
     {
         if (get_first_receiver() != atomic_contract) return;
+        config_table _config(get_self(), get_self().value);
+        const auto cfg = _config.get_or_create(get_self(), config());
+        if (collection_name != cfg.collection_name) return;
+
+        //catch avatar template creation
+        if (schema_name == cfg.avatar_schema) {
+            // auto template_ids = std::get<UINT32_VEC>(immutable_data["parts"]);
+            // auto identifier = calculateIdentifier(template_ids);
+            //delete from queue and add to avatar table with new received template_id
+        }
         //
     }
 

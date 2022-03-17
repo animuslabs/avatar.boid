@@ -75,6 +75,13 @@ namespace avatarmk {
             });
         }
     }
+    eosio::checksum256 avatarmk_c::calculateIdentifier(std::vector<uint32_t>& template_ids)
+    {
+        sort(template_ids.begin(), template_ids.end());
+        auto packed_parts = eosio::pack(template_ids);
+        std::string sdata = std::string(packed_parts.begin(), packed_parts.end());
+        return eosio::sha256(sdata.c_str(), sdata.length());
+    }
 
     std::optional<assemble_set> avatarmk_c::validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner, eosio::name collection_name, eosio::name schema_name)
     {
@@ -106,11 +113,11 @@ namespace avatarmk {
 
         //there must be 8 unique body part types
         if (result.template_ids.size() == 8) {
-            sort(result.template_ids.begin(), result.template_ids.end());
-            auto packed_parts = eosio::pack(result.template_ids);
-            std::string sdata = std::string(packed_parts.begin(), packed_parts.end());
+            // sort(result.template_ids.begin(), result.template_ids.end());
+            // auto packed_parts = eosio::pack(result.template_ids);
+            // std::string sdata = std::string(packed_parts.begin(), packed_parts.end());
 
-            result.identifier = eosio::sha256(sdata.c_str(), sdata.length());
+            result.identifier = calculateIdentifier(result.template_ids);
             result.rarity_score = std::floor(std::accumulate(rarities.begin(), rarities.end(), 0) / 8);
 
             return result;

@@ -17,7 +17,7 @@ namespace avatarmk {
         require_auth(minter);
         avatars_table _avatars(get_self(), get_self().value);
         auto itr = _avatars.require_find(avatar_id, "Avatar with this id doesn't exist.");
-        eosio::check(itr->template_id > 0 && !itr->ipfs_hash.empty(), "Avatar not finalized yet. Try again later.");
+        eosio::check(itr->template_id > 0, "Avatar not finalized yet. Try again later.");
 
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
@@ -67,7 +67,6 @@ namespace avatarmk {
             n.bodyparts = set_data.template_ids;
             //this data needs to be added by the server in response to the assemble action
             // n.template_id
-            // n.ipfs_hash;
             // n.max_mint = 0; //this can be calculated in the contract and added to set_data
         });
     }
@@ -80,9 +79,27 @@ namespace avatarmk {
 
         idx.modify(itr, eosio::same_payer, [&](auto& n) {
             n.template_id = template_id;
-            n.ipfs_hash = ipfs_hash;
             n.modified = eosio::time_point_sec(eosio::current_time_point());
         });
+        /*
+        //todo wip//
+
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+        const eosio::name authorized_creator = get_self();
+        const eosio::name collection_name = cfg.collection_name;
+        const eosio::name schema_name = cfg.avatar_schema;
+        const bool transferable = true;
+        const bool burnable = true;
+        const uint32_t max_supply = 10;
+        auto immutable_data = atomicassets::ATTRIBUTE_MAP{};
+        immutable_data["name"] = std::string("tester");  //testdata
+        immutable_data["img"] = ipfs_hash;
+        immutable_data["rarityScore"] = uint8_t(2);
+        immutable_data["parts"] = std::vector<uint32_t>{1, 2, 3};
+        const auto data = make_tuple(authorized_creator, collection_name, schema_name, transferable, burnable, max_supply, immutable_data);
+        eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "createtempl"_n, data).send();
+        */
     }
 
     void avatarmk_c::withdraw(const eosio::name& owner, const eosio::extended_asset& value)
