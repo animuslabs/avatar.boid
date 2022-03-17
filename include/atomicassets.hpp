@@ -17,8 +17,8 @@ namespace atomicassets {
 
     static constexpr name ATOMICASSETS_ACCOUNT = name("atomicassets");
 
-    //Custom vector types need to be defined because otherwise a bug in the ABI serialization
-    //would cause the ABI to be invalid
+    //for some reason it's not possible to include atomicassets.hpp in atomicasset.hpp without errors
+    //hence the typedefs for ATTRIBUTE_MAP here.
     typedef std::vector<int8_t> INT8_VEC;
     typedef std::vector<int16_t> INT16_VEC;
     typedef std::vector<int32_t> INT32_VEC;
