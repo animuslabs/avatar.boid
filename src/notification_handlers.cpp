@@ -1,6 +1,6 @@
 // #pragma once
 #include "avatarmk.hpp"
-
+#include "atomicassets.hpp"
 namespace avatarmk {
     //
     //system core token transfer handler
@@ -49,6 +49,19 @@ namespace avatarmk {
                 //burn received assets
             }
         }
+    }
+
+    void avatarmk_c::notify_lognewtempl(int32_t template_id,
+                                        eosio::name authorized_creator,
+                                        eosio::name collection_name,
+                                        eosio::name schema_name,
+                                        bool transferable,
+                                        bool burnable,
+                                        uint32_t max_supply,
+                                        atomicassets::ATTRIBUTE_MAP immutable_data)
+    {
+        if (get_first_receiver() != atomic_contract) return;
+        //
     }
 
 }  // namespace avatarmk

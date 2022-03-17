@@ -1,7 +1,6 @@
 // #pragma once
 #include "avatarmk.hpp"
 #include "atomicassets.hpp"
-#include "atomicdata.hpp"
 
 namespace avatarmk {
 

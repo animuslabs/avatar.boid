@@ -1,12 +1,8 @@
-#include <eosio/asset.hpp>
-#include <eosio/eosio.hpp>
-//https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/core/eosio/crypto.hpp
-// #include <eosio/crypto.hpp>
-#include <eosio/bytes.hpp>
-#include <token/token.hpp>
 #include "avatarmk.hpp"
+#include "atomicassets.hpp"
 #include "functions.cpp"
 #include "notification_handlers.cpp"
+
 namespace avatarmk {
 
     void avatarmk_c::setconfig(std::optional<config> cfg)
@@ -38,12 +34,13 @@ namespace avatarmk {
         });
         //atomic mint action
         const auto blank_data = atomicassets::ATTRIBUTE_MAP{};
+
         const std::vector<eosio::asset> tokens_to_back;
         const auto data = make_tuple(get_self(), cfg.collection_name, cfg.avatar_schema, itr->template_id, minter, blank_data, blank_data, tokens_to_back);
         eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "mintasset"_n, data).send();
     }
 
-    void avatarmk_c::assemble(const eosio::name& creator, assemble_set& set_data, std::string& avatar_name)
+    void avatarmk_c::assemble(const eosio::name& creator, assemble_set& set_data)
     {
         require_auth(get_self());
 
@@ -53,7 +50,7 @@ namespace avatarmk {
         eosio::check(idx.find(set_data.identifier) == idx.end(), "Avatar with these body parts already available to mint.");
 
         //todo: this function must catch abusive words
-        validate_avatar_name(avatar_name);
+        // validate_avatar_name(avatar_name);
 
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
@@ -61,7 +58,7 @@ namespace avatarmk {
         //add new avatar to table
         _avatars.emplace(get_self(), [&](auto& n) {
             n.id = _avatars.available_primary_key();
-            n.avatar_name = avatar_name;
+            // n.avatar_name = avatar_name;
             n.rarity = set_data.rarity_score;
             n.creator = creator;
             n.identifier = set_data.identifier;
@@ -113,6 +110,20 @@ namespace avatarmk {
             n.balance = eosio::extended_asset(0, token);
         });
     }
+
+#if defined(DEBUG)
+    template <typename T>
+    void cleanTable(eosio::name code, uint64_t account, const uint32_t batchSize)
+    {
+        T db(code, account);
+        uint32_t counter = 0;
+        auto itr = db.begin();
+        while (itr != db.end() && counter++ < batchSize) {
+            itr = db.erase(itr);
+        }
+    }
+    void avatarmk_c::clravatars() { cleanTable<avatars_table>(get_self(), get_self().value, 100); }
+#endif
 
 }  // namespace avatarmk
 
