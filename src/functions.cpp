@@ -113,10 +113,6 @@ namespace avatarmk {
 
         //there must be 8 unique body part types
         if (result.template_ids.size() == 8) {
-            // sort(result.template_ids.begin(), result.template_ids.end());
-            // auto packed_parts = eosio::pack(result.template_ids);
-            // std::string sdata = std::string(packed_parts.begin(), packed_parts.end());
-
             result.identifier = calculateIdentifier(result.template_ids);
             result.rarity_score = std::floor(std::accumulate(rarities.begin(), rarities.end(), 0) / 8);
 

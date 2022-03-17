@@ -155,7 +155,7 @@ namespace avatarmk {
         void open(const eosio::name& owner, eosio::extended_symbol& token, const eosio::name& ram_payer);
 
         void assemble(const eosio::name& creator, assemble_set& set_data);
-        void finalize(eosio::checksum256& identifier, std::string& ipfs_hash, uint32_t& template_id);
+        void finalize(eosio::checksum256& identifier, std::string& ipfs_hash);
         void mintavatar(eosio::name& minter, uint64_t& avatar_id);
         using assemble_action = eosio::action_wrapper<"assemble"_n, &avatarmk_c::assemble>;
 
@@ -194,7 +194,7 @@ namespace avatarmk {
                 action(withdraw, owner, value),
                 action(open, owner, token, ram_payer),
                 action(assemble, creator, set_data),
-                action(finalize, identifier, ipfs_hash, template_id),
+                action(finalize, identifier, ipfs_hash),
                 notify("eosio.token"_n, transfer),
                 notify(atomic_contract, logtransfer),
                 notify(atomic_contract, lognewtempl)

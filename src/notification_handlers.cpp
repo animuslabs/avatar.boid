@@ -67,9 +67,18 @@ namespace avatarmk {
 
         //catch avatar template creation
         if (schema_name == cfg.avatar_schema) {
-            // auto template_ids = std::get<UINT32_VEC>(immutable_data["parts"]);
-            // auto identifier = calculateIdentifier(template_ids);
+            auto template_ids = std::get<UINT32_VEC>(immutable_data["bodyparts"]);
+            auto identifier = calculateIdentifier(template_ids);
             //delete from queue and add to avatar table with new received template_id
+
+            avatars_table _avatars(get_self(), get_self().value);
+            auto a_idx = _avatars.get_index<eosio::name("byidf")>();
+            auto existing = a_idx.require_find(identifier, "Identifier not found in avatars table during lognewtempl notify handler.");
+
+            a_idx.modify(existing, eosio::same_payer, [&](auto& n) {
+                n.template_id = template_id;
+                n.modified = eosio::time_point_sec(eosio::current_time_point());
+            });
         }
         //
     }

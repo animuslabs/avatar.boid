@@ -42,12 +42,16 @@ namespace avatarmk {
 
     void avatarmk_c::assemble(const eosio::name& creator, assemble_set& set_data)
     {
+        //assemble adds work to the queue
         require_auth(get_self());
 
         avatars_table _avatars(get_self(), get_self().value);
-        auto idx = _avatars.get_index<eosio::name("byidf")>();
+        auto a_idx = _avatars.get_index<eosio::name("byidf")>();
+        eosio::check(a_idx.find(set_data.identifier) == a_idx.end(), "Avatar with these body parts already available to mint.");
 
-        eosio::check(idx.find(set_data.identifier) == idx.end(), "Avatar with these body parts already available to mint.");
+        queue_table _queue(get_self(), get_self().value);
+        auto q_idx = _queue.get_index<eosio::name("byidf")>();
+        eosio::check(q_idx.find(set_data.identifier) == q_idx.end(), "Avatar with these body parts already in queue.");
 
         //todo: this function must catch abusive words
         // validate_avatar_name(avatar_name);
@@ -55,9 +59,9 @@ namespace avatarmk {
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
 
-        //add new avatar to table
-        _avatars.emplace(get_self(), [&](auto& n) {
-            n.id = _avatars.available_primary_key();
+        //add to queue
+        _queue.emplace(get_self(), [&](auto& n) {
+            n.id = _queue.available_primary_key();
             // n.avatar_name = avatar_name;
             n.rarity = set_data.rarity_score;
             n.creator = creator;
@@ -65,25 +69,22 @@ namespace avatarmk {
             n.base_price = cfg.floor_mint_price * set_data.rarity_score;
             n.modified = eosio::time_point_sec(eosio::current_time_point());
             n.bodyparts = set_data.template_ids;
-            //this data needs to be added by the server in response to the assemble action
-            // n.template_id
             // n.max_mint = 0; //this can be calculated in the contract and added to set_data
         });
     }
-    void avatarmk_c::finalize(eosio::checksum256& identifier, std::string& ipfs_hash, uint32_t& template_id)
+    void avatarmk_c::finalize(eosio::checksum256& identifier, std::string& ipfs_hash)
     {
+        //finalize will remove from queue
         require_auth(get_self());
         avatars_table _avatars(get_self(), get_self().value);
-        auto idx = _avatars.get_index<eosio::name("byidf")>();
-        auto itr = idx.require_find(identifier, "Identifier doesn't exists in avatars table.");
+        auto a_idx = _avatars.get_index<eosio::name("byidf")>();
+        eosio::check(a_idx.find(identifier) == a_idx.end(), "Avatar with this identifier already finalized.");
 
-        idx.modify(itr, eosio::same_payer, [&](auto& n) {
-            n.template_id = template_id;
-            n.modified = eosio::time_point_sec(eosio::current_time_point());
-        });
-        /*
-        //todo wip//
+        queue_table _queue(get_self(), get_self().value);
+        auto q_idx = _queue.get_index<eosio::name("byidf")>();
+        auto queue_entry = q_idx.require_find(identifier, "Avatar with this identifier not in the queue.");
 
+        //create template inline action
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
         const eosio::name authorized_creator = get_self();
@@ -91,15 +92,30 @@ namespace avatarmk {
         const eosio::name schema_name = cfg.avatar_schema;
         const bool transferable = true;
         const bool burnable = true;
-        const uint32_t max_supply = 10;
+        const uint32_t max_supply = queue_entry->max_mint;
         auto immutable_data = atomicassets::ATTRIBUTE_MAP{};
-        immutable_data["name"] = std::string("tester");  //testdata
+        //must match avatar schema!!!!!!!!
+        immutable_data["name"] = queue_entry->avatar_name;
         immutable_data["img"] = ipfs_hash;
-        immutable_data["rarityScore"] = uint8_t(2);
-        immutable_data["parts"] = std::vector<uint32_t>{1, 2, 3};
+        immutable_data["rarityScore"] = queue_entry->rarity;
+        immutable_data["bodyparts"] = queue_entry->bodyparts;
         const auto data = make_tuple(authorized_creator, collection_name, schema_name, transferable, burnable, max_supply, immutable_data);
         eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "createtempl"_n, data).send();
-        */
+
+        //copy queue entry in avatar table + complete with finalize args (ipfs_hash).
+        _avatars.emplace(get_self(), [&](auto& n) {
+            n.id = _avatars.available_primary_key();
+            // n.avatar_name = avatar_name;
+            n.rarity = queue_entry->rarity;
+            n.creator = queue_entry->creator;
+            n.identifier = queue_entry->identifier;
+            n.base_price = queue_entry->base_price;
+            n.modified = eosio::time_point_sec(eosio::current_time_point());
+            n.bodyparts = queue_entry->bodyparts;
+            // n.max_mint = 0; //this can be calculated in the contract and added to set_data
+        });
+        //delete queue entry, not needed anymore.
+        q_idx.erase(queue_entry);
     }
 
     void avatarmk_c::withdraw(const eosio::name& owner, const eosio::extended_asset& value)
@@ -150,5 +166,6 @@ EOSIO_ABIGEN(
     // Include the contract actions in the ABI
     actions(avatarmk::actions),
     table("avatars"_n, avatarmk::avatars),
+    table("queue"_n, avatarmk::queue),
     table("deposits"_n, avatarmk::deposits),
     table("config"_n, avatarmk::config))
