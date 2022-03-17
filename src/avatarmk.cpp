@@ -76,6 +76,7 @@ namespace avatarmk {
     {
         //finalize will remove from queue
         require_auth(get_self());
+        eosio::check(ipfs_hash.size() > 0, "ipfs_hash required");
         avatars_table _avatars(get_self(), get_self().value);
         auto a_idx = _avatars.get_index<eosio::name("byidf")>();
         eosio::check(a_idx.find(identifier) == a_idx.end(), "Avatar with this identifier already finalized.");
@@ -156,6 +157,7 @@ namespace avatarmk {
         }
     }
     void avatarmk_c::clravatars() { cleanTable<avatars_table>(get_self(), get_self().value, 100); }
+    void avatarmk_c::clrqueue() { cleanTable<queue_table>(get_self(), get_self().value, 100); }
 #endif
 
 }  // namespace avatarmk

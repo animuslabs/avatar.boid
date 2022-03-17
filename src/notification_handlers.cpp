@@ -69,7 +69,6 @@ namespace avatarmk {
         if (schema_name == cfg.avatar_schema) {
             auto template_ids = std::get<UINT32_VEC>(immutable_data["bodyparts"]);
             auto identifier = calculateIdentifier(template_ids);
-            //delete from queue and add to avatar table with new received template_id
 
             avatars_table _avatars(get_self(), get_self().value);
             auto a_idx = _avatars.get_index<eosio::name("byidf")>();

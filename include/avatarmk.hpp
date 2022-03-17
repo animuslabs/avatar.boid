@@ -75,7 +75,7 @@ namespace avatarmk {
         eosio::asset floor_mint_price{1, core_symbol};
         eosio::name collection_name = "boidavatars1"_n;
         eosio::name parts_schema = "cartoonparts"_n;
-        eosio::name avatar_schema = "avatarschema"_n;
+        eosio::name avatar_schema = "testavatarsc"_n;
     };
     EOSIO_REFLECT(config, freeze, floor_mint_price, collection_name, parts_schema, avatar_schema)
     typedef eosio::singleton<"config"_n, config> config_table;
@@ -147,6 +147,7 @@ namespace avatarmk {
 
 #if defined(DEBUG)
         void clravatars();
+        void clrqueue();
 #endif
 
         //actions
@@ -189,6 +190,7 @@ namespace avatarmk {
                 "avatarmk"_n,
                 #if defined(DEBUG)
                 action(clravatars),
+                action(clrqueue),
                 #endif
                 action(setconfig, cfg),
                 action(withdraw, owner, value),
