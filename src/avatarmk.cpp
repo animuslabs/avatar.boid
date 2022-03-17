@@ -102,7 +102,7 @@ namespace avatarmk {
         const auto data = make_tuple(authorized_creator, collection_name, schema_name, transferable, burnable, max_supply, immutable_data);
         eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "createtempl"_n, data).send();
 
-        //copy queue entry in avatar table + complete with finalize args (ipfs_hash).
+        //copy queue entry in avatar table + complete with finalize args (ipfs_hash)..
         _avatars.emplace(get_self(), [&](auto& n) {
             n.id = _avatars.available_primary_key();
             // n.avatar_name = avatar_name;
