@@ -17,27 +17,27 @@ let rpc
 const formatBloksTransaction = (network, txId) => {
   let bloksSubdomain = `bloks.io`
   switch (network) {
-    case `jungle`:
-      bloksSubdomain = `jungle3.bloks.io`;
-      break;
-    case `telosTest`:
-      bloksSubdomain = `telostest.eosauthority.com`;
-      break;
-    case `waxTest`:
-      bloksSubdomain = `wax-test.bloks.io`;
-      break;
-    case `eos`:
-      bloksSubdomain = `bloks.io`;
-      break;
-    case `wax`:
-      bloksSubdomain = `wax.bloks.io`;
-      break;
-    case `telos`:
-      bloksSubdomain = `telos.eosauthority.com`;
-      break;
+  case `jungle`:
+    bloksSubdomain = `jungle3.bloks.io`
+    break
+  case `telosTest`:
+    bloksSubdomain = `telostest.eosauthority.com`
+    break
+  case `waxTest`:
+    bloksSubdomain = `wax-test.bloks.io`
+    break
+  case `eos`:
+    bloksSubdomain = `bloks.io`
+    break
+  case `wax`:
+    bloksSubdomain = `wax.bloks.io`
+    break
+  case `telos`:
+    bloksSubdomain = `telos.eosauthority.com`
+    break
   }
-  return `https://${bloksSubdomain}/transaction/${txId}`;
-};
+  return `https://${bloksSubdomain}/transaction/${txId}`
+}
 async function getFullTable({ code, scope, table }) {
   let limit = 100
   let results = []
@@ -46,7 +46,7 @@ async function getFullTable({ code, scope, table }) {
     const result = await api.rpc.get_table_rows({ code, scope, table, limit, lower_bound })
     for (const row of result.rows) results.push(row)
     if (result.more) {
-      console.log(results.length);
+      console.log(results.length)
       lower_bound = result.next_key
       return loop()
     }
@@ -66,12 +66,12 @@ async function doAction(name, data, account, auth) {
       actions: [{ account, name, data, authorization }]
     }, tapos)
     const txid = result.transaction_id
-    console.log(result);
+    console.log(result)
     console.log(formatBloksTransaction(activeChain, txid))
-    console.log(result.processed.action_traces[0]?.console);
+    console.log(result.processed.action_traces[0]?.console)
     return result
   } catch (error) {
-    console.log('error');
+    console.log('error')
     console.log(JSON.stringify(error, null, 2))
     console.error(error.toString())
     if (error.json) console.error("Logs:", error.json?.error?.details[1]?.message)
@@ -83,7 +83,7 @@ function init(keys, apiurl) {
   const fetch = require('node-fetch')
 
   if (!apiurl) apiurl = conf.endpoints[activeChain][0] || conf.endpoints[activeChain][1] || conf.endpoints[activeChain][0]
-  console.log(apiurl);
+  console.log(apiurl)
   rpc = new JsonRpc(apiurl, { fetch })
   api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() })
 

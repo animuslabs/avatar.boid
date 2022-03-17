@@ -18,7 +18,7 @@ async function runCommand(exec, params) {
     console.log('stdout: ', data.toString())
   })
   childProcess.stderr.on('data', function (data) {
-    let e_str = data.toString();
+    let e_str = data.toString()
     if (e_str.includes('warning: abigen warning (Action <')) {
 
     }
@@ -48,7 +48,7 @@ const methods = {
     try {
       try {
         const stats = await fs.stat(`../build/${conf.contractName}.wasm`)
-        console.log('wasm size preBuild:', stats.size / 1000, 'kb');
+        console.log('wasm size preBuild:', stats.size / 1000, 'kb')
       } catch (error) {
         console.log('no existing wasm file to check size.')
       }
@@ -62,7 +62,7 @@ const methods = {
       console.log("Building...")
       await runCommand('eosio-cpp', params)
       const stats2 = await fs.stat(`../build/${conf.contractName}.wasm`)
-      console.log('wasm size postBuild:', stats2.size / 1000, 'kb');
+      console.log('wasm size postBuild:', stats2.size / 1000, 'kb')
 
     } catch (error) {
       console.error(error.toString())
