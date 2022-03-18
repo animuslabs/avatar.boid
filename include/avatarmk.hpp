@@ -78,29 +78,32 @@ namespace avatarmk {
 
     struct config {
         bool freeze = false;
-        eosio::asset floor_mint_price{1, core_symbol};
+
         eosio::name collection_name = "boidavatars1"_n;
-        eosio::name parts_schema = "cartoonparts"_n;
-        eosio::name avatar_schema = "testavatarsc"_n;
+        // eosio::asset floor_mint_price{1, core_symbol};
+        // eosio::name parts_schema = "cartoonparts"_n;
+        // eosio::name avatar_schema = "testavatarsc"_n;
     };
-    EOSIO_REFLECT(config, freeze, floor_mint_price, collection_name, parts_schema, avatar_schema)
+    EOSIO_REFLECT(config, freeze, collection_name)
     typedef eosio::singleton<"config"_n, config> config_table;
 
-    struct packs {
-        uint64_t id;
-        eosio::name pack_schema_name;
-        eosio::name part_schema_name;
-        eosio::name avatar_schema_name;
-        eosio::asset pack_price;
-        eosio::asset floor_mint_price;
-        uint64_t primary_key() const { return id; }
+    struct schemacfg {
+        eosio::name part_schema_name;    //primary key, must be unique and function as identifier of different part groups (scope)
+        eosio::name avatar_schema_name;  //schema_name used for assembled parts/avatars
+        eosio::name pack_schema_name;    //schema_name of the packs used for distribution
+        eosio::asset pack_base_price;    //base price used for calculating pack price
+        eosio::asset floor_mint_price;   // min price to mint an avatar
+
+        uint64_t primary_key() const { return part_schema_name.value; }
+        uint64_t by_avatar() const { return avatar_schema_name.value; }
         uint64_t by_pack() const { return pack_schema_name.value; }
     };
-    EOSIO_REFLECT(packs, id, pack_schema_name, part_schema_name, avatar_schema_name, pack_price, floor_mint_price)
+    EOSIO_REFLECT(schemacfg, part_schema_name, avatar_schema_name, pack_schema_name, pack_base_price, floor_mint_price)
     // clang-format off
-    typedef eosio::multi_index<"packs"_n, packs,
-    eosio::indexed_by<"bypack"_n, eosio::const_mem_fun<packs, uint64_t, &packs::by_pack>>
-    >packs_table;
+    typedef eosio::multi_index<"schemacfg"_n, schemacfg,
+    eosio::indexed_by<"byavatar"_n, eosio::const_mem_fun<schemacfg, uint64_t, &schemacfg::by_avatar>>,
+    eosio::indexed_by<"bypack"_n, eosio::const_mem_fun<schemacfg, uint64_t, &schemacfg::by_pack>>
+    >schemacfg_table;
     // clang-format on
 
     struct deposits {
@@ -166,18 +169,20 @@ namespace avatarmk {
         using eosio::contract::contract;
 
 #if defined(DEBUG)
-        void clravatars();
+        void clravatars(eosio::name& scope);
         void clrqueue();
 #endif
 
         //actions
         void setconfig(std::optional<config> cfg);
+        void addgroup(eosio::name& part_schema_name, eosio::name& avatar_schema_name, eosio::name& pack_schema_name, eosio::asset& pack_base_price, eosio::asset& floor_mint_price);
+        void delgroup(eosio::name& part_schema_name);
         void withdraw(const eosio::name& owner, const eosio::extended_asset& value);
         void open(const eosio::name& owner, eosio::extended_symbol& token, const eosio::name& ram_payer);
 
         void assemble(assemble_set& set_data);
         void finalize(eosio::checksum256& identifier, std::string& ipfs_hash);
-        void mintavatar(eosio::name& minter, uint64_t& avatar_id);
+        void mintavatar(eosio::name& minter, uint64_t& avatar_id, eosio::name& scope);
         using assemble_action = eosio::action_wrapper<"assemble"_n, &avatarmk_c::assemble>;
 
         //notifications
@@ -195,7 +200,7 @@ namespace avatarmk {
        private:
         assemble_set validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name collection_name);
         eosio::checksum256 calculateIdentifier(std::vector<uint32_t>& template_ids);
-        avatar_mint_fee calculate_mint_price(const avatars& avatar, const config& cfg);
+        avatar_mint_fee calculate_mint_price(const avatars& avatar, const eosio::asset& floor_mint_price);
         void validate_avatar_name(std::string& avatar_name);
         //internal accounting
         void add_balance(const eosio::name& owner, const eosio::extended_asset& value, const eosio::name& ram_payer = eosio::name(0));
@@ -209,15 +214,17 @@ namespace avatarmk {
                 avatarmk_c,
                 "avatarmk"_n,
                 #if defined(DEBUG)
-                action(clravatars),
+                action(clravatars, scope),
                 action(clrqueue),
                 #endif
                 action(setconfig, cfg),
+                action(addgroup, part_schema_name, avatar_schema_name, pack_schema_name, pack_base_price, floor_mint_price),
+                action(delgroup, part_schema_name),
                 action(withdraw, owner, value),
                 action(open, owner, token, ram_payer),
                 action(assemble, set_data),
                 action(finalize, identifier, ipfs_hash),
-                action(mintavatar, minter, avatar_id),
+                action(mintavatar, minter, avatar_id, scope),
                 notify("eosio.token"_n, transfer),
                 notify(atomic_contract, logtransfer),
                 notify(atomic_contract, lognewtempl)

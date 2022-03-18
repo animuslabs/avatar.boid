@@ -62,20 +62,24 @@ namespace avatarmk {
         const auto cfg = _config.get_or_create(get_self(), config());
         if (collection_name != cfg.collection_name) return;
 
+        schemacfg_table _schemacfg(get_self(), get_self().value);
+        auto idx = _schemacfg.get_index<eosio::name("byavatar")>();
+        schemacfg scfg = idx.get(schema_name.value, "schema_name during lognewtempl not in schemacfg");
+
         //catch avatar template creation
-        if (schema_name == cfg.avatar_schema) {
-            auto template_ids = std::get<UINT32_VEC>(immutable_data["bodyparts"]);
-            auto identifier = calculateIdentifier(template_ids);
 
-            avatars_table _avatars(get_self(), schema_name.value);
-            auto a_idx = _avatars.get_index<eosio::name("byidf")>();
-            auto existing = a_idx.require_find(identifier, "Identifier not found in avatars table during lognewtempl notify handler.");
+        auto template_ids = std::get<UINT32_VEC>(immutable_data["bodyparts"]);
+        auto identifier = calculateIdentifier(template_ids);
 
-            a_idx.modify(existing, eosio::same_payer, [&](auto& n) {
-                n.template_id = template_id;
-                n.modified = eosio::time_point_sec(eosio::current_time_point());
-            });
-        }
+        avatars_table _avatars(get_self(), scfg.part_schema_name.value);
+        auto a_idx = _avatars.get_index<eosio::name("byidf")>();
+        auto existing = a_idx.require_find(identifier, "Identifier not found in scoped avatars table during lognewtempl notify handler.");
+
+        a_idx.modify(existing, eosio::same_payer, [&](auto& n) {
+            n.template_id = template_id;
+            n.modified = eosio::time_point_sec(eosio::current_time_point());
+        });
+
         //
     }
 

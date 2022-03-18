@@ -5,6 +5,34 @@
 
 namespace avatarmk {
 
+    void avatarmk_c::addgroup(eosio::name& part_schema_name,
+                              eosio::name& avatar_schema_name,
+                              eosio::name& pack_schema_name,
+                              eosio::asset& pack_base_price,
+                              eosio::asset& floor_mint_price)
+    {
+        //warning no input validation!
+        require_auth(get_self());
+        schemacfg_table _schemacfg(get_self(), get_self().value);
+        auto itr = _schemacfg.find(part_schema_name.value);
+        eosio::check(itr == _schemacfg.end(), "part schema name already used to identify subcollection");
+
+        _schemacfg.emplace(get_self(), [&](auto& n) {
+            n.part_schema_name = part_schema_name;
+            n.avatar_schema_name = avatar_schema_name;
+            n.pack_schema_name = pack_schema_name;
+            n.pack_base_price = pack_base_price;
+            n.floor_mint_price = floor_mint_price;
+        });
+    }
+    void avatarmk_c::delgroup(eosio::name& part_schema_name)
+    {
+        require_auth(get_self());
+        schemacfg_table _schemacfg(get_self(), get_self().value);
+        auto itr = _schemacfg.require_find(part_schema_name.value, "part_schema_name not in table");
+        _schemacfg.erase(itr);
+    }
+
     void avatarmk_c::setconfig(std::optional<config> cfg)
     {
         require_auth(get_self());
@@ -12,18 +40,21 @@ namespace avatarmk {
         cfg ? _config.set(cfg.value(), get_self()) : _config.remove();
     }
 
-    void avatarmk_c::mintavatar(eosio::name& minter, uint64_t& avatar_id)
+    void avatarmk_c::mintavatar(eosio::name& minter, uint64_t& avatar_id, eosio::name& scope)
     {
         require_auth(minter);
-        avatars_table _avatars(get_self(), get_self().value);
+        avatars_table _avatars(get_self(), scope.value);
         auto itr = _avatars.require_find(avatar_id, "Avatar with this id doesn't exist.");
         eosio::check(itr->template_id > 0, "Avatar not finalized yet. Try again later.");
 
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
 
+        schemacfg_table _schemacfg(get_self(), get_self().value);
+        schemacfg scfg = _schemacfg.get(scope.value, "schema not found in schemacfg");
+
         //for now 100% of fee goes to template owner
-        avatar_mint_fee amf = calculate_mint_price(*itr, cfg);  //not needed to pass in full config
+        avatar_mint_fee amf = calculate_mint_price(*itr, scfg.floor_mint_price);  //not needed to pass in full config
         sub_balance(minter, amf.fee);
         add_balance(itr->creator, amf.fee, get_self());  //let self pay for ram if new table entry?
 
@@ -39,7 +70,7 @@ namespace avatarmk {
         });
 
         const std::vector<eosio::asset> tokens_to_back;
-        const auto data = make_tuple(get_self(), cfg.collection_name, cfg.avatar_schema, itr->template_id, minter, immutable_data, blank_data, tokens_to_back);
+        const auto data = make_tuple(get_self(), cfg.collection_name, scfg.avatar_schema_name, itr->template_id, minter, immutable_data, blank_data, tokens_to_back);
         eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "mintasset"_n, data).send();
     }
 
@@ -76,7 +107,7 @@ namespace avatarmk {
         auto q_idx = _queue.get_index<eosio::name("byidf")>();
         auto queue_entry = q_idx.require_find(identifier, "Avatar with this identifier not in the queue.");
 
-        eosio::name scope = queue_entry->scope;
+        eosio::name scope = queue_entry->scope;  // = part_schema_name
 
         avatars_table _avatars(get_self(), scope.value);
         auto a_idx = _avatars.get_index<eosio::name("byidf")>();
@@ -160,7 +191,7 @@ namespace avatarmk {
             itr = db.erase(itr);
         }
     }
-    void avatarmk_c::clravatars() { cleanTable<avatars_table>(get_self(), get_self().value, 100); }
+    void avatarmk_c::clravatars(eosio::name& scope) { cleanTable<avatars_table>(get_self(), scope.value, 100); }
     void avatarmk_c::clrqueue() { cleanTable<queue_table>(get_self(), get_self().value, 100); }
 #endif
 

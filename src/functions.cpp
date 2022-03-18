@@ -4,7 +4,7 @@
 
 namespace avatarmk {
 
-    avatar_mint_fee avatarmk_c::calculate_mint_price(const avatars& avatar, const config& cfg)
+    avatar_mint_fee avatarmk_c::calculate_mint_price(const avatars& avatar, const eosio::asset& floor_mint_price)
     {
         //this is untested code!!!!!!!!!!
         //still need to thinker more
@@ -20,7 +20,7 @@ namespace avatarmk {
             result.next_base_price = {static_cast<int64_t>(nbp), core_symbol};
         }
         else {
-            result.next_base_price = cfg.floor_mint_price * avatar.rarity;
+            result.next_base_price = floor_mint_price * avatar.rarity;
         }
 
         //calculate mint fee based on current base price
@@ -29,7 +29,7 @@ namespace avatarmk {
         const auto decay_step = days_passed <= 7 ? 0 : days_passed - 7;  //start decay after 1 week
         const uint64_t p = (uint64_t)(pv * pow(1 - r, decay_step));
         eosio::asset mint_price{static_cast<int64_t>(p), core_symbol};
-        mint_price = std::max(mint_price, cfg.floor_mint_price);  //mint price can't be smaller than floor
+        mint_price = std::max(mint_price, floor_mint_price);  //mint price can't be smaller than floor
         result.fee = {mint_price, extended_core_symbol.get_contract()};
 
         return result;
@@ -87,8 +87,8 @@ namespace avatarmk {
     {
         //result to return only if valid, else assert.
 
-        config_table _config(get_self(), get_self().value);
-        auto const cfg = _config.get_or_create(get_self(), config());
+        // config_table _config(get_self(), get_self().value);
+        // auto const cfg = _config.get_or_create(get_self(), config());
 
         assemble_set result;
         //temp containers
@@ -99,13 +99,16 @@ namespace avatarmk {
         auto templates = atomicassets::get_templates(collection_name);
         auto collection_schemas = atomicassets::get_schemas(collection_name);
 
+        schemacfg_table _schemacfg(get_self(), get_self().value);
+        schemacfg scfg;
         atomicassets::schemas_s schema;
         for (uint64_t asset_id : asset_ids) {
             auto asset = received_assets.get(asset_id, "Asset not found");
             if (result.scope.value == 0) {
                 //first item, set scope and get associated schema
                 result.scope = asset.schema_name;  //must still validate if the schemaname is in config
-                schema = collection_schemas.get(asset.schema_name.value, "Schema with name not found");
+                scfg = _schemacfg.get(result.scope.value, "schema not found in schemacfg");
+                schema = collection_schemas.get(asset.schema_name.value, "Schema with name not found in atomicassets contract");
             }
             else {
                 eosio::check(result.scope == asset.schema_name, "Can't mix parts with different schema name");
@@ -134,8 +137,7 @@ namespace avatarmk {
         result.identifier = calculateIdentifier(result.template_ids);
         result.rarity_score = std::floor(std::accumulate(rarities.begin(), rarities.end(), 0) / 8);
         result.max_mint = 10;  //todo
-        result.base_price = cfg.floor_mint_price * result.rarity_score;
-        result.avatar_name = std::string("testname_need_t_come_from_memo");
+        result.base_price = scfg.floor_mint_price * result.rarity_score;
 
         return result;
     };
