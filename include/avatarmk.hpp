@@ -74,8 +74,9 @@ namespace avatarmk {
         bool freeze = false;
         eosio::asset floor_mint_price{1, core_symbol};
         eosio::name collection_name = "boidavatars1"_n;
-        eosio::name parts_schema = "cartoonparts"_n;
-        eosio::name avatar_schema = "testavatarsc"_n;
+        std::vector<eosio::name> parts_schemas;
+        std::vector<eosio::name> avatar_schemas;
+        std::vector<eosio::name> pack_schemas;
     };
     EOSIO_REFLECT(config, freeze, floor_mint_price, collection_name, parts_schema, avatar_schema)
     typedef eosio::singleton<"config"_n, config> config_table;
@@ -88,7 +89,7 @@ namespace avatarmk {
     };
     EOSIO_REFLECT(deposits, id, balance)
     // clang-format off
-    typedef eosio::multi_index<"deposits"_n, deposits, 
+    typedef eosio::multi_index<"deposits"_n, deposits,
     eosio::indexed_by<"bycontrsym"_n, eosio::const_mem_fun<deposits, uint128_t, &deposits::by_contr_sym>>
     > deposits_table;
     // clang-format on
