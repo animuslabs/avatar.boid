@@ -64,7 +64,7 @@ namespace avatarmk {
             auto template_ids = std::get<UINT32_VEC>(immutable_data["bodyparts"]);
             auto identifier = calculateIdentifier(template_ids);
 
-            avatars_table _avatars(get_self(), get_self().value);
+            avatars_table _avatars(get_self(), schema_name.value);
             auto a_idx = _avatars.get_index<eosio::name("byidf")>();
             auto existing = a_idx.require_find(identifier, "Identifier not found in avatars table during lognewtempl notify handler.");
 
