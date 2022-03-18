@@ -56,9 +56,6 @@ namespace avatarmk {
         auto q_idx = _queue.get_index<eosio::name("byidf")>();
         eosio::check(q_idx.find(set_data.identifier) == q_idx.end(), "Avatar with these body parts already in queue.");
 
-        //todo: this function must catch abusive words
-        // validate_avatar_name(avatar_name);
-
         //add to queue
         _queue.emplace(get_self(), [&](auto& n) {
             n.id = _queue.available_primary_key();

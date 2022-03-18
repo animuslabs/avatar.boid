@@ -86,6 +86,23 @@ namespace avatarmk {
     EOSIO_REFLECT(config, freeze, floor_mint_price, collection_name, parts_schema, avatar_schema)
     typedef eosio::singleton<"config"_n, config> config_table;
 
+    struct packs {
+        uint64_t id;
+        eosio::name pack_schema_name;
+        eosio::name part_schema_name;
+        eosio::name avatar_schema_name;
+        eosio::asset pack_price;
+        eosio::asset floor_mint_price;
+        uint64_t primary_key() const { return id; }
+        uint64_t by_pack() const { return pack_schema_name.value; }
+    };
+    EOSIO_REFLECT(packs, id, pack_schema_name, part_schema_name, avatar_schema_name, pack_price, floor_mint_price)
+    // clang-format off
+    typedef eosio::multi_index<"packs"_n, packs,
+    eosio::indexed_by<"bypack"_n, eosio::const_mem_fun<packs, uint64_t, &packs::by_pack>>
+    >packs_table;
+    // clang-format on
+
     struct deposits {
         uint64_t id;
         eosio::extended_asset balance;
