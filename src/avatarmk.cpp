@@ -205,4 +205,5 @@ EOSIO_ABIGEN(
     table("avatars"_n, avatarmk::avatars),
     table("queue"_n, avatarmk::queue),
     table("deposits"_n, avatarmk::deposits),
-    table("config"_n, avatarmk::config))
+    table("config"_n, avatarmk::config),
+    table("schemacfg"_n, avatarmk::schemacfg))

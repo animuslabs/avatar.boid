@@ -213,18 +213,19 @@ namespace avatarmk {
     EOSIO_ACTIONS(
                 avatarmk_c,
                 "avatarmk"_n,
-                #if defined(DEBUG)
-                action(clravatars, scope),
-                action(clrqueue),
-                #endif
-                action(setconfig, cfg),
+
                 action(addgroup, part_schema_name, avatar_schema_name, pack_schema_name, pack_base_price, floor_mint_price),
                 action(delgroup, part_schema_name),
+                action(setconfig, cfg),
                 action(withdraw, owner, value),
                 action(open, owner, token, ram_payer),
                 action(assemble, set_data),
                 action(finalize, identifier, ipfs_hash),
                 action(mintavatar, minter, avatar_id, scope),
+                #if defined(DEBUG)
+                action(clravatars, scope),
+                action(clrqueue),
+                #endif
                 notify("eosio.token"_n, transfer),
                 notify(atomic_contract, logtransfer),
                 notify(atomic_contract, lognewtempl)
