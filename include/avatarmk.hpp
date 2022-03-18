@@ -127,10 +127,10 @@ namespace avatarmk {
     ///////
     struct queue {
         uint64_t id;
-        eosio::checksum256 identifier;  //checksum from sorted vector containing all part_template_ids
-        eosio::name work;               //assemble
-        eosio::name scope;              //which pack
-        assemble_set set_data;
+        eosio::checksum256 identifier;   //checksum from sorted vector containing all part_template_ids
+        eosio::name work;                //[assemble, potion, etc]
+        eosio::name scope;               //which pack
+        assemble_set set_data;           //can make this a variant for future work types with different payload
         eosio::time_point_sec inserted;  //timestamp that gets updated each time the row gets modified (assemble, finalize, mint)
 
         uint64_t primary_key() const { return id; }
