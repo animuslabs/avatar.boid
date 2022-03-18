@@ -63,6 +63,7 @@ namespace avatarmk {
         uint8_t rarity_score;
         eosio::checksum256 identifier;
         uint32_t max_mint;
+        std::vector<std::pair<std::string, std::string>> bodypart_names;
         eosio::name scope;
     };
     EOSIO_REFLECT(assemble_set, template_ids, rarity_score, identifier, max_mint, scope)
@@ -123,7 +124,7 @@ namespace avatarmk {
     ///////
     struct queue {
         uint64_t id;
-        eosio::name scope;
+        eosio::name scope;  //which pack
         std::string avatar_name;
         uint32_t template_id;           //atomic assets template_id
         eosio::name creator;            //creator of the template

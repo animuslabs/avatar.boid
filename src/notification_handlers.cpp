@@ -34,7 +34,7 @@ namespace avatarmk {
                 //validate_assemble_set will assert when not a valid set
                 auto assemble_set = validate_assemble_set(asset_ids, to, cfg.collection_name);
                 const auto data = std::make_tuple(from, assemble_set);
-                eosio::action(eosio::permission_level{get_self(), "active"_n}, get_self(), "assemble"_n, data).send();
+                eosio::action(eosio::permission_level{get_self(), "active"_n}, get_self(), "assemble"_n, data).send();  //can be a function call instead of action
                 burn_nfts(asset_ids);
             }
             if (memo == std::string("potion")) {

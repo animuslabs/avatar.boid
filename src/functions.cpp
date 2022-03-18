@@ -119,6 +119,8 @@ namespace avatarmk {
                 test_types.push_back(body_type);
                 result.template_ids.push_back(asset.template_id);
                 rarities.push_back(get<uint8_t>(des_data["rarityScore"]));
+                //add body part name to set_data
+                result.bodypart_names.push_back(std::make_pair(body_type, get<std::string>(des_data["name"])));
             }
         }
 
