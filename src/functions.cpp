@@ -86,6 +86,10 @@ namespace avatarmk {
     assemble_set avatarmk_c::validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner, eosio::name collection_name)
     {
         //result to return only if valid, else assert.
+
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+
         assemble_set result;
         //temp containers
         std::vector<uint8_t> rarities;
@@ -130,6 +134,9 @@ namespace avatarmk {
         result.identifier = calculateIdentifier(result.template_ids);
         result.rarity_score = std::floor(std::accumulate(rarities.begin(), rarities.end(), 0) / 8);
         result.max_mint = 10;  //todo
+        result.base_price = cfg.floor_mint_price * result.rarity_score;
+        result.avatar_name = std::string("testname_need_t_come_from_memo");
+
         return result;
     };
 

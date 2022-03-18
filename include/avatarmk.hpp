@@ -59,14 +59,16 @@ namespace avatarmk {
     inline constexpr int day_sec = 86400;
 
     struct assemble_set {
+        std::string avatar_name;
         std::vector<uint32_t> template_ids;
         uint8_t rarity_score;
         eosio::checksum256 identifier;
         uint32_t max_mint;
         std::vector<std::pair<std::string, std::string>> bodypart_names;
         eosio::name scope;
+        eosio::asset base_price;
     };
-    EOSIO_REFLECT(assemble_set, template_ids, rarity_score, identifier, max_mint, scope)
+    EOSIO_REFLECT(assemble_set, avatar_name, template_ids, rarity_score, identifier, max_mint, scope, base_price)
 
     struct avatar_mint_fee {
         eosio::extended_asset fee;
@@ -124,23 +126,17 @@ namespace avatarmk {
     ///////
     struct queue {
         uint64_t id;
-        eosio::name scope;  //which pack
-        std::string avatar_name;
-        uint32_t template_id;           //atomic assets template_id
-        eosio::name creator;            //creator of the template
         eosio::checksum256 identifier;  //checksum from sorted vector containing all part_template_ids
-        uint8_t rarity;
-        uint32_t mint;                   //how many are minted
-        uint32_t max_mint;               //added for convenience
-        eosio::time_point_sec modified;  //timestamp that gets updated each time the row gets modified (assemble, finalize, mint)
-        eosio::asset base_price;
-        std::vector<uint32_t> bodyparts;
+        eosio::name creator;            //creator of the template
+        eosio::name scope;              //which pack
+        assemble_set set_data;
+        eosio::time_point_sec inserted;  //timestamp that gets updated each time the row gets modified (assemble, finalize, mint)
 
         uint64_t primary_key() const { return id; }
         eosio::checksum256 by_idf() const { return identifier; }
         uint64_t by_scope() const { return scope.value; }
     };
-    EOSIO_REFLECT(queue, id, scope, avatar_name, template_id, creator, identifier, rarity, mint, max_mint, modified, base_price, bodyparts)
+    EOSIO_REFLECT(queue, id, identifier, creator, scope, set_data, inserted);
     // clang-format off
     typedef eosio::multi_index<"queue"_n, queue,
     eosio::indexed_by<"byidf"_n, eosio::const_mem_fun<queue, eosio::checksum256, &queue::by_idf>>,

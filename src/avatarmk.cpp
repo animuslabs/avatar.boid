@@ -59,21 +59,14 @@ namespace avatarmk {
         //todo: this function must catch abusive words
         // validate_avatar_name(avatar_name);
 
-        config_table _config(get_self(), get_self().value);
-        auto const cfg = _config.get_or_create(get_self(), config());
-
         //add to queue
         _queue.emplace(get_self(), [&](auto& n) {
             n.id = _queue.available_primary_key();
             n.scope = set_data.scope;
-            // n.avatar_name = avatar_name;
-            n.rarity = set_data.rarity_score;
-            n.creator = creator;
             n.identifier = set_data.identifier;
-            n.base_price = cfg.floor_mint_price * set_data.rarity_score;
-            n.modified = eosio::time_point_sec(eosio::current_time_point());
-            n.bodyparts = set_data.template_ids;
-            n.max_mint = set_data.max_mint;  //this can be calculated in the contract and added to set_data
+            n.creator = creator;
+            n.set_data = set_data;
+            n.inserted = eosio::time_point_sec(eosio::current_time_point());
         });
     }
     void avatarmk_c::finalize(eosio::checksum256& identifier, std::string& ipfs_hash)
@@ -101,13 +94,18 @@ namespace avatarmk {
         const eosio::name schema_name = scope;
         const bool transferable = true;
         const bool burnable = true;
-        const uint32_t max_supply = queue_entry->max_mint;
+        const uint32_t max_supply = queue_entry->set_data.max_mint;
         auto immutable_data = atomicassets::ATTRIBUTE_MAP{};
         //must match avatar schema!!!!!!!!
-        immutable_data["name"] = queue_entry->avatar_name;
+        immutable_data["name"] = queue_entry->set_data.avatar_name;
         immutable_data["img"] = ipfs_hash;
-        immutable_data["rarityScore"] = queue_entry->rarity;
-        immutable_data["bodyparts"] = queue_entry->bodyparts;
+        immutable_data["rarityScore"] = queue_entry->set_data.rarity_score;
+        immutable_data["bodyparts"] = queue_entry->set_data.template_ids;  //vector template_ids
+
+        //add part names to immutable_data
+        for (auto p : queue_entry->set_data.bodypart_names) {
+            immutable_data[p.first] = p.second;
+        }
 
         const auto data = make_tuple(authorized_creator, collection_name, schema_name, transferable, burnable, max_supply, immutable_data);
         eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "createtempl"_n, data).send();
@@ -115,14 +113,14 @@ namespace avatarmk {
         //copy queue entry in avatar table scope + complete with finalize args (ipfs_hash)..
         _avatars.emplace(get_self(), [&](auto& n) {
             n.id = _avatars.available_primary_key();
-            // n.avatar_name = avatar_name;
-            n.rarity = queue_entry->rarity;
+            n.avatar_name = queue_entry->set_data.avatar_name;
+            n.rarity = queue_entry->set_data.rarity_score;
             n.creator = queue_entry->creator;
             n.identifier = queue_entry->identifier;
-            n.base_price = queue_entry->base_price;
+            n.base_price = queue_entry->set_data.base_price;
             n.modified = eosio::time_point_sec(eosio::current_time_point());
-            n.bodyparts = queue_entry->bodyparts;
-            n.max_mint = queue_entry->max_mint;
+            n.bodyparts = queue_entry->set_data.template_ids;
+            n.max_mint = queue_entry->set_data.max_mint;
         });
         //delete queue entry, not needed anymore.
         q_idx.erase(queue_entry);
