@@ -62,8 +62,10 @@ namespace avatarmk {
         std::vector<uint32_t> template_ids;
         uint8_t rarity_score;
         eosio::checksum256 identifier;
+        uint32_t max_mint;
+        eosio::name scope;
     };
-    EOSIO_REFLECT(assemble_set, template_ids, rarity_score, identifier)
+    EOSIO_REFLECT(assemble_set, template_ids, rarity_score, identifier, max_mint, scope)
 
     struct avatar_mint_fee {
         eosio::extended_asset fee;
@@ -173,7 +175,7 @@ namespace avatarmk {
                                 ATTRIBUTE_MAP immutable_data);  //,atomicassets::ATTRIBUTE_MAP immutable_data
 
        private:
-        std::optional<assemble_set> validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner, eosio::name collection_name, eosio::name schema_name);
+        assemble_set validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner, eosio::name collection_name);
         eosio::checksum256 calculateIdentifier(std::vector<uint32_t>& template_ids);
         avatar_mint_fee calculate_mint_price(const avatars& avatar, const config& cfg);
         void validate_avatar_name(std::string& avatar_name);

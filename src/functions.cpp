@@ -83,7 +83,7 @@ namespace avatarmk {
         return eosio::sha256(sdata.c_str(), sdata.length());
     }
 
-    std::optional<assemble_set> avatarmk_c::validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner, eosio::name collection_name, eosio::name schema_name)
+    assemble_set avatarmk_c::validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner, eosio::name collection_name)
     {
         assemble_set result;
         std::vector<uint8_t> rarities;
@@ -91,12 +91,21 @@ namespace avatarmk {
 
         auto receiver_assets = atomicassets::get_assets(owner);
 
-        auto collection_schemas = atomicassets::get_schemas(collection_name);
-        auto schema = collection_schemas.get(schema_name.value, "Schema with name not found");
+        atomicassets::schemas_s schema;
         auto templates = atomicassets::get_templates(collection_name);
 
         for (uint64_t asset_id : asset_ids) {
             auto asset = receiver_assets.get(asset_id, "Asset not found");
+            if (result.scope.value == 0) {
+                //first item
+                result.scope = asset.schema_name;  //must still validate if the schemaname is in config
+                auto collection_schemas = atomicassets::get_schemas(collection_name);
+                schema = collection_schemas.get(asset.schema_name.value, "Schema with name not found");
+            }
+            else {
+                eosio::check(result.scope == asset.schema_name, "Can't mix parts with different schema name");
+            }
+
             auto t = templates.get(asset.template_id, "Template not found");
             auto des_data = atomicassets::deserialize(t.immutable_serialized_data, schema.format);
 
@@ -106,19 +115,19 @@ namespace avatarmk {
                 eosio::check(false, "Duplicate body part type " + body_type);
             }
             else {
+                test_types.push_back(body_type);
                 result.template_ids.push_back(asset.template_id);
                 rarities.push_back(get<uint8_t>(des_data["rarityScore"]));
             }
         }
 
         //there must be 8 unique body part types
-        if (result.template_ids.size() == 8) {
-            result.identifier = calculateIdentifier(result.template_ids);
-            result.rarity_score = std::floor(std::accumulate(rarities.begin(), rarities.end(), 0) / 8);
+        eosio::check(result.template_ids.size() == 8, "there must be 8 unique body part types");
 
-            return result;
-        }
-        return std::nullopt;
+        result.identifier = calculateIdentifier(result.template_ids);
+        result.rarity_score = std::floor(std::accumulate(rarities.begin(), rarities.end(), 0) / 8);
+        result.max_mint = 10;  //todo
+        return result;
     };
 
     //
