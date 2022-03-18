@@ -32,7 +32,9 @@ namespace avatarmk {
         if (to == get_self()) {
             if (memo == std::string("assemble")) {
                 //validate_assemble_set will assert when not a valid set
-                auto assemble_set = validate_assemble_set(asset_ids, to, cfg.collection_name);
+                auto assemble_set = validate_assemble_set(asset_ids, cfg.collection_name);
+                assemble_set.creator = from;
+                assemble_set.avatar_name = std::string("bbbbbbb");
                 const auto data = std::make_tuple(from, assemble_set);
                 eosio::action(eosio::permission_level{get_self(), "active"_n}, get_self(), "assemble"_n, data).send();  //can be a function call instead of action
                 burn_nfts(asset_ids);

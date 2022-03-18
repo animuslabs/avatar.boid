@@ -43,7 +43,7 @@ namespace avatarmk {
         eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "mintasset"_n, data).send();
     }
 
-    void avatarmk_c::assemble(const eosio::name& creator, assemble_set& set_data)
+    void avatarmk_c::assemble(assemble_set& set_data)
     {
         //assemble adds work to the queue
         require_auth(get_self());
@@ -64,7 +64,7 @@ namespace avatarmk {
             n.id = _queue.available_primary_key();
             n.scope = set_data.scope;
             n.identifier = set_data.identifier;
-            n.creator = creator;
+            n.work = eosio::name("assemble");
             n.set_data = set_data;
             n.inserted = eosio::time_point_sec(eosio::current_time_point());
         });
@@ -110,12 +110,12 @@ namespace avatarmk {
         const auto data = make_tuple(authorized_creator, collection_name, schema_name, transferable, burnable, max_supply, immutable_data);
         eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "createtempl"_n, data).send();
 
-        //copy queue entry in avatar table scope + complete with finalize args (ipfs_hash)..
+        //destructure set_data in avatar table scope + complete with finalize args (ipfs_hash)..
         _avatars.emplace(get_self(), [&](auto& n) {
             n.id = _avatars.available_primary_key();
             n.avatar_name = queue_entry->set_data.avatar_name;
             n.rarity = queue_entry->set_data.rarity_score;
-            n.creator = queue_entry->creator;
+            n.creator = queue_entry->set_data.creator;
             n.identifier = queue_entry->identifier;
             n.base_price = queue_entry->set_data.base_price;
             n.modified = eosio::time_point_sec(eosio::current_time_point());

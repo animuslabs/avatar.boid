@@ -59,6 +59,7 @@ namespace avatarmk {
     inline constexpr int day_sec = 86400;
 
     struct assemble_set {
+        eosio::name creator;
         std::string avatar_name;
         std::vector<uint32_t> template_ids;
         uint8_t rarity_score;
@@ -68,7 +69,7 @@ namespace avatarmk {
         eosio::name scope;
         eosio::asset base_price;
     };
-    EOSIO_REFLECT(assemble_set, avatar_name, template_ids, rarity_score, identifier, max_mint, scope, base_price)
+    EOSIO_REFLECT(assemble_set, creator, avatar_name, template_ids, rarity_score, identifier, max_mint, scope, base_price)
 
     struct avatar_mint_fee {
         eosio::extended_asset fee;
@@ -127,7 +128,7 @@ namespace avatarmk {
     struct queue {
         uint64_t id;
         eosio::checksum256 identifier;  //checksum from sorted vector containing all part_template_ids
-        eosio::name creator;            //creator of the template
+        eosio::name work;               //assemble
         eosio::name scope;              //which pack
         assemble_set set_data;
         eosio::time_point_sec inserted;  //timestamp that gets updated each time the row gets modified (assemble, finalize, mint)
@@ -136,7 +137,7 @@ namespace avatarmk {
         eosio::checksum256 by_idf() const { return identifier; }
         uint64_t by_scope() const { return scope.value; }
     };
-    EOSIO_REFLECT(queue, id, identifier, creator, scope, set_data, inserted);
+    EOSIO_REFLECT(queue, id, identifier, work, scope, set_data, inserted);
     // clang-format off
     typedef eosio::multi_index<"queue"_n, queue,
     eosio::indexed_by<"byidf"_n, eosio::const_mem_fun<queue, eosio::checksum256, &queue::by_idf>>,
@@ -157,7 +158,7 @@ namespace avatarmk {
         void withdraw(const eosio::name& owner, const eosio::extended_asset& value);
         void open(const eosio::name& owner, eosio::extended_symbol& token, const eosio::name& ram_payer);
 
-        void assemble(const eosio::name& creator, assemble_set& set_data);
+        void assemble(assemble_set& set_data);
         void finalize(eosio::checksum256& identifier, std::string& ipfs_hash);
         void mintavatar(eosio::name& minter, uint64_t& avatar_id);
         using assemble_action = eosio::action_wrapper<"assemble"_n, &avatarmk_c::assemble>;
@@ -175,7 +176,7 @@ namespace avatarmk {
                                 ATTRIBUTE_MAP immutable_data);  //,atomicassets::ATTRIBUTE_MAP immutable_data
 
        private:
-        assemble_set validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner, eosio::name collection_name);
+        assemble_set validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name collection_name);
         eosio::checksum256 calculateIdentifier(std::vector<uint32_t>& template_ids);
         avatar_mint_fee calculate_mint_price(const avatars& avatar, const config& cfg);
         void validate_avatar_name(std::string& avatar_name);
@@ -197,7 +198,7 @@ namespace avatarmk {
                 action(setconfig, cfg),
                 action(withdraw, owner, value),
                 action(open, owner, token, ram_payer),
-                action(assemble, creator, set_data),
+                action(assemble, set_data),
                 action(finalize, identifier, ipfs_hash),
                 action(mintavatar, minter, avatar_id),
                 notify("eosio.token"_n, transfer),

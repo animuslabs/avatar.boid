@@ -83,7 +83,7 @@ namespace avatarmk {
         return eosio::sha256(sdata.c_str(), sdata.length());
     }
 
-    assemble_set avatarmk_c::validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name owner, eosio::name collection_name)
+    assemble_set avatarmk_c::validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name collection_name)
     {
         //result to return only if valid, else assert.
 
@@ -95,13 +95,13 @@ namespace avatarmk {
         std::vector<uint8_t> rarities;
         std::vector<std::string> test_types;
 
-        auto receiver_assets = atomicassets::get_assets(owner);
+        auto received_assets = atomicassets::get_assets(get_self());
         auto templates = atomicassets::get_templates(collection_name);
         auto collection_schemas = atomicassets::get_schemas(collection_name);
 
         atomicassets::schemas_s schema;
         for (uint64_t asset_id : asset_ids) {
-            auto asset = receiver_assets.get(asset_id, "Asset not found");
+            auto asset = received_assets.get(asset_id, "Asset not found");
             if (result.scope.value == 0) {
                 //first item, set scope and get associated schema
                 result.scope = asset.schema_name;  //must still validate if the schemaname is in config
