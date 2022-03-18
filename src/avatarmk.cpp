@@ -81,20 +81,24 @@ namespace avatarmk {
         //finalize will remove from queue
         require_auth(get_self());
         eosio::check(ipfs_hash.size() > 0, "ipfs_hash required");
-        avatars_table _avatars(get_self(), get_self().value);
-        auto a_idx = _avatars.get_index<eosio::name("byidf")>();
-        eosio::check(a_idx.find(identifier) == a_idx.end(), "Avatar with this identifier already finalized.");
 
         queue_table _queue(get_self(), get_self().value);
         auto q_idx = _queue.get_index<eosio::name("byidf")>();
         auto queue_entry = q_idx.require_find(identifier, "Avatar with this identifier not in the queue.");
 
+        eosio::name scope = queue_entry->scope;
+
+        avatars_table _avatars(get_self(), scope.value);
+        auto a_idx = _avatars.get_index<eosio::name("byidf")>();
+        eosio::check(a_idx.find(identifier) == a_idx.end(), "Avatar with this identifier already finalized.");
+
         //create template inline action
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
+
         const eosio::name authorized_creator = get_self();
         const eosio::name collection_name = cfg.collection_name;
-        const eosio::name schema_name = cfg.avatar_schema;
+        const eosio::name schema_name = scope;
         const bool transferable = true;
         const bool burnable = true;
         const uint32_t max_supply = queue_entry->max_mint;
@@ -104,10 +108,11 @@ namespace avatarmk {
         immutable_data["img"] = ipfs_hash;
         immutable_data["rarityScore"] = queue_entry->rarity;
         immutable_data["bodyparts"] = queue_entry->bodyparts;
+
         const auto data = make_tuple(authorized_creator, collection_name, schema_name, transferable, burnable, max_supply, immutable_data);
         eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "createtempl"_n, data).send();
 
-        //copy queue entry in avatar table + complete with finalize args (ipfs_hash)..
+        //copy queue entry in avatar table scope + complete with finalize args (ipfs_hash)..
         _avatars.emplace(get_self(), [&](auto& n) {
             n.id = _avatars.available_primary_key();
             // n.avatar_name = avatar_name;
@@ -117,7 +122,7 @@ namespace avatarmk {
             n.base_price = queue_entry->base_price;
             n.modified = eosio::time_point_sec(eosio::current_time_point());
             n.bodyparts = queue_entry->bodyparts;
-            // n.max_mint = 0; //this can be calculated in the contract and added to set_data
+            n.max_mint = queue_entry->max_mint;
         });
         //delete queue entry, not needed anymore.
         q_idx.erase(queue_entry);
