@@ -123,6 +123,7 @@ namespace avatarmk {
     ///////
     struct queue {
         uint64_t id;
+        eosio::name scope;
         std::string avatar_name;
         uint32_t template_id;           //atomic assets template_id
         eosio::name creator;            //creator of the template
@@ -136,13 +137,15 @@ namespace avatarmk {
 
         uint64_t primary_key() const { return id; }
         eosio::checksum256 by_idf() const { return identifier; }
+        uint64_t by_scope() const { return scope.value; }
     };
-    EOSIO_REFLECT(queue, id, avatar_name, template_id, creator, identifier, rarity, mint, max_mint, modified, base_price, bodyparts)
+    EOSIO_REFLECT(queue, id, scope, avatar_name, template_id, creator, identifier, rarity, mint, max_mint, modified, base_price, bodyparts)
     // clang-format off
     typedef eosio::multi_index<"queue"_n, queue,
-    eosio::indexed_by<"byidf"_n, eosio::const_mem_fun<queue, eosio::checksum256, &queue::by_idf>>
+    eosio::indexed_by<"byidf"_n, eosio::const_mem_fun<queue, eosio::checksum256, &queue::by_idf>>,
+    eosio::indexed_by<"byscope"_n, eosio::const_mem_fun<queue, uint64_t, &queue::by_scope>>
     >queue_table;
-    //////
+    // clang-format on
 
     struct avatarmk_c : public eosio::contract {
         using eosio::contract::contract;
