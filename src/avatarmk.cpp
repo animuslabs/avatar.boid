@@ -48,7 +48,7 @@ namespace avatarmk {
         //assemble adds work to the queue
         require_auth(get_self());
 
-        avatars_table _avatars(get_self(), get_self().value);
+        avatars_table _avatars(get_self(), set_data.scope.value);
         auto a_idx = _avatars.get_index<eosio::name("byidf")>();
         eosio::check(a_idx.find(set_data.identifier) == a_idx.end(), "Avatar with these body parts already available to mint.");
 
@@ -65,6 +65,7 @@ namespace avatarmk {
         //add to queue
         _queue.emplace(get_self(), [&](auto& n) {
             n.id = _queue.available_primary_key();
+            n.scope = set_data.scope;
             // n.avatar_name = avatar_name;
             n.rarity = set_data.rarity_score;
             n.creator = creator;
