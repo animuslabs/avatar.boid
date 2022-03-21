@@ -78,7 +78,6 @@ namespace avatarmk {
     {
         //assemble adds work to the queue
         require_auth(get_self());
-
         avatars_table _avatars(get_self(), set_data.scope.value);
         auto a_idx = _avatars.get_index<eosio::name("byidf")>();
         eosio::check(a_idx.find(set_data.identifier) == a_idx.end(), "Avatar with these body parts already available to mint.");
@@ -132,7 +131,7 @@ namespace avatarmk {
 
         //add part names to immutable_data
         for (auto p : queue_entry->set_data.bodypart_names) {
-            immutable_data[p.first] = p.second;
+            immutable_data[p.bodypart] = p.name;
         }
 
         const auto data = make_tuple(authorized_creator, collection_name, schema_name, transferable, burnable, max_supply, immutable_data);

@@ -58,6 +58,12 @@ namespace avatarmk {
     inline constexpr auto atomic_contract = "atomicassets"_n;
     inline constexpr int day_sec = 86400;
 
+    struct namepair {
+        std::string bodypart;
+        std::string name;
+    };
+    EOSIO_REFLECT(namepair, bodypart, name)
+
     struct assemble_set {
         eosio::name creator;
         std::string avatar_name;
@@ -65,11 +71,11 @@ namespace avatarmk {
         uint8_t rarity_score;
         eosio::checksum256 identifier;
         uint32_t max_mint;
-        std::vector<std::pair<std::string, std::string>> bodypart_names;
+        std::vector<namepair> bodypart_names;  ///////////////////
         eosio::name scope;
         eosio::asset base_price;
     };
-    EOSIO_REFLECT(assemble_set, creator, avatar_name, template_ids, rarity_score, identifier, max_mint, scope, base_price)
+    EOSIO_REFLECT(assemble_set, creator, avatar_name, template_ids, rarity_score, identifier, max_mint, bodypart_names, scope, base_price)
 
     struct avatar_mint_fee {
         eosio::extended_asset fee;

@@ -35,6 +35,7 @@ namespace avatarmk {
                 auto assemble_set = validate_assemble_set(asset_ids, cfg.collection_name);
                 assemble_set.creator = from;
                 assemble_set.avatar_name = memo.substr(9);  //assemble:avatarname
+
                 validate_avatar_name(assemble_set.avatar_name);
                 const auto data = std::make_tuple(from, assemble_set);
                 eosio::action(eosio::permission_level{get_self(), "active"_n}, get_self(), "assemble"_n, data).send();  //can be a function call instead of action
@@ -58,6 +59,7 @@ namespace avatarmk {
                                         atomicassets::ATTRIBUTE_MAP immutable_data)
     {
         if (get_first_receiver() != atomic_contract) return;
+
         config_table _config(get_self(), get_self().value);
         const auto cfg = _config.get_or_create(get_self(), config());
         if (collection_name != cfg.collection_name) return;
@@ -71,10 +73,13 @@ namespace avatarmk {
         auto template_ids = std::get<UINT32_VEC>(immutable_data["bodyparts"]);
         auto identifier = calculateIdentifier(template_ids);
 
+        //auto scope = std::get<std::string>(immutable_data["edition"]);
+
         avatars_table _avatars(get_self(), scfg.part_schema_name.value);
         auto a_idx = _avatars.get_index<eosio::name("byidf")>();
         auto existing = a_idx.require_find(identifier, "Identifier not found in scoped avatars table during lognewtempl notify handler.");
 
+        //update template_id
         a_idx.modify(existing, eosio::same_payer, [&](auto& n) {
             n.template_id = template_id;
             n.modified = eosio::time_point_sec(eosio::current_time_point());

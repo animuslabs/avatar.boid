@@ -127,7 +127,7 @@ namespace avatarmk {
                 result.template_ids.push_back(asset.template_id);
                 rarities.push_back(get<uint8_t>(des_data["rarityScore"]));
                 //add body part name to set_data
-                result.bodypart_names.push_back(std::make_pair(body_type, get<std::string>(des_data["name"])));
+                result.bodypart_names.push_back({body_type, get<std::string>(des_data["name"])});
             }
         }
 
@@ -135,7 +135,8 @@ namespace avatarmk {
         eosio::check(result.template_ids.size() == 8, "there must be 8 unique body part types");
 
         result.identifier = calculateIdentifier(result.template_ids);
-        result.rarity_score = std::floor(std::accumulate(rarities.begin(), rarities.end(), 0) / 8);
+        // result.rarity_score = std::floor(std::accumulate(rarities.begin(), rarities.end(), 0) / 8);
+        result.rarity_score = *std::max_element(rarities.begin(), rarities.end());
         result.max_mint = 10;  //todo
         result.base_price = scfg.floor_mint_price * result.rarity_score;
 
