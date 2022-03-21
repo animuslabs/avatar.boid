@@ -32,12 +32,13 @@ namespace avatarmk {
         if (to == get_self()) {
             if (memo.substr(0, 8) == "assemble") {
                 //validate_assemble_set will assert when not a valid set
-                auto assemble_set = validate_assemble_set(asset_ids, cfg.collection_name);
+                auto assemble_set = validate_assemble_set(asset_ids, cfg);
                 assemble_set.creator = from;
                 assemble_set.avatar_name = memo.substr(9);  //assemble:avatarname
 
                 validate_avatar_name(assemble_set.avatar_name);
-                const auto data = std::make_tuple(from, assemble_set);
+
+                const auto data = std::make_tuple(assemble_set);
                 eosio::action(eosio::permission_level{get_self(), "active"_n}, get_self(), "assemble"_n, data).send();  //can be a function call instead of action
                 burn_nfts(asset_ids);
             }
@@ -63,19 +64,16 @@ namespace avatarmk {
         config_table _config(get_self(), get_self().value);
         const auto cfg = _config.get_or_create(get_self(), config());
         if (collection_name != cfg.collection_name) return;
-
-        schemacfg_table _schemacfg(get_self(), get_self().value);
-        auto idx = _schemacfg.get_index<eosio::name("byavatar")>();
-        schemacfg scfg = idx.get(schema_name.value, "schema_name during lognewtempl not in schemacfg");
+        if (schema_name != cfg.avatar_schema) return;  //only catch creation of avatar templates
 
         //catch avatar template creation
 
         auto template_ids = std::get<UINT32_VEC>(immutable_data["bodyparts"]);
         auto identifier = calculateIdentifier(template_ids);
 
-        //auto scope = std::get<std::string>(immutable_data["edition"]);
+        auto scope_str = std::get<std::string>(immutable_data["edition"]);
 
-        avatars_table _avatars(get_self(), scfg.part_schema_name.value);
+        avatars_table _avatars(get_self(), eosio::name(scope_str).value);
         auto a_idx = _avatars.get_index<eosio::name("byidf")>();
         auto existing = a_idx.require_find(identifier, "Identifier not found in scoped avatars table during lognewtempl notify handler.");
 

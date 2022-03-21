@@ -84,32 +84,22 @@ namespace avatarmk {
 
     struct config {
         bool freeze = false;
-
         eosio::name collection_name = "boidavatars1"_n;
-        // eosio::asset floor_mint_price{1, core_symbol};
-        // eosio::name parts_schema = "cartoonparts"_n;
-        // eosio::name avatar_schema = "testavatarsc"_n;
+        eosio::name parts_schema = "cartoonparts"_n;
+        eosio::name avatar_schema = "testavatarsc"_n;
     };
     EOSIO_REFLECT(config, freeze, collection_name)
     typedef eosio::singleton<"config"_n, config> config_table;
 
-    struct schemacfg {
-        eosio::name part_schema_name;    //primary key, must be unique and function as identifier of different part groups (scope)
-        eosio::name avatar_schema_name;  //schema_name used for assembled parts/avatars
-        eosio::name pack_schema_name;    //schema_name of the packs used for distribution
-        eosio::asset pack_base_price;    //base price used for calculating pack price
-        eosio::asset floor_mint_price;   // min price to mint an avatar
+    struct editions {
+        eosio::name edition_scope;      //primary key, must be unique and function as identifier of different part groups (scope)
+        eosio::asset floor_mint_price;  // min price to mint an avatar from this edition
 
-        uint64_t primary_key() const { return part_schema_name.value; }
-        uint64_t by_avatar() const { return avatar_schema_name.value; }
-        uint64_t by_pack() const { return pack_schema_name.value; }
+        uint64_t primary_key() const { return edition_scope.value; }
     };
-    EOSIO_REFLECT(schemacfg, part_schema_name, avatar_schema_name, pack_schema_name, pack_base_price, floor_mint_price)
+    EOSIO_REFLECT(editions, edition_scope, floor_mint_price)
     // clang-format off
-    typedef eosio::multi_index<"schemacfg"_n, schemacfg,
-    eosio::indexed_by<"byavatar"_n, eosio::const_mem_fun<schemacfg, uint64_t, &schemacfg::by_avatar>>,
-    eosio::indexed_by<"bypack"_n, eosio::const_mem_fun<schemacfg, uint64_t, &schemacfg::by_pack>>
-    >schemacfg_table;
+    typedef eosio::multi_index<"editions"_n, editions >editions_table;
     // clang-format on
 
     struct deposits {
@@ -181,8 +171,8 @@ namespace avatarmk {
 
         //actions
         void setconfig(std::optional<config> cfg);
-        void addgroup(eosio::name& part_schema_name, eosio::name& avatar_schema_name, eosio::name& pack_schema_name, eosio::asset& pack_base_price, eosio::asset& floor_mint_price);
-        void delgroup(eosio::name& part_schema_name);
+        void editionadd(eosio::name& edition_scope, eosio::asset& floor_mint_price);
+        void editiondel(eosio::name& edition_scope);
         void withdraw(const eosio::name& owner, const eosio::extended_asset& value);
         void open(const eosio::name& owner, eosio::extended_symbol& token, const eosio::name& ram_payer);
 
@@ -204,7 +194,7 @@ namespace avatarmk {
                                 ATTRIBUTE_MAP immutable_data);  //,atomicassets::ATTRIBUTE_MAP immutable_data
 
        private:
-        assemble_set validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name collection_name);
+        assemble_set validate_assemble_set(std::vector<uint64_t> asset_ids, config cfg);
         eosio::checksum256 calculateIdentifier(std::vector<uint32_t>& template_ids);
         avatar_mint_fee calculate_mint_price(const avatars& avatar, const eosio::asset& floor_mint_price);
         void validate_avatar_name(std::string& avatar_name);
@@ -220,8 +210,8 @@ namespace avatarmk {
                 avatarmk_c,
                 "avatarmk"_n,
 
-                action(addgroup, part_schema_name, avatar_schema_name, pack_schema_name, pack_base_price, floor_mint_price),
-                action(delgroup, part_schema_name),
+                action(editionadd, edition_scope, floor_mint_price),
+                action(editiondel, edition_scope),
                 action(setconfig, cfg),
                 action(withdraw, owner, value),
                 action(open, owner, token, ram_payer),

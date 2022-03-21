@@ -5,32 +5,25 @@
 
 namespace avatarmk {
 
-    void avatarmk_c::addgroup(eosio::name& part_schema_name,
-                              eosio::name& avatar_schema_name,
-                              eosio::name& pack_schema_name,
-                              eosio::asset& pack_base_price,
-                              eosio::asset& floor_mint_price)
+    void avatarmk_c::editionadd(eosio::name& edition_scope, eosio::asset& floor_mint_price)
     {
         //warning no input validation!
         require_auth(get_self());
-        schemacfg_table _schemacfg(get_self(), get_self().value);
-        auto itr = _schemacfg.find(part_schema_name.value);
-        eosio::check(itr == _schemacfg.end(), "part schema name already used to identify subcollection");
+        editions_table _editions(get_self(), get_self().value);
+        auto itr = _editions.find(edition_scope.value);
+        eosio::check(itr == _editions.end(), "Edition with this scope already registered");
 
-        _schemacfg.emplace(get_self(), [&](auto& n) {
-            n.part_schema_name = part_schema_name;
-            n.avatar_schema_name = avatar_schema_name;
-            n.pack_schema_name = pack_schema_name;
-            n.pack_base_price = pack_base_price;
+        _editions.emplace(get_self(), [&](auto& n) {
+            n.edition_scope = edition_scope;
             n.floor_mint_price = floor_mint_price;
         });
     }
-    void avatarmk_c::delgroup(eosio::name& part_schema_name)
+    void avatarmk_c::editiondel(eosio::name& edition_scope)
     {
         require_auth(get_self());
-        schemacfg_table _schemacfg(get_self(), get_self().value);
-        auto itr = _schemacfg.require_find(part_schema_name.value, "part_schema_name not in table");
-        _schemacfg.erase(itr);
+        editions_table _editions(get_self(), get_self().value);
+        auto itr = _editions.require_find(edition_scope.value, "Edition with this scope not registered");
+        _editions.erase(itr);
     }
 
     void avatarmk_c::setconfig(std::optional<config> cfg)
@@ -45,21 +38,20 @@ namespace avatarmk {
         require_auth(minter);
         avatars_table _avatars(get_self(), scope.value);
         auto itr = _avatars.require_find(avatar_id, "Avatar with this id doesn't exist.");
-        eosio::check(itr->template_id > 0, "Avatar not finalized yet. Try again later.");
 
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
 
-        schemacfg_table _schemacfg(get_self(), get_self().value);
-        schemacfg scfg = _schemacfg.get(scope.value, "schema not found in schemacfg");
+        editions_table _editions(get_self(), get_self().value);
+        editions edition_cfg = _editions.get(scope.value, "Scope is not a valid edition");
 
         //for now 100% of fee goes to template owner
-        avatar_mint_fee amf = calculate_mint_price(*itr, scfg.floor_mint_price);  //not needed to pass in full config
+        avatar_mint_fee amf = calculate_mint_price(*itr, edition_cfg.floor_mint_price);
         sub_balance(minter, amf.fee);
         add_balance(itr->creator, amf.fee, get_self());  //let self pay for ram if new table entry?
 
         //atomic mint action
-        const auto blank_data = atomicassets::ATTRIBUTE_MAP{};
+        const auto mutable_data = atomicassets::ATTRIBUTE_MAP{};
         auto immutable_data = atomicassets::ATTRIBUTE_MAP{};
         immutable_data["mint"] = itr->mint + 1;
 
@@ -70,7 +62,7 @@ namespace avatarmk {
         });
 
         const std::vector<eosio::asset> tokens_to_back;
-        const auto data = make_tuple(get_self(), cfg.collection_name, scfg.avatar_schema_name, itr->template_id, minter, immutable_data, blank_data, tokens_to_back);
+        const auto data = make_tuple(get_self(), cfg.collection_name, cfg.avatar_schema, itr->template_id, minter, immutable_data, mutable_data, tokens_to_back);
         eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "mintasset"_n, data).send();
     }
 
@@ -100,13 +92,13 @@ namespace avatarmk {
     {
         //finalize will remove from queue
         require_auth(get_self());
-        eosio::check(ipfs_hash.size() > 0, "ipfs_hash required");
+        eosio::check(ipfs_hash.size() > 0, "ipfs_hash required");  //this validation can be done better
 
         queue_table _queue(get_self(), get_self().value);
         auto q_idx = _queue.get_index<eosio::name("byidf")>();
         auto queue_entry = q_idx.require_find(identifier, "Avatar with this identifier not in the queue.");
 
-        eosio::name scope = queue_entry->scope;  // = part_schema_name
+        eosio::name scope = queue_entry->scope;  // = edition
 
         avatars_table _avatars(get_self(), scope.value);
         auto a_idx = _avatars.get_index<eosio::name("byidf")>();
@@ -118,13 +110,14 @@ namespace avatarmk {
 
         const eosio::name authorized_creator = get_self();
         const eosio::name collection_name = cfg.collection_name;
-        const eosio::name schema_name = scope;
+        const eosio::name schema_name = cfg.avatar_schema;
         const bool transferable = true;
         const bool burnable = true;
         const uint32_t max_supply = queue_entry->set_data.max_mint;
         auto immutable_data = atomicassets::ATTRIBUTE_MAP{};
         //must match avatar schema!!!!!!!!
         immutable_data["name"] = queue_entry->set_data.avatar_name;
+        immutable_data["edition"] = scope.to_string();
         immutable_data["img"] = ipfs_hash;
         immutable_data["rarityScore"] = queue_entry->set_data.rarity_score;
         immutable_data["bodyparts"] = queue_entry->set_data.template_ids;  //vector template_ids
@@ -205,4 +198,4 @@ EOSIO_ABIGEN(
     table("queue"_n, avatarmk::queue),
     table("deposits"_n, avatarmk::deposits),
     table("config"_n, avatarmk::config),
-    table("schemacfg"_n, avatarmk::schemacfg))
+    table("editions"_n, avatarmk::editions))

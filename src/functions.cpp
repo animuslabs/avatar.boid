@@ -83,12 +83,9 @@ namespace avatarmk {
         return eosio::sha256(sdata.c_str(), sdata.length());
     }
 
-    assemble_set avatarmk_c::validate_assemble_set(std::vector<uint64_t> asset_ids, eosio::name collection_name)
+    assemble_set avatarmk_c::validate_assemble_set(std::vector<uint64_t> asset_ids, config cfg)
     {
         //result to return only if valid, else assert.
-
-        // config_table _config(get_self(), get_self().value);
-        // auto const cfg = _config.get_or_create(get_self(), config());
 
         assemble_set result;
         //temp containers
@@ -96,26 +93,29 @@ namespace avatarmk {
         std::vector<std::string> test_types;
 
         auto received_assets = atomicassets::get_assets(get_self());
-        auto templates = atomicassets::get_templates(collection_name);
-        auto collection_schemas = atomicassets::get_schemas(collection_name);
+        auto templates = atomicassets::get_templates(cfg.collection_name);
+        auto collection_schemas = atomicassets::get_schemas(cfg.collection_name);
+        auto schema = collection_schemas.get(cfg.parts_schema.value, "Schema with name not found in atomicassets contract");
 
-        schemacfg_table _schemacfg(get_self(), get_self().value);
-        schemacfg scfg;
-        atomicassets::schemas_s schema;
+        editions_table _editions(get_self(), get_self().value);
+        editions edition_cfg;
+
         for (uint64_t asset_id : asset_ids) {
-            auto asset = received_assets.get(asset_id, "Asset not found");
-            if (result.scope.value == 0) {
-                //first item, set scope and get associated schema
-                result.scope = asset.schema_name;  //must still validate if the schemaname is in config
-                scfg = _schemacfg.get(result.scope.value, "schema not found in schemacfg");
-                schema = collection_schemas.get(asset.schema_name.value, "Schema with name not found in atomicassets contract");
-            }
-            else {
-                eosio::check(result.scope == asset.schema_name, "Can't mix parts with different schema name");
-            }
+            auto asset = received_assets.get(asset_id, "Asset not received in contract");
 
             auto t = templates.get(asset.template_id, "Template not found");
+
             auto des_data = atomicassets::deserialize(t.immutable_serialized_data, schema.format);
+
+            auto scope = eosio::name(std::get<std::string>(des_data["edition"]));
+
+            if (result.scope.value == 0) {
+                edition_cfg = _editions.get(scope.value, "Edition not found in editions table");
+                result.scope = scope;
+            }
+            else {
+                eosio::check(scope == result.scope, "body parts from different editions/scope received.");
+            }
 
             auto body_type = std::get<std::string>(des_data["bodypart"]);  //type
 
@@ -138,7 +138,7 @@ namespace avatarmk {
         // result.rarity_score = std::floor(std::accumulate(rarities.begin(), rarities.end(), 0) / 8);
         result.rarity_score = *std::max_element(rarities.begin(), rarities.end());
         result.max_mint = 10;  //todo
-        result.base_price = scfg.floor_mint_price * result.rarity_score;
+        result.base_price = edition_cfg.floor_mint_price * result.rarity_score;
 
         return result;
     };
