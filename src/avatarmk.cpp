@@ -172,12 +172,16 @@ namespace avatarmk {
         });
     }
 
-    void avatarmk_c::buypack(eosio::name& buyer, eosio::name& edition_scope, uint8_t pack_type)
+    void avatarmk_c::buypack(eosio::name& buyer, eosio::name& edition_scope, eosio::name& pack_name)
     {
         require_auth(buyer);
         editions_table _editions(get_self(), get_self().value);
-        auto itr = _editions.find(edition_scope.value);
-        eosio::check(itr != _editions.end(), "Edition doesn't exists");
+        _editions.get(edition_scope.value, "Edition doesn't exists");
+
+        packs_table _packs(get_self(), edition_scope.value);
+        auto p_itr = _packs.find(pack_name.value);
+        eosio::check(p_itr != _packs.end(), "Pack with this name doesn't exist");
+
         // sub_balance(buyer, xxxx);
         // add_balance(get_self(), xxxx, get_self());
     }
@@ -208,4 +212,5 @@ EOSIO_ABIGEN(
     table("queue"_n, avatarmk::queue),
     table("deposits"_n, avatarmk::deposits),
     table("config"_n, avatarmk::config),
-    table("editions"_n, avatarmk::editions))
+    table("editions"_n, avatarmk::editions),
+    table("packs"_n, avatarmk::packs))

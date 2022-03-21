@@ -91,6 +91,19 @@ namespace avatarmk {
     EOSIO_REFLECT(config, freeze, collection_name)
     typedef eosio::singleton<"config"_n, config> config_table;
 
+    //scoped by edition
+    struct packs {
+        eosio::name pack_name;
+        eosio::asset start_price;
+        eosio::asset floor_price;
+        uint32_t packs_sold;
+        eosio::time_point_sec last_sold;
+    };
+    EOSIO_REFLECT(packs, pack_name, start_price, floor_price, packs_sold, last_sold)
+    // clang-format off
+    typedef eosio::multi_index<"packs"_n, packs >packs_table;
+    // clang-format on
+
     struct editions {
         eosio::name edition_scope;      //primary key, must be unique and function as identifier of different part groups (scope)
         eosio::asset floor_mint_price;  // min price to mint an avatar from this edition
@@ -115,6 +128,7 @@ namespace avatarmk {
     > deposits_table;
     // clang-format on
 
+    //scoped by edition
     struct avatars {
         uint64_t id;
         std::string avatar_name;
@@ -176,7 +190,7 @@ namespace avatarmk {
         void withdraw(const eosio::name& owner, const eosio::extended_asset& value);
         void open(const eosio::name& owner, eosio::extended_symbol& token, const eosio::name& ram_payer);
 
-        void buypack(eosio::name& buyer, eosio::name& edition_scope, uint8_t pack_type);
+        void buypack(eosio::name& buyer, eosio::name& edition_scope, eosio::name& pack_name);
         void assemble(assemble_set& set_data);
         void finalize(eosio::checksum256& identifier, std::string& ipfs_hash);
         void mintavatar(eosio::name& minter, uint64_t& avatar_id, eosio::name& scope);
@@ -219,7 +233,7 @@ namespace avatarmk {
                 action(assemble, set_data),
                 action(finalize, identifier, ipfs_hash),
                 action(mintavatar, minter, avatar_id, scope),
-                action(buypack, buyer, edition_scope, pack_type),
+                action(buypack, buyer, edition_scope, pack_name),
                 #if defined(DEBUG)
                 action(clravatars, scope),
                 action(clrqueue),
