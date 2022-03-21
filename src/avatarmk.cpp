@@ -172,6 +172,16 @@ namespace avatarmk {
         });
     }
 
+    void avatarmk_c::buypack(eosio::name& buyer, eosio::name& edition_scope, uint8_t pack_type)
+    {
+        require_auth(buyer);
+        editions_table _editions(get_self(), get_self().value);
+        auto itr = _editions.find(edition_scope.value);
+        eosio::check(itr != _editions.end(), "Edition doesn't exists");
+        // sub_balance(buyer, xxxx);
+        // add_balance(get_self(), xxxx, get_self());
+    }
+
 #if defined(DEBUG)
     template <typename T>
     void cleanTable(eosio::name code, uint64_t account, const uint32_t batchSize)
