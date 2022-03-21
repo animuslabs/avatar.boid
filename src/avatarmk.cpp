@@ -176,11 +176,13 @@ namespace avatarmk {
     {
         require_auth(buyer);
         editions_table _editions(get_self(), get_self().value);
-        _editions.get(edition_scope.value, "Edition doesn't exists");
+        auto edition = _editions.get(edition_scope.value, "Edition doesn't exists");
 
         packs_table _packs(get_self(), edition_scope.value);
         auto p_itr = _packs.find(pack_name.value);
         eosio::check(p_itr != _packs.end(), "Pack with this name doesn't exist");
+
+        //calculate price
 
         // sub_balance(buyer, xxxx);
         // add_balance(get_self(), xxxx, get_self());

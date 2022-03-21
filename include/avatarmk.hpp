@@ -98,6 +98,8 @@ namespace avatarmk {
         eosio::asset floor_price;
         uint32_t packs_sold;
         eosio::time_point_sec last_sold;
+
+        uint64_t primary_key() const { return pack_name.value; }
     };
     EOSIO_REFLECT(packs, pack_name, start_price, floor_price, packs_sold, last_sold)
     // clang-format off
