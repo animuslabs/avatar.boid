@@ -97,6 +97,21 @@ namespace avatarmk {
     typedef eosio::singleton<"config"_n, config> config_table;
 
     //scoped by edition
+    struct parts {
+        uint64_t template_id;
+        uint64_t rarity_score;
+
+        uint64_t primary_key() const { return template_id; }
+        uint64_t by_rarity() const { return rarity_score; }
+    };
+    EOSIO_REFLECT(parts, template_id, rarity_score)
+    // clang-format off
+    typedef eosio::multi_index<"parts"_n, parts, 
+    eosio::indexed_by<"byrarity"_n, eosio::const_mem_fun<parts, uint64_t, &parts::by_rarity>>
+    > parts_table;
+    // clang-format on
+
+    //scoped by edition
     struct packs {
         eosio::name pack_name;
         eosio::asset base_price;

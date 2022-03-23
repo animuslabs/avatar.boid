@@ -71,25 +71,39 @@ namespace avatarmk {
         config_table _config(get_self(), get_self().value);
         const auto cfg = _config.get_or_create(get_self(), config());
         if (collection_name != cfg.collection_name) return;
-        if (schema_name != cfg.avatar_schema) return;  //only catch creation of avatar templates
 
-        //catch avatar template creation
+        if (schema_name == cfg.avatar_schema) {
+            //avatar template creation//
+            ////////////////////////////
+            auto template_ids = std::get<UINT32_VEC>(immutable_data["bodyparts"]);
+            auto identifier = calculateIdentifier(template_ids);
 
-        auto template_ids = std::get<UINT32_VEC>(immutable_data["bodyparts"]);
-        auto identifier = calculateIdentifier(template_ids);
+            auto scope_str = std::get<std::string>(immutable_data["edition"]);
 
-        auto scope_str = std::get<std::string>(immutable_data["edition"]);
+            avatars_table _avatars(get_self(), eosio::name(scope_str).value);
+            auto a_idx = _avatars.get_index<eosio::name("byidf")>();
+            auto existing = a_idx.require_find(identifier, "Identifier not found in scoped avatars table during lognewtempl notify handler.");
 
-        avatars_table _avatars(get_self(), eosio::name(scope_str).value);
-        auto a_idx = _avatars.get_index<eosio::name("byidf")>();
-        auto existing = a_idx.require_find(identifier, "Identifier not found in scoped avatars table during lognewtempl notify handler.");
+            //update template_id
+            a_idx.modify(existing, eosio::same_payer, [&](auto& n) {
+                n.template_id = template_id;
+                n.modified = eosio::time_point_sec(eosio::current_time_point());
+            });
+        }
 
-        //update template_id
-        a_idx.modify(existing, eosio::same_payer, [&](auto& n) {
-            n.template_id = template_id;
-            n.modified = eosio::time_point_sec(eosio::current_time_point());
-        });
+        if (schema_name == cfg.parts_schema) {
+            //populate table for packs logic
 
+            eosio::check(true, "Enable parts schema in config to be able to create new templates with this schema");
+            auto scope_str = std::get<std::string>(immutable_data["edition"]);
+            auto rarity_score = std::get<uint8_t>(immutable_data["rarityScore"]);
+            //template_id
+            parts_table _parts(get_self(), eosio::name(scope_str).value);
+            _parts.emplace(get_self(), [&](auto& n) {
+                n.template_id = template_id;
+                n.rarity_score = rarity_score;
+            });
+        }
         //
     }
 

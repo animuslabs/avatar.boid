@@ -221,4 +221,5 @@ EOSIO_ABIGEN(
     table("deposits"_n, avatarmk::deposits),
     table("config"_n, avatarmk::config),
     table("editions"_n, avatarmk::editions),
-    table("packs"_n, avatarmk::packs))
+    table("packs"_n, avatarmk::packs),
+    table("parts"_n, avatarmk::parts))
