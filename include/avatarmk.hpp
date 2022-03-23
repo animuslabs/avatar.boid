@@ -58,6 +58,10 @@ namespace avatarmk {
     inline constexpr auto atomic_contract = "atomicassets"_n;
     inline constexpr int day_sec = 86400;
 
+    struct pack_data {
+        eosio::name edition;
+        std::string pack_size;  //small, medium, large
+    };
     struct namepair {
         std::string bodypart;
         std::string name;
@@ -85,8 +89,9 @@ namespace avatarmk {
     struct config {
         bool freeze = false;
         eosio::name collection_name = "boidavatars1"_n;
-        eosio::name parts_schema = "cartoonparts"_n;
+        eosio::name parts_schema = "avatarparts"_n;
         eosio::name avatar_schema = "testavatarsc"_n;
+        eosio::name pack_schema = "partspacksch"_n;
     };
     EOSIO_REFLECT(config, freeze, collection_name)
     typedef eosio::singleton<"config"_n, config> config_table;
@@ -94,14 +99,14 @@ namespace avatarmk {
     //scoped by edition
     struct packs {
         eosio::name pack_name;
-        eosio::asset start_price;
+        eosio::asset base_price;
         eosio::asset floor_price;
-        uint32_t packs_sold;
+        uint64_t packs_sold;
         eosio::time_point_sec last_sold;
 
         uint64_t primary_key() const { return pack_name.value; }
     };
-    EOSIO_REFLECT(packs, pack_name, start_price, floor_price, packs_sold, last_sold)
+    EOSIO_REFLECT(packs, pack_name, base_price, floor_price, packs_sold, last_sold)
     // clang-format off
     typedef eosio::multi_index<"packs"_n, packs >packs_table;
     // clang-format on
@@ -211,6 +216,7 @@ namespace avatarmk {
                                 ATTRIBUTE_MAP immutable_data);  //,atomicassets::ATTRIBUTE_MAP immutable_data
 
        private:
+        pack_data validate_pack(const uint64_t& asset_id, const config& cfg);
         assemble_set validate_assemble_set(std::vector<uint64_t> asset_ids, config cfg);
         eosio::checksum256 calculateIdentifier(std::vector<uint32_t>& template_ids);
         avatar_mint_fee calculate_mint_price(const avatars& avatar, const eosio::asset& floor_mint_price);

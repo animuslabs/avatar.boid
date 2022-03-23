@@ -186,6 +186,12 @@ namespace avatarmk {
 
         // sub_balance(buyer, xxxx);
         // add_balance(get_self(), xxxx, get_self());
+
+        // _packs.modify(p_itr, eosio::same_payer, [&](auto& n) {
+        //     n.base_price;
+        //     n.packs_sold += 1;
+        //     n.last_sold = eosio::time_point_sec(eosio::current_time_point());
+        // });
     }
 
 #if defined(DEBUG)

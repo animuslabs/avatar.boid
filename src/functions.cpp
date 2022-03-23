@@ -83,6 +83,29 @@ namespace avatarmk {
         return eosio::sha256(sdata.c_str(), sdata.length());
     }
 
+    pack_data avatarmk_c::validate_pack(const uint64_t& asset_id, const config& cfg)
+    {
+        pack_data result;
+        std::vector<std::string> vps{"small", "medium", "large"};  //valid_pack_sizes;
+
+        auto received_assets = atomicassets::get_assets(get_self());
+        auto asset = received_assets.get(asset_id, "Asset not received in contract");
+        eosio::check(cfg.pack_schema == asset.schema_name, "asset doesn't have the correct pack_schema");
+        auto templates = atomicassets::get_templates(cfg.collection_name);
+        auto collection_schemas = atomicassets::get_schemas(cfg.collection_name);
+        auto schema = collection_schemas.get(cfg.pack_schema.value, "Schema with name not found in atomicassets contract");
+        auto t = templates.get(asset.template_id, "Template not found");
+        auto des_data = atomicassets::deserialize(t.immutable_serialized_data, schema.format);
+
+        result.pack_size = std::get<std::string>(des_data["size"]);
+        eosio::check(std::find(vps.begin(), vps.end(), result.pack_size) != vps.end(), "Invalid pack_size. Must be small, medium or large");
+        result.edition = eosio::name(std::get<std::string>(des_data["edition"]));
+        editions_table _editions(get_self(), get_self().value);
+        _editions.get(result.edition.value, "Pack received with unkown edition.");
+
+        return result;
+    }
+
     assemble_set avatarmk_c::validate_assemble_set(std::vector<uint64_t> asset_ids, config cfg)
     {
         //result to return only if valid, else assert.

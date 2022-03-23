@@ -47,6 +47,13 @@ namespace avatarmk {
                 //trigger inline "log" action that the server can intercept to render new nft
                 //burn received assets
             }
+            if (memo == std::string("unpack")) {
+                eosio::check(asset_ids.size() == 1, "Only can unpack 1 pack at the same time.");
+                //get pack info
+                auto pack_data = validate_pack(asset_ids[0], cfg);
+                //do unpack
+                // burn_nfts(asset_ids);
+            }
         }
     }
 
