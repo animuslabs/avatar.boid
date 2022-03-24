@@ -57,6 +57,7 @@ namespace avatarmk {
     inline constexpr eosio::symbol core_symbol{"WAX", 8};
     inline constexpr eosio::extended_symbol extended_core_symbol{core_symbol, "eosio.token"_n};
     inline constexpr auto atomic_contract = "atomicassets"_n;
+    inline constexpr auto rng_contract = "orng.wax"_n;
     inline constexpr int day_sec = 86400;
 
     struct pack_data {
@@ -213,6 +214,8 @@ namespace avatarmk {
         std::string pack_name;
 
         //actions
+        void receiverand(uint64_t& assoc_id, const eosio::checksum256& random_value);
+
         void setconfig(std::optional<config> cfg);
         void packadd(eosio::name& edition_scope, uint64_t& template_id, eosio::asset& base_price, eosio::asset& floor_price, std::string& pack_name);
         void packdel(eosio::name& edition_scope, uint64_t& template_id);
@@ -269,6 +272,7 @@ namespace avatarmk {
                 action(assemble, set_data),
                 action(finalize, identifier, ipfs_hash),
                 action(mintavatar, minter, avatar_id, scope),
+                action(receiverand, assoc_id, random_value),
 
                 #if defined(DEBUG)
                 action(clravatars, scope),

@@ -219,6 +219,8 @@ namespace avatarmk {
         eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "mintasset"_n, data).send();
     }
 
+    void avatarmk_c::receiverand(uint64_t& assoc_id, const eosio::checksum256& random_value) { require_auth(rng_contract); }
+
 #if defined(DEBUG)
     template <typename T>
     void cleanTable(eosio::name code, uint64_t account, const uint32_t batchSize)

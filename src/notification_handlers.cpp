@@ -42,17 +42,20 @@ namespace avatarmk {
                 eosio::action(eosio::permission_level{get_self(), "active"_n}, get_self(), "assemble"_n, data).send();  //can be a function call instead of action
                 burn_nfts(asset_ids);
             }
-            if (memo == std::string("potion")) {
+            else if (memo == std::string("potion")) {
                 //check if received nfts are 1x avatar + potion nfts
                 //trigger inline "log" action that the server can intercept to render new nft
                 //burn received assets
             }
-            if (memo == std::string("unpack")) {
+            else if (memo == std::string("unpack")) {
                 eosio::check(asset_ids.size() == 1, "Only can unpack 1 pack at the same time.");
                 //get pack info
                 auto pack_data = validate_pack(asset_ids[0], cfg);
                 //do unpack
                 // burn_nfts(asset_ids);
+                //const auto tx_signing_value = get_trx_id();
+                //const auto data = std::make_tuple(order_id, tx_signing_value, get_self())
+                //action({ get_self(), "active"_n }, rng_contract,  "requestrand"_n, data).send();
             }
         }
     }
@@ -91,7 +94,7 @@ namespace avatarmk {
             });
         }
 
-        if (schema_name == cfg.parts_schema) {
+        else if (schema_name == cfg.parts_schema) {
             //populate table for packs logic
 
             eosio::check(true, "Enable parts schema in config to be able to create new templates with this schema");
