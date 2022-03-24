@@ -213,7 +213,9 @@ namespace avatarmk {
         const auto mutable_data = atomicassets::ATTRIBUTE_MAP{};
         auto immutable_data = atomicassets::ATTRIBUTE_MAP{};
         const std::vector<eosio::asset> tokens_to_back;
-        const auto data = make_tuple(get_self(), cfg.collection_name, cfg.pack_schema, p_itr->template_id, buyer, immutable_data, mutable_data, tokens_to_back);
+
+        const auto data = make_tuple(get_self(), cfg.collection_name, cfg.pack_schema, (uint32_t)template_id, buyer, immutable_data, mutable_data, tokens_to_back);
+
         eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "mintasset"_n, data).send();
     }
 
