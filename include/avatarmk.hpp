@@ -5,6 +5,7 @@
 #include <eosio/singleton.hpp>
 #include <eosio/system.hpp>
 #include <eosio/crypto.hpp>
+#include <eosio/transaction.hpp>
 #include <numeric>
 #include <cmath>
 #include <token/token.hpp>
@@ -249,6 +250,7 @@ namespace avatarmk {
         void sub_balance(const eosio::name& owner, const eosio::extended_asset& value);
 
         void burn_nfts(std::vector<uint64_t>& asset_ids);
+        eosio::checksum256 get_trx_id();
     };
 
     // clang-format off

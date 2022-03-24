@@ -183,4 +183,13 @@ namespace avatarmk {
         eosio::check(l <= 20, "Avatar name can't have more then 20 characters");
     };
 
+    eosio::checksum256 avatarmk_c::get_trx_id()
+    {
+        auto size = transaction_size();
+        char* buffer = (char*)(512 < size ? malloc(size) : alloca(size));
+        uint32_t read = read_transaction(buffer, size);
+        eosio::check(size == read, "read_transaction failed");
+        return sha256(buffer, read);
+    }
+
 }  // namespace avatarmk
