@@ -4,7 +4,7 @@
 
 namespace avatarmk {
 
-    avatar_mint_fee avatarmk_c::calculate_mint_price(const avatars& avatar, const eosio::asset& floor_mint_price)
+    avatar_mint_fee avatarmk_c::calculate_mint_price(const avatars& avatar, const eosio::asset& avatar_floor_mint_price)
     {
         //this is untested code!!!!!!!!!!
         //still need to thinker more
@@ -20,7 +20,7 @@ namespace avatarmk {
             result.next_base_price = {static_cast<int64_t>(nbp), core_symbol};
         }
         else {
-            result.next_base_price = floor_mint_price * avatar.rarity;
+            result.next_base_price = avatar_floor_mint_price * avatar.rarity;
         }
 
         //calculate mint fee based on current base price
@@ -29,7 +29,7 @@ namespace avatarmk {
         const auto decay_step = days_passed <= 7 ? 0 : days_passed - 7;  //start decay after 1 week
         const uint64_t p = (uint64_t)(pv * pow(1 - r, decay_step));
         eosio::asset mint_price{static_cast<int64_t>(p), core_symbol};
-        mint_price = std::max(mint_price, floor_mint_price);  //mint price can't be smaller than floor
+        mint_price = std::max(mint_price, avatar_floor_mint_price);  //mint price can't be smaller than floor
         result.fee = {mint_price, extended_core_symbol.get_contract()};
 
         return result;
@@ -161,7 +161,7 @@ namespace avatarmk {
         // result.rarity_score = std::floor(std::accumulate(rarities.begin(), rarities.end(), 0) / 8);
         result.rarity_score = *std::max_element(rarities.begin(), rarities.end());
         result.max_mint = 10;  //todo
-        result.base_price = edition_cfg.floor_mint_price * result.rarity_score;
+        result.base_price = edition_cfg.avatar_floor_mint_price * result.rarity_score;
 
         return result;
     };

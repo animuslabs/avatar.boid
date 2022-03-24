@@ -5,7 +5,7 @@
 
 namespace avatarmk {
 
-    void avatarmk_c::editionadd(eosio::name& edition_scope, eosio::asset& floor_mint_price)
+    void avatarmk_c::editionadd(eosio::name& edition_scope, eosio::asset& avatar_floor_mint_price)
     {
         //warning no input validation!
         require_auth(get_self());
@@ -15,7 +15,7 @@ namespace avatarmk {
 
         _editions.emplace(get_self(), [&](auto& n) {
             n.edition_scope = edition_scope;
-            n.floor_mint_price = floor_mint_price;
+            n.avatar_floor_mint_price = avatar_floor_mint_price;
         });
     }
     void avatarmk_c::editiondel(eosio::name& edition_scope)
@@ -46,7 +46,7 @@ namespace avatarmk {
         editions edition_cfg = _editions.get(scope.value, "Scope is not a valid edition");
 
         //for now 100% of fee goes to template owner
-        avatar_mint_fee amf = calculate_mint_price(*itr, edition_cfg.floor_mint_price);
+        avatar_mint_fee amf = calculate_mint_price(*itr, edition_cfg.avatar_floor_mint_price);
         sub_balance(minter, amf.fee);
         add_balance(itr->creator, amf.fee, get_self());  //let self pay for ram if new table entry?
 
@@ -172,26 +172,49 @@ namespace avatarmk {
         });
     }
 
-    void avatarmk_c::buypack(eosio::name& buyer, eosio::name& edition_scope, eosio::name& pack_name)
+    void avatarmk_c::packadd(eosio::name& edition_scope, uint64_t& template_id, eosio::asset& base_price, eosio::asset& floor_price, std::string& pack_name)
+    {
+        require_auth(get_self());
+        packs_table _packs(get_self(), edition_scope.value);
+        auto p_itr = _packs.find(template_id);
+        eosio::check(p_itr == _packs.end(), "Pack with this template_id already in table");
+        _packs.emplace(get_self(), [&](auto& n) {
+            n.template_id = template_id;
+            n.base_price = base_price;
+            n.floor_price = floor_price;
+            n.pack_name = pack_name;
+        });
+    }
+    void avatarmk_c::packdel(eosio::name& edition_scope, uint64_t& template_id)
+    {
+        require_auth(get_self());
+        packs_table _packs(get_self(), edition_scope.value);
+        auto p_itr = _packs.find(template_id);
+        eosio::check(p_itr != _packs.end(), "Pack with this template_id not found");
+        _packs.erase(p_itr);
+    }
+
+    void avatarmk_c::buypack(eosio::name& buyer, eosio::name& edition_scope, uint64_t& template_id)
     {
         require_auth(buyer);
-        editions_table _editions(get_self(), get_self().value);
-        auto edition = _editions.get(edition_scope.value, "Edition doesn't exists");
-
         packs_table _packs(get_self(), edition_scope.value);
-        auto p_itr = _packs.find(pack_name.value);
-        eosio::check(p_itr != _packs.end(), "Pack with this name doesn't exist");
+        auto p_itr = _packs.require_find(template_id, "Pack with this template_id not found for this scope");
+
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
 
         //calculate price
+        eosio::extended_asset p = {p_itr->base_price, extended_core_symbol.get_contract()};
+        sub_balance(buyer, p);
+        add_balance(get_self(), p, get_self());
 
-        // sub_balance(buyer, xxxx);
-        // add_balance(get_self(), xxxx, get_self());
+        _packs.modify(p_itr, eosio::same_payer, [&](auto& n) { n.last_sold = eosio::time_point_sec(eosio::current_time_point()); });
 
-        // _packs.modify(p_itr, eosio::same_payer, [&](auto& n) {
-        //     n.base_price;
-        //     n.packs_sold += 1;
-        //     n.last_sold = eosio::time_point_sec(eosio::current_time_point());
-        // });
+        const auto mutable_data = atomicassets::ATTRIBUTE_MAP{};
+        auto immutable_data = atomicassets::ATTRIBUTE_MAP{};
+        const std::vector<eosio::asset> tokens_to_back;
+        const auto data = make_tuple(get_self(), cfg.collection_name, cfg.pack_schema, p_itr->template_id, buyer, immutable_data, mutable_data, tokens_to_back);
+        eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "mintasset"_n, data).send();
     }
 
 #if defined(DEBUG)
@@ -221,5 +244,5 @@ EOSIO_ABIGEN(
     table("deposits"_n, avatarmk::deposits),
     table("config"_n, avatarmk::config),
     table("editions"_n, avatarmk::editions),
-    table("packs"_n, avatarmk::packs),
-    table("parts"_n, avatarmk::parts))
+    table("parts"_n, avatarmk::parts),
+    table("packs"_n, avatarmk::packs))

@@ -93,7 +93,8 @@ namespace avatarmk {
         eosio::name avatar_schema = "testavatarsc"_n;
         eosio::name pack_schema = "partspacksch"_n;
     };
-    EOSIO_REFLECT(config, freeze, collection_name)
+
+    EOSIO_REFLECT(config, freeze, collection_name, parts_schema, avatar_schema, pack_schema)
     typedef eosio::singleton<"config"_n, config> config_table;
 
     //scoped by edition
@@ -113,26 +114,25 @@ namespace avatarmk {
 
     //scoped by edition
     struct packs {
-        eosio::name pack_name;
+        uint64_t template_id;
         eosio::asset base_price;
         eosio::asset floor_price;
-        uint64_t packs_sold;
         eosio::time_point_sec last_sold;
-
-        uint64_t primary_key() const { return pack_name.value; }
+        std::string pack_name;
+        uint64_t primary_key() const { return template_id; }
     };
-    EOSIO_REFLECT(packs, pack_name, base_price, floor_price, packs_sold, last_sold)
+    EOSIO_REFLECT(packs, template_id, base_price, floor_price, last_sold, pack_name)
     // clang-format off
     typedef eosio::multi_index<"packs"_n, packs >packs_table;
     // clang-format on
 
     struct editions {
-        eosio::name edition_scope;      //primary key, must be unique and function as identifier of different part groups (scope)
-        eosio::asset floor_mint_price;  // min price to mint an avatar from this edition
+        eosio::name edition_scope;             //primary key, must be unique and function as identifier of different part groups (scope)
+        eosio::asset avatar_floor_mint_price;  // min price to mint an avatar from this edition
 
         uint64_t primary_key() const { return edition_scope.value; }
     };
-    EOSIO_REFLECT(editions, edition_scope, floor_mint_price)
+    EOSIO_REFLECT(editions, edition_scope, avatar_floor_mint_price)
     // clang-format off
     typedef eosio::multi_index<"editions"_n, editions >editions_table;
     // clang-format on
@@ -205,14 +205,22 @@ namespace avatarmk {
         void clrqueue();
 #endif
 
+        uint64_t template_id;
+        eosio::asset base_price;
+        eosio::asset floor_price;
+        eosio::time_point_sec last_sold;
+        std::string pack_name;
+
         //actions
         void setconfig(std::optional<config> cfg);
-        void editionadd(eosio::name& edition_scope, eosio::asset& floor_mint_price);
+        void packadd(eosio::name& edition_scope, uint64_t& template_id, eosio::asset& base_price, eosio::asset& floor_price, std::string& pack_name);
+        void packdel(eosio::name& edition_scope, uint64_t& template_id);
+        void editionadd(eosio::name& edition_scope, eosio::asset& avatar_floor_mint_price);
         void editiondel(eosio::name& edition_scope);
         void withdraw(const eosio::name& owner, const eosio::extended_asset& value);
         void open(const eosio::name& owner, eosio::extended_symbol& token, const eosio::name& ram_payer);
 
-        void buypack(eosio::name& buyer, eosio::name& edition_scope, eosio::name& pack_name);
+        void buypack(eosio::name& buyer, eosio::name& edition_scope, uint64_t& template_id);
         void assemble(assemble_set& set_data);
         void finalize(eosio::checksum256& identifier, std::string& ipfs_hash);
         void mintavatar(eosio::name& minter, uint64_t& avatar_id, eosio::name& scope);
@@ -234,7 +242,7 @@ namespace avatarmk {
         pack_data validate_pack(const uint64_t& asset_id, const config& cfg);
         assemble_set validate_assemble_set(std::vector<uint64_t> asset_ids, config cfg);
         eosio::checksum256 calculateIdentifier(std::vector<uint32_t>& template_ids);
-        avatar_mint_fee calculate_mint_price(const avatars& avatar, const eosio::asset& floor_mint_price);
+        avatar_mint_fee calculate_mint_price(const avatars& avatar, const eosio::asset& avatar_floor_mint_price);
         void validate_avatar_name(std::string& avatar_name);
         //internal accounting
         void add_balance(const eosio::name& owner, const eosio::extended_asset& value, const eosio::name& ram_payer = eosio::name(0));
@@ -248,7 +256,10 @@ namespace avatarmk {
                 avatarmk_c,
                 "avatarmk"_n,
 
-                action(editionadd, edition_scope, floor_mint_price),
+                action(packadd, edition_scope, template_id, base_price, floor_price, pack_name),
+                action(packdel, edition_scope, template_id),
+                action(buypack, buyer, edition_scope, template_id),
+                action(editionadd, edition_scope, avatar_floor_mint_price),
                 action(editiondel, edition_scope),
                 action(setconfig, cfg),
                 action(withdraw, owner, value),
@@ -256,7 +267,7 @@ namespace avatarmk {
                 action(assemble, set_data),
                 action(finalize, identifier, ipfs_hash),
                 action(mintavatar, minter, avatar_id, scope),
-                action(buypack, buyer, edition_scope, pack_name),
+
                 #if defined(DEBUG)
                 action(clravatars, scope),
                 action(clrqueue),
