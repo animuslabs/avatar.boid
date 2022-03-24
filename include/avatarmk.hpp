@@ -89,9 +89,9 @@ namespace avatarmk {
     struct config {
         bool freeze = false;
         eosio::name collection_name = "boidavatars1"_n;
-        eosio::name parts_schema = "avatarparts"_n;
-        eosio::name avatar_schema = "testavatarsc"_n;
-        eosio::name pack_schema = "partspacksch"_n;
+        // eosio::name parts_schema = "avatarparts"_n;
+        // eosio::name avatar_schema = "testavatarsc"_n;
+        // eosio::name pack_schema = "partspacksch"_n;
     };
     EOSIO_REFLECT(config, freeze, collection_name)
     typedef eosio::singleton<"config"_n, config> config_table;
@@ -106,7 +106,7 @@ namespace avatarmk {
     };
     EOSIO_REFLECT(parts, template_id, rarity_score)
     // clang-format off
-    typedef eosio::multi_index<"parts"_n, parts, 
+    typedef eosio::multi_index<"parts"_n, parts,
     eosio::indexed_by<"byrarity"_n, eosio::const_mem_fun<parts, uint64_t, &parts::by_rarity>>
     > parts_table;
     // clang-format on
@@ -145,7 +145,7 @@ namespace avatarmk {
     };
     EOSIO_REFLECT(deposits, id, balance)
     // clang-format off
-    typedef eosio::multi_index<"deposits"_n, deposits, 
+    typedef eosio::multi_index<"deposits"_n, deposits,
     eosio::indexed_by<"bycontrsym"_n, eosio::const_mem_fun<deposits, uint128_t, &deposits::by_contr_sym>>
     > deposits_table;
     // clang-format on

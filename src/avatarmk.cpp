@@ -108,6 +108,7 @@ namespace avatarmk {
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
 
+        return;
         const eosio::name authorized_creator = get_self();
         const eosio::name collection_name = cfg.collection_name;
         const eosio::name schema_name = cfg.avatar_schema;
