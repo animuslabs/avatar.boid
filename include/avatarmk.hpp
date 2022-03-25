@@ -62,8 +62,10 @@ namespace avatarmk {
 
     struct pack_data {
         eosio::name edition;
-        std::string pack_size;  //small, medium, large
+        uint8_t pack_size;  //number of nfts in pack
     };
+    EOSIO_REFLECT(pack_data, edition, pack_size)
+
     struct namepair {
         std::string bodypart;
         std::string name;
@@ -112,6 +114,22 @@ namespace avatarmk {
     typedef eosio::multi_index<"parts"_n, parts, 
     eosio::indexed_by<"byrarity"_n, eosio::const_mem_fun<parts, uint64_t, &parts::by_rarity>>
     > parts_table;
+    // clang-format on
+
+    struct unpack {
+        uint64_t pack_asset_id;
+        eosio::name owner;
+        pack_data pack_data;
+        std::vector<uint32_t> claimable_template_ids;
+        eosio::time_point_sec inserted;
+        uint64_t primary_key() const { return pack_asset_id; }
+        uint64_t by_owner() const { return owner.value; }
+    };
+    EOSIO_REFLECT(unpack, pack_asset_id, owner, pack_data, claimable_template_ids, inserted)
+    // clang-format off
+    typedef eosio::multi_index<"unpack"_n, unpack,
+    eosio::indexed_by<"byowner"_n, eosio::const_mem_fun<unpack, uint64_t, &unpack::by_owner>>
+    >unpack_table;
     // clang-format on
 
     //scoped by edition
@@ -205,13 +223,9 @@ namespace avatarmk {
 #if defined(DEBUG)
         void clravatars(eosio::name& scope);
         void clrqueue();
+        void clrunpack();
+        void test(uint64_t id);
 #endif
-
-        uint64_t template_id;
-        eosio::asset base_price;
-        eosio::asset floor_price;
-        eosio::time_point_sec last_sold;
-        std::string pack_name;
 
         //actions
         void receiverand(uint64_t& assoc_id, const eosio::checksum256& random_value);
@@ -225,6 +239,7 @@ namespace avatarmk {
         void open(const eosio::name& owner, eosio::extended_symbol& token, const eosio::name& ram_payer);
 
         void buypack(eosio::name& buyer, eosio::name& edition_scope, uint64_t& template_id);
+        void claimpack(eosio::name& owner, uint64_t& pack_asset_id);
         void assemble(assemble_set& set_data);
         void finalize(eosio::checksum256& identifier, std::string& ipfs_hash);
         void mintavatar(eosio::name& minter, uint64_t& avatar_id, eosio::name& scope);
@@ -260,10 +275,10 @@ namespace avatarmk {
     EOSIO_ACTIONS(
                 avatarmk_c,
                 "avatarmk"_n,
-
                 action(packadd, edition_scope, template_id, base_price, floor_price, pack_name),
                 action(packdel, edition_scope, template_id),
                 action(buypack, buyer, edition_scope, template_id),
+                action(claimpack, owner, pack_asset_id),
                 action(editionadd, edition_scope, avatar_floor_mint_price),
                 action(editiondel, edition_scope),
                 action(setconfig, cfg),
@@ -273,10 +288,12 @@ namespace avatarmk {
                 action(finalize, identifier, ipfs_hash),
                 action(mintavatar, minter, avatar_id, scope),
                 action(receiverand, assoc_id, random_value),
-
+                
                 #if defined(DEBUG)
+                action(test, id),
                 action(clravatars, scope),
                 action(clrqueue),
+                action(clrunpack),
                 #endif
                 notify("eosio.token"_n, transfer),
                 notify(atomic_contract, logtransfer),

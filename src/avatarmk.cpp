@@ -2,6 +2,7 @@
 #include "atomicassets.hpp"
 #include "functions.cpp"
 #include "notification_handlers.cpp"
+#include "randomness_provider.hpp"
 
 namespace avatarmk {
 
@@ -219,7 +220,46 @@ namespace avatarmk {
         eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "mintasset"_n, data).send();
     }
 
-    void avatarmk_c::receiverand(uint64_t& assoc_id, const eosio::checksum256& random_value) { require_auth(rng_contract); }
+    void avatarmk_c::claimpack(eosio::name& owner, uint64_t& pack_asset_id)
+    {
+        require_auth(owner);
+        unpack_table _unpack(get_self(), get_self().value);
+
+        auto itr = _unpack.find(pack_asset_id);
+        eosio::check(itr != _unpack.end(), "pack with this id not in the unpack table");
+        eosio::check(itr->owner == owner, "you are not the owner of this pack");
+        eosio::check(itr->claimable_template_ids.size() != 0, "pack not ready to claim yet. waiting for oracle to draw random cards");
+
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+
+        const auto mutable_data = atomicassets::ATTRIBUTE_MAP{};
+        const auto immutable_data = atomicassets::ATTRIBUTE_MAP{};
+        const std::vector<eosio::asset> tokens_to_back;
+        for (const auto template_id : itr->claimable_template_ids) {
+            const auto data = make_tuple(get_self(), cfg.collection_name, cfg.parts_schema, template_id, owner, immutable_data, mutable_data, tokens_to_back);
+            eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "mintasset"_n, data).send();
+        }
+        _unpack.erase(itr);
+    }
+
+    void avatarmk_c::receiverand(uint64_t& assoc_id, const eosio::checksum256& random_value)
+    {
+        require_auth(rng_contract);
+        RandomnessProvider RP(random_value);
+        uint32_t random1 = RP.get_rand(200);
+        uint32_t random2 = RP.get_rand(200);
+        uint32_t random3 = RP.get_rand(200);
+
+        unpack_table _unpack(get_self(), get_self().value);
+        _unpack.emplace(get_self(), [&](auto& n) {
+            n.pack_asset_id = assoc_id;
+            n.claimable_template_ids.push_back(random1);
+            n.claimable_template_ids.push_back(random2);
+            n.claimable_template_ids.push_back(random3);
+            n.inserted = eosio::time_point_sec(eosio::current_time_point());
+        });
+    }
 
 #if defined(DEBUG)
     template <typename T>
@@ -234,6 +274,15 @@ namespace avatarmk {
     }
     void avatarmk_c::clravatars(eosio::name& scope) { cleanTable<avatars_table>(get_self(), scope.value, 100); }
     void avatarmk_c::clrqueue() { cleanTable<queue_table>(get_self(), get_self().value, 100); }
+    void avatarmk_c::clrunpack() { cleanTable<unpack_table>(get_self(), get_self().value, 100); }
+    void avatarmk_c::test(uint64_t id)
+    {
+        const auto tx_id = get_trx_id();
+        uint64_t signing_value;
+        memcpy(&signing_value, tx_id.data(), sizeof(signing_value));
+        const auto data = std::make_tuple(id, signing_value, get_self());
+        eosio::action({get_self(), "active"_n}, rng_contract, "requestrand"_n, data).send();
+    }
 #endif
 
 }  // namespace avatarmk
@@ -249,4 +298,5 @@ EOSIO_ABIGEN(
     table("config"_n, avatarmk::config),
     table("editions"_n, avatarmk::editions),
     table("parts"_n, avatarmk::parts),
-    table("packs"_n, avatarmk::packs))
+    table("packs"_n, avatarmk::packs),
+    table("unpack"_n, avatarmk::unpack))

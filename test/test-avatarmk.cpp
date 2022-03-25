@@ -8,8 +8,6 @@
 
 using namespace eosio;
 
-
-
 // Setup function to install contract to the test_chain t
 void setup_installMyContract(test_chain& t)
 {
@@ -20,8 +18,7 @@ void setup_installMyContract(test_chain& t)
 // Setup function to add some accounts to the chain
 void setup_createAccounts(test_chain& t)
 {
-    for (auto user : {"alice"_n, "bob"_n, "jane"_n, "joe"_n})
-    {
+    for (auto user : {"alice"_n, "bob"_n, "jane"_n, "joe"_n}) {
         t.create_account(user);
     }
 }
@@ -73,8 +70,7 @@ void setup_token(test_chain& t)
 // Sample setup function to fund some users
 void setup_fundUsers(test_chain& t)
 {
-    for (auto user : {"alice"_n, "bob"_n, "jane"_n, "joe"_n})
-    {
+    for (auto user : {"alice"_n, "bob"_n, "jane"_n, "joe"_n}) {
         t.as("eosio"_n).act<token::actions::transfer>("eosio"_n, user, s2a("10000.0000 EOS"), "");
         t.as("eosio"_n).act<token::actions::transfer>("eosio"_n, user, s2a("10000.0000 OTHER"), "");
         t.as("hacker.token"_n).with_code("hacker.token"_n).act<token::actions::transfer>("hacker.token"_n, user, s2a("10000.0000 EOS"), "");
@@ -100,7 +96,6 @@ TEST_CASE("Short description of first test", "[test]")
     //      within it (partial match)
 
     // expect(alice.trace<avatarmk::actions::assemble>("alice"_n, "blabla"), nullptr);
-    // alice.trace<avatarmk::actions::assemble>("alice"_n, "blabla");
-
+    // alice.trace<avatarmk::actions::test>();
 
 }  // First test
