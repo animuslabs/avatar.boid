@@ -229,6 +229,7 @@ namespace avatarmk {
         eosio::check(itr != _unpack.end(), "pack with this id not in the unpack table");
         eosio::check(itr->owner == owner, "you are not the owner of this pack");
         eosio::check(itr->claimable_template_ids.size() != 0, "pack not ready to claim yet. waiting for oracle to draw random cards");
+        eosio::check(itr->claimable_template_ids.size() == itr->pack_data.pack_size, "Claimable templates count doesn't equal pack_size");
 
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
