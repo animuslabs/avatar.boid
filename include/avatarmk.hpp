@@ -132,10 +132,10 @@ namespace avatarmk {
     // clang-format on
 
     struct editions {
-        eosio::name edition_scope;             //primary key, must be unique and function as identifier of different part groups (scope)
-        eosio::asset avatar_floor_mint_price;  // min price to mint an avatar from this edition
-        std::vector<uint32_t> part_template_ids;
-        std::vector<uint16_t> rarity_counts = {0, 0, 0, 0, 0};  //index matches rarityscore -1
+        eosio::name edition_scope;                                                    //primary key, must be unique and function as identifier of different part groups (scope)
+        eosio::asset avatar_floor_mint_price;                                         // min price to mint an avatar from this edition
+        std::vector<std::vector<uint32_t>> part_template_ids = {{}, {}, {}, {}, {}};  //index matches rarityscore -1
+        std::vector<uint16_t> rarity_counts = {0, 0, 0, 0, 0};                        //index matches rarityscore -1
 
         uint64_t primary_key() const { return edition_scope.value; }
     };
@@ -211,7 +211,7 @@ namespace avatarmk {
         void clravatars(eosio::name& scope);
         void clrqueue();
         void clrunpack();
-        void test(uint64_t id);
+        void test(const uint32_t template_id, const uint8_t& rarity_score);
 #endif
 
         //actions
@@ -256,6 +256,7 @@ namespace avatarmk {
 
         void burn_nfts(std::vector<uint64_t>& asset_ids);
         eosio::checksum256 get_trx_id();
+        void register_part(const eosio::name& edition_scope, const uint32_t& template_id, const uint8_t& rarity_score);
     };
 
     // clang-format off
@@ -277,7 +278,7 @@ namespace avatarmk {
                 action(receiverand, assoc_id, random_value),
                 
                 #if defined(DEBUG)
-                action(test, id),
+                action(test, template_id, rarity_score),
                 action(clravatars, scope),
                 action(clrqueue),
                 action(clrunpack),

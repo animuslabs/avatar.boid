@@ -190,4 +190,18 @@ namespace avatarmk {
         return sha256(buffer, read);
     }
 
+    void avatarmk_c::register_part(const eosio::name& edition_scope, const uint32_t& template_id, const uint8_t& rarity_score)
+    {
+        editions_table _editions(get_self(), get_self().value);
+        auto itr = _editions.find(edition_scope.value);
+        eosio::check(itr != _editions.end(), "configure edition before creating new part templates");
+
+        auto rarity_index = rarity_score - 1;
+
+        _editions.modify(itr, eosio::same_payer, [&](auto& n) {
+            n.part_template_ids[rarity_index].push_back(template_id);
+            n.rarity_counts[rarity_index] += 1;
+        });
+    }
+
 }  // namespace avatarmk

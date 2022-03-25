@@ -276,13 +276,14 @@ namespace avatarmk {
     void avatarmk_c::clravatars(eosio::name& scope) { cleanTable<avatars_table>(get_self(), scope.value, 100); }
     void avatarmk_c::clrqueue() { cleanTable<queue_table>(get_self(), get_self().value, 100); }
     void avatarmk_c::clrunpack() { cleanTable<unpack_table>(get_self(), get_self().value, 100); }
-    void avatarmk_c::test(uint64_t id)
+    void avatarmk_c::test(const uint32_t template_id, const uint8_t& rarity_score)
     {
-        const auto tx_id = get_trx_id();
-        uint64_t signing_value;
-        memcpy(&signing_value, tx_id.data(), sizeof(signing_value));
-        const auto data = std::make_tuple(id, signing_value, get_self());
-        eosio::action({get_self(), "active"_n}, rng_contract, "requestrand"_n, data).send();
+        register_part(eosio::name("cartoon"), template_id, rarity_score);
+        // const auto tx_id = get_trx_id();
+        // uint64_t signing_value;
+        // memcpy(&signing_value, tx_id.data(), sizeof(signing_value));
+        // const auto data = std::make_tuple(id, signing_value, get_self());
+        // eosio::action({get_self(), "active"_n}, rng_contract, "requestrand"_n, data).send();
     }
 #endif
 

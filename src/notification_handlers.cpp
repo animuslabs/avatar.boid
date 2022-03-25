@@ -98,15 +98,11 @@ namespace avatarmk {
             //populate table for packs logic
             auto edition_name = eosio::name(std::get<std::string>(immutable_data["edition"]));
             auto rarity_score = std::get<uint8_t>(immutable_data["rarityScore"]);
+            eosio::check(rarity_score <= 5 && rarity_score > 0, "rarityscore out of bounds 1-5");
             //template_id
-            editions_table _editions(get_self(), get_self().value);
-            auto itr = _editions.find(edition_name.value);
-            eosio::check(itr != _editions.end(), "configure edition before creating new part templates");
-            _editions.modify(itr, eosio::same_payer, [&](auto& n) {
-                n.part_template_ids.push_back(template_id);
-                n.rarity_counts[rarity_score - 1] += 1;
-            });
+            register_part(edition_name, template_id, rarity_score);
         }
+
         //
     }
 
