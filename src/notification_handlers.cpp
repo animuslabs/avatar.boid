@@ -96,15 +96,15 @@ namespace avatarmk {
 
         else if (schema_name == cfg.parts_schema) {
             //populate table for packs logic
-
-            eosio::check(true, "Enable parts schema in config to be able to create new templates with this schema");
-            auto scope_str = std::get<std::string>(immutable_data["edition"]);
+            auto edition_name = eosio::name(std::get<std::string>(immutable_data["edition"]));
             auto rarity_score = std::get<uint8_t>(immutable_data["rarityScore"]);
             //template_id
-            parts_table _parts(get_self(), eosio::name(scope_str).value);
-            _parts.emplace(get_self(), [&](auto& n) {
-                n.template_id = template_id;
-                n.rarity_score = rarity_score;
+            editions_table _editions(get_self(), get_self().value);
+            auto itr = _editions.find(edition_name.value);
+            eosio::check(itr != _editions.end(), "configure edition before creating new part templates");
+            _editions.modify(itr, eosio::same_payer, [&](auto& n) {
+                n.part_template_ids.push_back(template_id);
+                n.rarity_counts[rarity_score - 1] += 1;
             });
         }
         //

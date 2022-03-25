@@ -101,21 +101,6 @@ namespace avatarmk {
     EOSIO_REFLECT(config, freeze, collection_name, parts_schema, avatar_schema, pack_schema)
     typedef eosio::singleton<"config"_n, config> config_table;
 
-    //scoped by edition
-    struct parts {
-        uint64_t template_id;
-        uint64_t rarity_score;
-
-        uint64_t primary_key() const { return template_id; }
-        uint64_t by_rarity() const { return rarity_score; }
-    };
-    EOSIO_REFLECT(parts, template_id, rarity_score)
-    // clang-format off
-    typedef eosio::multi_index<"parts"_n, parts, 
-    eosio::indexed_by<"byrarity"_n, eosio::const_mem_fun<parts, uint64_t, &parts::by_rarity>>
-    > parts_table;
-    // clang-format on
-
     struct unpack {
         uint64_t pack_asset_id;
         eosio::name owner;
@@ -149,10 +134,12 @@ namespace avatarmk {
     struct editions {
         eosio::name edition_scope;             //primary key, must be unique and function as identifier of different part groups (scope)
         eosio::asset avatar_floor_mint_price;  // min price to mint an avatar from this edition
+        std::vector<uint32_t> part_template_ids;
+        std::vector<uint16_t> rarity_counts = {0, 0, 0, 0, 0};  //index matches rarityscore -1
 
         uint64_t primary_key() const { return edition_scope.value; }
     };
-    EOSIO_REFLECT(editions, edition_scope, avatar_floor_mint_price)
+    EOSIO_REFLECT(editions, edition_scope, avatar_floor_mint_price, part_template_ids, rarity_counts)
     // clang-format off
     typedef eosio::multi_index<"editions"_n, editions >editions_table;
     // clang-format on
@@ -222,7 +209,6 @@ namespace avatarmk {
 
 #if defined(DEBUG)
         void clravatars(eosio::name& scope);
-        void clrparts(eosio::name& scope);
         void clrqueue();
         void clrunpack();
         void test(uint64_t id);
@@ -293,7 +279,6 @@ namespace avatarmk {
                 #if defined(DEBUG)
                 action(test, id),
                 action(clravatars, scope),
-                action(clrparts, scope),
                 action(clrqueue),
                 action(clrunpack),
                 #endif
