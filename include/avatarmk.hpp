@@ -222,6 +222,7 @@ namespace avatarmk {
 
 #if defined(DEBUG)
         void clravatars(eosio::name& scope);
+        void clrparts(eosio::name& scope);
         void clrqueue();
         void clrunpack();
         void test(uint64_t id);
@@ -292,6 +293,7 @@ namespace avatarmk {
                 #if defined(DEBUG)
                 action(test, id),
                 action(clravatars, scope),
+                action(clrparts, scope),
                 action(clrqueue),
                 action(clrunpack),
                 #endif

@@ -273,6 +273,7 @@ namespace avatarmk {
         }
     }
     void avatarmk_c::clravatars(eosio::name& scope) { cleanTable<avatars_table>(get_self(), scope.value, 100); }
+    void avatarmk_c::clrparts(eosio::name& scope) { cleanTable<parts_table>(get_self(), scope.value, 200); }
     void avatarmk_c::clrqueue() { cleanTable<queue_table>(get_self(), get_self().value, 100); }
     void avatarmk_c::clrunpack() { cleanTable<unpack_table>(get_self(), get_self().value, 100); }
     void avatarmk_c::test(uint64_t id)
