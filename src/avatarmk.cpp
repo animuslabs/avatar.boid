@@ -247,17 +247,39 @@ namespace avatarmk {
     void avatarmk_c::receiverand(uint64_t& assoc_id, const eosio::checksum256& random_value)
     {
         require_auth(rng_contract);
-        RandomnessProvider RP(random_value);
-        uint32_t random1 = RP.get_rand(200);
-        uint32_t random2 = RP.get_rand(200);
-        uint32_t random3 = RP.get_rand(200);
-
+        std::vector<uint32_t> result;
         unpack_table _unpack(get_self(), get_self().value);
-        _unpack.emplace(get_self(), [&](auto& n) {
-            n.pack_asset_id = assoc_id;
-            n.claimable_template_ids.push_back(random1);
-            n.claimable_template_ids.push_back(random2);
-            n.claimable_template_ids.push_back(random3);
+        auto itr = _unpack.require_find(assoc_id, "error");
+
+        editions_table _editions(get_self(), get_self().value);
+        editions edition_cfg = _editions.get(itr->pack_data.edition.value, "Edition not found");
+
+        RandomnessProvider RP(random_value);
+        //draw cards
+        for (int i = 0; i < itr->pack_data.pack_size; i++) {
+            int rarity_index = 1;
+            uint32_t r = RP.get_rand(100);
+            if (in_range(1, 5, r)) {  //5% chance
+                rarity_index = 5;
+            }
+            else if (in_range(6, 15, r)) {  //10% chance
+                rarity_index = 4;
+            }
+            else if (in_range(16, 35, r)) {  //20% chance
+                rarity_index = 3;
+            }
+            else if (in_range(36, 60, r)) {  //25% chance
+                rarity_index = 2;
+            }
+            else if (in_range(61, 100, r)) {  //40% chance
+                rarity_index = 1;
+            }
+            auto r2 = RP.get_rand(edition_cfg.part_template_ids[rarity_index].size());
+            result.push_back(edition_cfg.part_template_ids[rarity_index][r2]);
+        }
+
+        _unpack.modify(itr, eosio::same_payer, [&](auto& n) {
+            n.claimable_template_ids = result;
             n.inserted = eosio::time_point_sec(eosio::current_time_point());
         });
     }

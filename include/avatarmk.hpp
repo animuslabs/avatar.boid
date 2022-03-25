@@ -257,6 +257,7 @@ namespace avatarmk {
         void burn_nfts(std::vector<uint64_t>& asset_ids);
         eosio::checksum256 get_trx_id();
         void register_part(const eosio::name& edition_scope, const uint32_t& template_id, const uint8_t& rarity_score);
+        bool in_range(unsigned low, unsigned high, unsigned x) { return ((x - low) <= (high - low)); }
     };
 
     // clang-format off

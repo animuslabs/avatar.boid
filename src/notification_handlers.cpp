@@ -50,12 +50,22 @@ namespace avatarmk {
             else if (memo == std::string("unpack")) {
                 eosio::check(asset_ids.size() == 1, "Only can unpack 1 pack at the same time.");
                 //get pack info
-                auto pack_data = validate_pack(asset_ids[0], cfg);
-                //do unpack
-                // burn_nfts(asset_ids);
-                //const auto tx_signing_value = get_trx_id();
-                //const auto data = std::make_tuple(order_id, tx_signing_value, get_self())
-                //action({ get_self(), "active"_n }, rng_contract,  "requestrand"_n, data).send();
+                auto asset_id = asset_ids[0];
+                auto pack_data = validate_pack(asset_id, cfg);
+
+                unpack_table _unpack(get_self(), get_self().value);
+                _unpack.emplace(get_self(), [&](auto& n) {
+                    n.pack_asset_id = asset_id;
+                    n.owner = from;
+                    n.pack_data = pack_data;
+                    n.inserted = eosio::time_point_sec(eosio::current_time_point());
+                });
+                const auto tx_id = get_trx_id();
+                uint64_t signing_value;
+                memcpy(&signing_value, tx_id.data(), sizeof(signing_value));
+                const auto data = std::make_tuple(asset_id, signing_value, get_self());
+                eosio::action({get_self(), "active"_n}, rng_contract, "requestrand"_n, data).send();
+                burn_nfts(asset_ids);
             }
         }
     }
