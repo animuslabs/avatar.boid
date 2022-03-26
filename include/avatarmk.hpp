@@ -135,11 +135,10 @@ namespace avatarmk {
         eosio::name edition_scope;                                                    //primary key, must be unique and function as identifier of different part groups (scope)
         eosio::asset avatar_floor_mint_price;                                         // min price to mint an avatar from this edition
         std::vector<std::vector<uint32_t>> part_template_ids = {{}, {}, {}, {}, {}};  //index matches rarityscore -1
-        std::vector<uint16_t> rarity_counts = {0, 0, 0, 0, 0};                        //index matches rarityscore -1
 
         uint64_t primary_key() const { return edition_scope.value; }
     };
-    EOSIO_REFLECT(editions, edition_scope, avatar_floor_mint_price, part_template_ids, rarity_counts)
+    EOSIO_REFLECT(editions, edition_scope, avatar_floor_mint_price, part_template_ids)
     // clang-format off
     typedef eosio::multi_index<"editions"_n, editions >editions_table;
     // clang-format on

@@ -198,10 +198,7 @@ namespace avatarmk {
 
         auto rarity_index = rarity_score - 1;
 
-        _editions.modify(itr, eosio::same_payer, [&](auto& n) {
-            n.part_template_ids[rarity_index].push_back(template_id);
-            n.rarity_counts[rarity_index] += 1;
-        });
+        _editions.modify(itr, eosio::same_payer, [&](auto& n) { n.part_template_ids[rarity_index].push_back(template_id); });
     }
 
 }  // namespace avatarmk
