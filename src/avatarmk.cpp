@@ -222,7 +222,7 @@ namespace avatarmk {
 
     void avatarmk_c::claimpack(eosio::name& owner, uint64_t& pack_asset_id)
     {
-        require_auth(owner);
+        eosio::check(has_auth(get_self()) || has_auth(owner), "Need authorization of owner or contract");
         unpack_table _unpack(get_self(), get_self().value);
 
         auto itr = _unpack.find(pack_asset_id);
@@ -254,6 +254,9 @@ namespace avatarmk {
         editions_table _editions(get_self(), get_self().value);
         editions edition_cfg = _editions.get(itr->pack_data.edition.value, "Edition not found");
 
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+
         RandomnessProvider RP(random_value);
         //draw cards
         for (int i = 0; i < itr->pack_data.pack_size; i++) {
@@ -282,6 +285,11 @@ namespace avatarmk {
             n.claimable_template_ids = result;
             n.inserted = eosio::time_point_sec(eosio::current_time_point());
         });
+        if (cfg.auto_claim_packs) {
+            //untested
+            auto data = std::make_tuple(itr->owner, assoc_id);
+            eosio::action(eosio::permission_level{get_self(), "active"_n}, get_self(), "claimpack"_n, data).send();
+        }
     }
 
     void avatarmk_c::setparts(const eosio::name& edition_scope, const std::vector<uint32_t> template_ids, std::vector<uint8_t>& rarity_scores)

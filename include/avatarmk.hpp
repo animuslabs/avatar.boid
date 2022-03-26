@@ -92,6 +92,7 @@ namespace avatarmk {
 
     struct config {
         bool freeze = false;
+        bool auto_claim_packs = false;
         eosio::name collection_name = "boidavatars1"_n;
         eosio::name parts_schema = "avatarparts"_n;
         eosio::name avatar_schema = "testavatarsc"_n;
