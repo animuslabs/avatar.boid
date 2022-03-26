@@ -286,6 +286,7 @@ namespace avatarmk {
 
     void avatarmk_c::setparts(const eosio::name& edition_scope, const std::vector<uint32_t> template_ids, std::vector<uint8_t>& rarity_scores)
     {
+        require_auth(get_self());
         editions_table _editions(get_self(), get_self().value);
         auto itr = _editions.find(edition_scope.value);
         eosio::check(itr != _editions.end(), "configure edition before creating new part templates.");
