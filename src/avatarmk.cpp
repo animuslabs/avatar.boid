@@ -284,6 +284,32 @@ namespace avatarmk {
         });
     }
 
+    void avatarmk_c::setparts(const eosio::name& edition_scope, const std::vector<uint32_t> template_ids, std::vector<uint8_t>& rarity_scores)
+    {
+        editions_table _editions(get_self(), get_self().value);
+        auto itr = _editions.find(edition_scope.value);
+        eosio::check(itr != _editions.end(), "configure edition before creating new part templates.");
+        eosio::check(template_ids.size() == rarity_scores.size(), "invalid input. vectors must be of equal size.");
+
+        _editions.modify(itr, eosio::same_payer, [&](auto& n) {
+            for (unsigned i = 0; i < template_ids.size(); ++i) {
+                auto rarity_index = rarity_scores[i] - 1;
+                if (template_ids.size() == 1) {
+                    auto existing = std::find(n.part_template_ids[rarity_index].begin(), n.part_template_ids[rarity_index].end(), template_ids[i]);
+                    if (existing != n.part_template_ids[rarity_index].end()) {
+                        n.part_template_ids[rarity_index].erase(existing);
+                    }
+                    else {
+                        n.part_template_ids[rarity_index].push_back(template_ids[i]);
+                    }
+                }
+                else {
+                    n.part_template_ids[rarity_index].push_back(template_ids[i]);
+                }
+            }
+        });
+    }
+
 #if defined(DEBUG)
     template <typename T>
     void cleanTable(eosio::name code, uint64_t account, const uint32_t batchSize)

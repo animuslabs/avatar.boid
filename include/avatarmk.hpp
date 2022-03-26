@@ -214,6 +214,7 @@ namespace avatarmk {
 #endif
 
         //actions
+        void setparts(const eosio::name& edition_scope, const std::vector<uint32_t> template_ids, std::vector<uint8_t>& rarity_scores);
         void receiverand(uint64_t& assoc_id, const eosio::checksum256& random_value);
 
         void setconfig(std::optional<config> cfg);
@@ -269,6 +270,7 @@ namespace avatarmk {
                 action(claimpack, owner, pack_asset_id),
                 action(editionadd, edition_scope, avatar_floor_mint_price),
                 action(editiondel, edition_scope),
+                action(setparts, edition_scope, template_ids, rarity_scores),
                 action(setconfig, cfg),
                 action(withdraw, owner, value),
                 action(open, owner, token, ram_payer),
