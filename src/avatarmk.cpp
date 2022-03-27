@@ -47,9 +47,13 @@ namespace avatarmk {
         editions edition_cfg = _editions.get(scope.value, "Scope is not a valid edition");
 
         //for now 100% of price goes to template owner
-        avatar_mint_price amf = calculate_mint_price(*itr, edition_cfg.avatar_floor_mint_price);
-        sub_balance(minter, amf.price);
-        add_balance(itr->creator, amf.price, get_self());  //let self pay for ram if new table entry?
+        avatar_mint_price amp = calculate_mint_price(*itr, edition_cfg.avatar_floor_mint_price);
+        double pct_cut = 0.5;  //50%
+        auto contract_share = eosio::extended_asset((uint64_t)(amp.price.quantity.amount * pct_cut), amp.price.get_extended_symbol());
+        auto user_reward = amp.price - contract_share;
+        sub_balance(minter, amp.price);
+        add_balance(itr->creator, user_reward, get_self());
+        add_balance(get_self(), contract_share, get_self());
 
         //atomic mint action
         const auto mutable_data = atomicassets::ATTRIBUTE_MAP{};
@@ -59,7 +63,7 @@ namespace avatarmk {
         _avatars.modify(itr, eosio::same_payer, [&](auto& n) {
             n.mint += 1;
             n.modified = eosio::time_point_sec(eosio::current_time_point());
-            n.base_price = amf.next_base_price;
+            n.base_price = amp.next_base_price;
         });
 
         const std::vector<eosio::asset> tokens_to_back;
@@ -335,11 +339,24 @@ namespace avatarmk {
             itr = db.erase(itr);
         }
     }
-    void avatarmk_c::clravatars(eosio::name& scope) { cleanTable<avatars_table>(get_self(), scope.value, 100); }
-    void avatarmk_c::clrqueue() { cleanTable<queue_table>(get_self(), get_self().value, 100); }
-    void avatarmk_c::clrunpack() { cleanTable<unpack_table>(get_self(), get_self().value, 100); }
+    void avatarmk_c::clravatars(eosio::name& scope)
+    {
+        require_auth(get_self());
+        cleanTable<avatars_table>(get_self(), scope.value, 100);
+    }
+    void avatarmk_c::clrqueue()
+    {
+        require_auth(get_self());
+        cleanTable<queue_table>(get_self(), get_self().value, 100);
+    }
+    void avatarmk_c::clrunpack()
+    {
+        require_auth(get_self());
+        cleanTable<unpack_table>(get_self(), get_self().value, 100);
+    }
     void avatarmk_c::test(const uint64_t id)
     {
+        require_auth(get_self());
         const auto tx_id = get_trx_id();
         uint64_t signing_value;
         memcpy(&signing_value, tx_id.data(), sizeof(signing_value));
