@@ -60,6 +60,7 @@ namespace avatarmk {
                     n.pack_data = pack_data;
                     n.inserted = eosio::time_point_sec(eosio::current_time_point());
                 });
+
                 const auto tx_id = get_trx_id();
                 uint64_t signing_value;
                 memcpy(&signing_value, tx_id.data(), sizeof(signing_value));

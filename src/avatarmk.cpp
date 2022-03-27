@@ -46,10 +46,10 @@ namespace avatarmk {
         editions_table _editions(get_self(), get_self().value);
         editions edition_cfg = _editions.get(scope.value, "Scope is not a valid edition");
 
-        //for now 100% of fee goes to template owner
-        avatar_mint_fee amf = calculate_mint_price(*itr, edition_cfg.avatar_floor_mint_price);
-        sub_balance(minter, amf.fee);
-        add_balance(itr->creator, amf.fee, get_self());  //let self pay for ram if new table entry?
+        //for now 100% of price goes to template owner
+        avatar_mint_price amf = calculate_mint_price(*itr, edition_cfg.avatar_floor_mint_price);
+        sub_balance(minter, amf.price);
+        add_balance(itr->creator, amf.price, get_self());  //let self pay for ram if new table entry?
 
         //atomic mint action
         const auto mutable_data = atomicassets::ATTRIBUTE_MAP{};
@@ -246,7 +246,7 @@ namespace avatarmk {
 
     void avatarmk_c::receiverand(uint64_t& assoc_id, const eosio::checksum256& random_value)
     {
-        require_auth(rng_contract);
+        eosio::check(has_auth(get_self()) || has_auth(rng_contract), "Need authorization of owner or contract");
         std::vector<uint32_t> result;
         unpack_table _unpack(get_self(), get_self().value);
         auto itr = _unpack.require_find(assoc_id, "error");
@@ -277,8 +277,8 @@ namespace avatarmk {
             else if (in_range(61, 100, r)) {  //40% chance
                 rarity_index = 1;
             }
-            auto r2 = RP.get_rand(edition_cfg.part_template_ids[rarity_index].size());
-            result.push_back(edition_cfg.part_template_ids[rarity_index][r2]);
+            auto r2 = RP.get_rand(edition_cfg.part_template_ids[rarity_index - 1].size());
+            result.push_back(edition_cfg.part_template_ids[rarity_index - 1][r2]);
         }
 
         _unpack.modify(itr, eosio::same_payer, [&](auto& n) {
@@ -299,6 +299,11 @@ namespace avatarmk {
         auto itr = _editions.find(edition_scope.value);
         eosio::check(itr != _editions.end(), "configure edition before creating new part templates.");
         eosio::check(template_ids.size() == rarity_scores.size(), "invalid input. vectors must be of equal size.");
+
+        if (template_ids.size() == 0) {
+            _editions.modify(itr, eosio::same_payer, [&](auto& n) { n.part_template_ids = {{}, {}, {}, {}, {}}; });
+            return;
+        }
 
         _editions.modify(itr, eosio::same_payer, [&](auto& n) {
             for (unsigned i = 0; i < template_ids.size(); ++i) {
@@ -333,14 +338,13 @@ namespace avatarmk {
     void avatarmk_c::clravatars(eosio::name& scope) { cleanTable<avatars_table>(get_self(), scope.value, 100); }
     void avatarmk_c::clrqueue() { cleanTable<queue_table>(get_self(), get_self().value, 100); }
     void avatarmk_c::clrunpack() { cleanTable<unpack_table>(get_self(), get_self().value, 100); }
-    void avatarmk_c::test(const uint32_t template_id, const uint8_t& rarity_score)
+    void avatarmk_c::test(const uint64_t id)
     {
-        register_part(eosio::name("cartoon"), template_id, rarity_score);
-        // const auto tx_id = get_trx_id();
-        // uint64_t signing_value;
-        // memcpy(&signing_value, tx_id.data(), sizeof(signing_value));
-        // const auto data = std::make_tuple(id, signing_value, get_self());
-        // eosio::action({get_self(), "active"_n}, rng_contract, "requestrand"_n, data).send();
+        const auto tx_id = get_trx_id();
+        uint64_t signing_value;
+        memcpy(&signing_value, tx_id.data(), sizeof(signing_value));
+        const auto data = std::make_tuple(id, signing_value, get_self());
+        eosio::action({get_self(), "active"_n}, rng_contract, "requestrand"_n, data).send();
     }
 #endif
 

@@ -85,8 +85,8 @@ namespace avatarmk {
     };
     EOSIO_REFLECT(assemble_set, creator, avatar_name, template_ids, rarity_score, identifier, max_mint, bodypart_names, scope, base_price)
 
-    struct avatar_mint_fee {
-        eosio::extended_asset fee;
+    struct avatar_mint_price {
+        eosio::extended_asset price;
         eosio::asset next_base_price;
     };
 
@@ -211,7 +211,7 @@ namespace avatarmk {
         void clravatars(eosio::name& scope);
         void clrqueue();
         void clrunpack();
-        void test(const uint32_t template_id, const uint8_t& rarity_score);
+        void test(const uint64_t id);
 #endif
 
         //actions
@@ -249,7 +249,7 @@ namespace avatarmk {
         pack_data validate_pack(const uint64_t& asset_id, const config& cfg);
         assemble_set validate_assemble_set(std::vector<uint64_t> asset_ids, config cfg);
         eosio::checksum256 calculateIdentifier(std::vector<uint32_t>& template_ids);
-        avatar_mint_fee calculate_mint_price(const avatars& avatar, const eosio::asset& avatar_floor_mint_price);
+        avatar_mint_price calculate_mint_price(const avatars& avatar, const eosio::asset& avatar_floor_mint_price);
         void validate_avatar_name(std::string& avatar_name);
         //internal accounting
         void add_balance(const eosio::name& owner, const eosio::extended_asset& value, const eosio::name& ram_payer = eosio::name(0));
@@ -281,7 +281,7 @@ namespace avatarmk {
                 action(receiverand, assoc_id, random_value),
                 
                 #if defined(DEBUG)
-                action(test, template_id, rarity_score),
+                action(test, id),
                 action(clravatars, scope),
                 action(clrqueue),
                 action(clrunpack),

@@ -4,11 +4,11 @@
 
 namespace avatarmk {
 
-    avatar_mint_fee avatarmk_c::calculate_mint_price(const avatars& avatar, const eosio::asset& avatar_floor_mint_price)
+    avatar_mint_price avatarmk_c::calculate_mint_price(const avatars& avatar, const eosio::asset& avatar_floor_mint_price)
     {
         //this is untested code!!!!!!!!!!
         //still need to thinker more
-        avatar_mint_fee result;
+        avatar_mint_price result;
         // int core_precision_pow = pow(10, core_symbol.precision());
         const auto sec_passed = (eosio::current_time_point() - avatar.modified).to_seconds();
         const auto days_passed = std::floor(sec_passed / day_sec);
@@ -23,14 +23,14 @@ namespace avatarmk {
             result.next_base_price = avatar_floor_mint_price * avatar.rarity;
         }
 
-        //calculate mint fee based on current base price
+        //calculate mint price based on current base price
         const uint64_t pv = avatar.base_price.amount;
         const double r = 0.01 * (5 / avatar.rarity);                     //rare avatars will decay slower
         const auto decay_step = days_passed <= 7 ? 0 : days_passed - 7;  //start decay after 1 week
         const uint64_t p = (uint64_t)(pv * pow(1 - r, decay_step));
         eosio::asset mint_price{static_cast<int64_t>(p), core_symbol};
         mint_price = std::max(mint_price, avatar_floor_mint_price);  //mint price can't be smaller than floor
-        result.fee = {mint_price, extended_core_symbol.get_contract()};
+        result.price = {mint_price, extended_core_symbol.get_contract()};
 
         return result;
     }
