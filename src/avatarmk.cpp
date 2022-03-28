@@ -43,17 +43,30 @@ namespace avatarmk {
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
 
+        eosio::time_point_sec now(eosio::current_time_point());
+
+        if (itr->mint == 0 && itr->modified < now + 3600) {
+            eosio::check(itr->creator == minter, "Only the creator can mint the first avatar within the first hour the template is finalized");
+        }
+
         editions_table _editions(get_self(), get_self().value);
         editions edition_cfg = _editions.get(scope.value, "Scope is not a valid edition");
 
-        //for now 100% of price goes to template owner
+        //billing logic
         avatar_mint_price amp = calculate_mint_price(*itr, edition_cfg.avatar_floor_mint_price);
-        double pct_cut = 0.5;  //50%
-        auto contract_share = eosio::extended_asset((uint64_t)(amp.price.quantity.amount * pct_cut), amp.price.get_extended_symbol());
-        auto user_reward = amp.price - contract_share;
         sub_balance(minter, amp.price);
-        add_balance(itr->creator, user_reward, get_self());
-        add_balance(get_self(), contract_share, get_self());
+
+        if (minter == itr->creator) {
+            //don't reward the template creator if he is the minter
+            add_balance(get_self(), amp.price, get_self());
+        }
+        else {
+            double pct_cut = 0.5;  //50%
+            auto contract_share = eosio::extended_asset((uint64_t)(amp.price.quantity.amount * pct_cut), amp.price.get_extended_symbol());
+            auto user_reward = amp.price - contract_share;
+            add_balance(itr->creator, user_reward, get_self());
+            add_balance(get_self(), contract_share, get_self());
+        }
 
         //atomic mint action
         const auto mutable_data = atomicassets::ATTRIBUTE_MAP{};
@@ -62,7 +75,7 @@ namespace avatarmk {
 
         _avatars.modify(itr, eosio::same_payer, [&](auto& n) {
             n.mint += 1;
-            n.modified = eosio::time_point_sec(eosio::current_time_point());
+            n.modified = now;
             n.base_price = amp.next_base_price;
         });
 
