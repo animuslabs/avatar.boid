@@ -6,18 +6,28 @@
 
 namespace avatarmk {
 
-    void avatarmk_c::editionadd(eosio::name& edition_scope, eosio::asset& avatar_floor_mint_price)
+    void avatarmk_c::editionset(eosio::name& edition_scope, eosio::asset& avatar_floor_mint_price, eosio::asset& avatar_template_price)
     {
         //warning no input validation!
         require_auth(get_self());
         editions_table _editions(get_self(), get_self().value);
         auto itr = _editions.find(edition_scope.value);
-        eosio::check(itr == _editions.end(), "Edition with this scope already registered");
 
-        _editions.emplace(get_self(), [&](auto& n) {
-            n.edition_scope = edition_scope;
-            n.avatar_floor_mint_price = avatar_floor_mint_price;
-        });
+        if (itr == _editions.end()) {
+            //new edition
+            _editions.emplace(get_self(), [&](auto& n) {
+                n.edition_scope = edition_scope;
+                n.avatar_template_price = avatar_template_price;
+                n.avatar_floor_mint_price = avatar_floor_mint_price;
+            });
+        }
+        else {
+            //existing edition
+            _editions.modify(itr, eosio::same_payer, [&](auto& n) {
+                n.avatar_template_price = avatar_template_price;
+                n.avatar_floor_mint_price = avatar_floor_mint_price;
+            });
+        }
     }
     void avatarmk_c::editiondel(eosio::name& edition_scope)
     {

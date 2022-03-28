@@ -133,13 +133,14 @@ namespace avatarmk {
     // clang-format on
 
     struct editions {
-        eosio::name edition_scope;                                                    //primary key, must be unique and function as identifier of different part groups (scope)
-        eosio::asset avatar_floor_mint_price;                                         // min price to mint an avatar from this edition
+        eosio::name edition_scope;             //primary key, must be unique and function as identifier of different part groups (scope)
+        eosio::asset avatar_floor_mint_price;  // min price to mint an avatar from this edition
+        eosio::asset avatar_template_price;
         std::vector<std::vector<uint32_t>> part_template_ids = {{}, {}, {}, {}, {}};  //index matches rarityscore -1
 
         uint64_t primary_key() const { return edition_scope.value; }
     };
-    EOSIO_REFLECT(editions, edition_scope, avatar_floor_mint_price, part_template_ids)
+    EOSIO_REFLECT(editions, edition_scope, avatar_floor_mint_price, avatar_template_price, part_template_ids)
     // clang-format off
     typedef eosio::multi_index<"editions"_n, editions >editions_table;
     // clang-format on
@@ -220,7 +221,7 @@ namespace avatarmk {
         void setconfig(std::optional<config> cfg);
         void packadd(eosio::name& edition_scope, uint64_t& template_id, eosio::asset& base_price, eosio::asset& floor_price, std::string& pack_name);
         void packdel(eosio::name& edition_scope, uint64_t& template_id);
-        void editionadd(eosio::name& edition_scope, eosio::asset& avatar_floor_mint_price);
+        void editionset(eosio::name& edition_scope, eosio::asset& avatar_floor_mint_price, eosio::asset& avatar_template_price);
         void editiondel(eosio::name& edition_scope);
         void withdraw(const eosio::name& owner, const eosio::extended_asset& value);
         void open(const eosio::name& owner, eosio::extended_symbol& token, const eosio::name& ram_payer);
@@ -268,7 +269,7 @@ namespace avatarmk {
                 action(packdel, edition_scope, template_id),
                 action(buypack, buyer, edition_scope, template_id),
                 action(claimpack, owner, pack_asset_id),
-                action(editionadd, edition_scope, avatar_floor_mint_price),
+                action(editionset, edition_scope, avatar_floor_mint_price, avatar_template_price),
                 action(editiondel, edition_scope),
                 action(setparts, edition_scope, template_ids, rarity_scores),
                 action(setconfig, cfg),

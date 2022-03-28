@@ -36,6 +36,13 @@ namespace avatarmk {
                 assemble_set.creator = from;
                 assemble_set.avatar_name = eosio::name(memo.substr(9));  //assemble:avatarname
 
+                editions_table _editions(get_self(), get_self().value);
+                auto edition = _editions.get(assemble_set.scope.value, "edition doesn't exists");
+                if (edition.avatar_template_price.amount > 0) {
+                    eosio::extended_asset atp(edition.avatar_template_price, extended_core_symbol.get_contract());
+                    sub_balance(from, atp);
+                }
+
                 const auto data = std::make_tuple(assemble_set);
                 eosio::action(eosio::permission_level{get_self(), "active"_n}, get_self(), "assemble"_n, data).send();  //can be a function call instead of action
                 burn_nfts(asset_ids);
