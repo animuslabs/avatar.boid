@@ -6,8 +6,6 @@ namespace avatarmk {
 
     avatar_mint_price avatarmk_c::calculate_mint_price(const avatars& avatar, const eosio::asset& avatar_floor_mint_price)
     {
-        //this is untested code!!!!!!!!!!
-        //still need to thinker more
         avatar_mint_price result;
         // int core_precision_pow = pow(10, core_symbol.precision());
         const auto sec_passed = (eosio::current_time_point() - avatar.modified).to_seconds();
@@ -171,14 +169,6 @@ namespace avatarmk {
             const auto data = std::make_tuple(get_self(), asset_id);
             eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "burnasset"_n, data).send();
         }
-    };
-
-    void avatarmk_c::validate_avatar_name(std::string& avatar_name)
-    {
-        //implement blacklist here?
-        int l = avatar_name.size();
-        eosio::check(l >= 3, "Avatar name must have a minimum of 3 characters");
-        eosio::check(l <= 20, "Avatar name can't have more then 20 characters");
     };
 
     eosio::checksum256 avatarmk_c::get_trx_id()

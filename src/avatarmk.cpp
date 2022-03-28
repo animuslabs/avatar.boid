@@ -34,11 +34,11 @@ namespace avatarmk {
         cfg ? _config.set(cfg.value(), get_self()) : _config.remove();
     }
 
-    void avatarmk_c::mintavatar(eosio::name& minter, uint64_t& avatar_id, eosio::name& scope)
+    void avatarmk_c::mintavatar(eosio::name& minter, eosio::name& avatar_name, eosio::name& scope)
     {
         require_auth(minter);
         avatars_table _avatars(get_self(), scope.value);
-        auto itr = _avatars.require_find(avatar_id, "Avatar with this id doesn't exist.");
+        auto itr = _avatars.require_find(avatar_name.value, "Avatar with this name doesn't exist.");
 
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
@@ -83,9 +83,15 @@ namespace avatarmk {
         auto q_idx = _queue.get_index<eosio::name("byidf")>();
         eosio::check(q_idx.find(set_data.identifier) == q_idx.end(), "Avatar with these body parts already in queue.");
 
+        auto q_name = _queue.find(set_data.avatar_name.value);
+        eosio::check(q_name == _queue.end(), "avatar with this name already in queue");
+
+        auto a_name = _avatars.find(set_data.avatar_name.value);
+        eosio::check(a_name == _avatars.end(), "avatar with this name already exists in edition");
+
         //add to queue
         _queue.emplace(get_self(), [&](auto& n) {
-            n.id = _queue.available_primary_key();
+            n.avatar_name = set_data.avatar_name;
             n.scope = set_data.scope;
             n.identifier = set_data.identifier;
             n.work = eosio::name("assemble");
@@ -121,7 +127,7 @@ namespace avatarmk {
         const uint32_t max_supply = queue_entry->set_data.max_mint;
         auto immutable_data = atomicassets::ATTRIBUTE_MAP{};
         //must match avatar schema!!!!!!!!
-        immutable_data["name"] = queue_entry->set_data.avatar_name;
+        immutable_data["name"] = queue_entry->set_data.avatar_name.to_string();
         immutable_data["edition"] = scope.to_string();
         immutable_data["img"] = ipfs_hash;
         immutable_data["rarityScore"] = queue_entry->set_data.rarity_score;
@@ -137,7 +143,6 @@ namespace avatarmk {
 
         //destructure set_data in avatar table scope + complete with finalize args (ipfs_hash)..
         _avatars.emplace(get_self(), [&](auto& n) {
-            n.id = _avatars.available_primary_key();
             n.avatar_name = queue_entry->set_data.avatar_name;
             n.rarity = queue_entry->set_data.rarity_score;
             n.creator = queue_entry->set_data.creator;

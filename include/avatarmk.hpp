@@ -74,7 +74,7 @@ namespace avatarmk {
 
     struct assemble_set {
         eosio::name creator;
-        std::string avatar_name;
+        eosio::name avatar_name;
         std::vector<uint32_t> template_ids;
         uint8_t rarity_score;
         eosio::checksum256 identifier;
@@ -159,8 +159,7 @@ namespace avatarmk {
 
     //scoped by edition
     struct avatars {
-        uint64_t id;
-        std::string avatar_name;
+        eosio::name avatar_name;
         uint32_t template_id;           //atomic assets template_id
         eosio::name creator;            //creator of the template
         eosio::checksum256 identifier;  //checksum from sorted vector containing all part_template_ids
@@ -171,11 +170,11 @@ namespace avatarmk {
         eosio::asset base_price;
         std::vector<uint32_t> bodyparts;
 
-        uint64_t primary_key() const { return id; }
+        uint64_t primary_key() const { return avatar_name.value; }
         uint64_t by_creator() const { return creator.value; }
         eosio::checksum256 by_idf() const { return identifier; }
     };
-    EOSIO_REFLECT(avatars, id, avatar_name, template_id, creator, identifier, rarity, mint, max_mint, modified, base_price, bodyparts)
+    EOSIO_REFLECT(avatars, avatar_name, template_id, creator, identifier, rarity, mint, max_mint, modified, base_price, bodyparts)
     // clang-format off
     typedef eosio::multi_index<"avatars"_n, avatars,
     eosio::indexed_by<"bycreator"_n, eosio::const_mem_fun<avatars, uint64_t, &avatars::by_creator>>,
@@ -185,18 +184,18 @@ namespace avatarmk {
 
     ///////
     struct queue {
-        uint64_t id;
+        eosio::name avatar_name;
         eosio::checksum256 identifier;   //checksum from sorted vector containing all part_template_ids
         eosio::name work;                //[assemble, potion, etc]
         eosio::name scope;               //which pack
         assemble_set set_data;           //can make this a variant for future work types with different payload
         eosio::time_point_sec inserted;  //timestamp that gets updated each time the row gets modified (assemble, finalize, mint)
 
-        uint64_t primary_key() const { return id; }
+        uint64_t primary_key() const { return avatar_name.value; }
         eosio::checksum256 by_idf() const { return identifier; }
         uint64_t by_scope() const { return scope.value; }
     };
-    EOSIO_REFLECT(queue, id, identifier, work, scope, set_data, inserted);
+    EOSIO_REFLECT(queue, avatar_name, identifier, work, scope, set_data, inserted);
     // clang-format off
     typedef eosio::multi_index<"queue"_n, queue,
     eosio::indexed_by<"byidf"_n, eosio::const_mem_fun<queue, eosio::checksum256, &queue::by_idf>>,
@@ -230,7 +229,7 @@ namespace avatarmk {
         void claimpack(eosio::name& owner, uint64_t& pack_asset_id);
         void assemble(assemble_set& set_data);
         void finalize(eosio::checksum256& identifier, std::string& ipfs_hash);
-        void mintavatar(eosio::name& minter, uint64_t& avatar_id, eosio::name& scope);
+        void mintavatar(eosio::name& minter, eosio::name& avatar_name, eosio::name& scope);
         using assemble_action = eosio::action_wrapper<"assemble"_n, &avatarmk_c::assemble>;
 
         //notifications
@@ -250,7 +249,7 @@ namespace avatarmk {
         assemble_set validate_assemble_set(std::vector<uint64_t> asset_ids, config cfg);
         eosio::checksum256 calculateIdentifier(std::vector<uint32_t>& template_ids);
         avatar_mint_price calculate_mint_price(const avatars& avatar, const eosio::asset& avatar_floor_mint_price);
-        void validate_avatar_name(std::string& avatar_name);
+
         //internal accounting
         void add_balance(const eosio::name& owner, const eosio::extended_asset& value, const eosio::name& ram_payer = eosio::name(0));
         void sub_balance(const eosio::name& owner, const eosio::extended_asset& value);
@@ -277,7 +276,7 @@ namespace avatarmk {
                 action(open, owner, token, ram_payer),
                 action(assemble, set_data),
                 action(finalize, identifier, ipfs_hash),
-                action(mintavatar, minter, avatar_id, scope),
+                action(mintavatar, minter, avatar_name, scope),
                 action(receiverand, assoc_id, random_value),
                 
                 #if defined(DEBUG)
