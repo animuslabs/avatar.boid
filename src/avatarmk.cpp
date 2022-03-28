@@ -45,7 +45,7 @@ namespace avatarmk {
 
         eosio::time_point_sec now(eosio::current_time_point());
 
-        if (itr->mint == 0 && itr->modified < now + 3600) {
+        if (itr->mint == 0 && now < itr->modified + 3600) {
             eosio::check(itr->creator == minter, "Only the creator can mint the first avatar within the first hour the template is finalized");
         }
 
