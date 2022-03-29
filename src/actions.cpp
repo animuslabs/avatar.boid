@@ -1,6 +1,5 @@
 #include "avatarmk.hpp"
 #include "atomicassets.hpp"
-
 #include "randomness_provider.hpp"
 
 namespace avatarmk {
@@ -176,32 +175,6 @@ namespace avatarmk {
         });
         //delete queue entry, not needed anymore.
         q_idx.erase(queue_entry);
-    }
-
-    void avatarmk_c::withdraw(const eosio::name& owner, const eosio::extended_asset& value)
-    {
-        require_auth(owner);
-        eosio::check(value.quantity.amount > 0, "Withdraw amount must be possitive.");
-        sub_balance(owner, value);
-        token::actions::transfer{value.contract, get_self()}.send(get_self(), owner, value.quantity, "withdraw");
-    }
-
-    void avatarmk_c::open(const eosio::name& owner, eosio::extended_symbol& token, const eosio::name& ram_payer)
-    {
-        //can make ram_payer optional
-        require_auth(ram_payer);
-        eosio::check(is_account(owner), "Owner isn't associated with an on-chain account.");
-
-        deposits_table _deposits(get_self(), owner.value);
-        auto idx = _deposits.get_index<"bycontrsym"_n>();
-        uint128_t composite_id = (uint128_t{token.contract.value} << 64) | token.get_symbol().raw();
-        auto itr = idx.find(composite_id);
-        eosio::check(itr == idx.end(), "Owner already has an open account for token");
-
-        _deposits.emplace(ram_payer, [&](auto& n) {
-            n.id = _deposits.available_primary_key();
-            n.balance = eosio::extended_asset(0, token);
-        });
     }
 
     void avatarmk_c::packadd(eosio::name& edition_scope, uint64_t& template_id, eosio::asset& base_price, eosio::asset& floor_price, std::string& pack_name)

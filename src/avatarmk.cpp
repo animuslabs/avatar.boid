@@ -2,7 +2,7 @@
 
 #include "functions.cpp"
 #include "notification_handlers.cpp"
-
+#include "deposit_spend.cpp"
 #include "actions.cpp"
 
 #if defined(DEBUG)
