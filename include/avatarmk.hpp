@@ -11,7 +11,6 @@
 #include <token/token.hpp>
 
 #define DEBUG
-
 //for some reason it's not possible to include atomicassets.hpp in avatarmk.hpp.
 //hence the typedefs for ATTRIBUTE_MAP here.
 typedef std::vector<int8_t> INT8_VEC;
@@ -51,7 +50,6 @@ typedef std::variant<int8_t,
     ATOMIC_ATTRIBUTE;
 
 typedef std::map<std::string, ATOMIC_ATTRIBUTE> ATTRIBUTE_MAP;
-
 namespace avatarmk {
 
     inline constexpr eosio::symbol core_symbol{"WAX", 8};
@@ -60,11 +58,11 @@ namespace avatarmk {
     inline constexpr auto rng_contract = "orng.wax"_n;
     inline constexpr int day_sec = 86400;
 
-    struct pack_data {
-        eosio::name edition;
-        uint8_t pack_size;  //number of nfts in pack
+    //used as return value by mint price calculation
+    struct avatar_mint_price {
+        eosio::extended_asset price;
+        eosio::asset next_base_price;
     };
-    EOSIO_REFLECT(pack_data, edition, pack_size)
 
     struct namepair {
         std::string bodypart;
@@ -85,11 +83,6 @@ namespace avatarmk {
     };
     EOSIO_REFLECT(assemble_set, creator, avatar_name, template_ids, rarity_score, identifier, max_mint, bodypart_names, scope, base_price)
 
-    struct avatar_mint_price {
-        eosio::extended_asset price;
-        eosio::asset next_base_price;
-    };
-
     struct config {
         bool freeze = false;
         bool auto_claim_packs = false;
@@ -98,9 +91,14 @@ namespace avatarmk {
         eosio::name avatar_schema = "testavatarsc"_n;
         eosio::name pack_schema = "partspacksch"_n;
     };
-
-    EOSIO_REFLECT(config, freeze, collection_name, parts_schema, avatar_schema, pack_schema)
+    EOSIO_REFLECT(config, freeze, auto_claim_packs, collection_name, parts_schema, avatar_schema, pack_schema)
     typedef eosio::singleton<"config"_n, config> config_table;
+
+    struct pack_data {
+        eosio::name edition;
+        uint8_t pack_size;  //number of nfts in pack
+    };
+    EOSIO_REFLECT(pack_data, edition, pack_size)
 
     struct unpack {
         uint64_t pack_asset_id;
