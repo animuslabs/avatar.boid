@@ -229,6 +229,7 @@ namespace avatarmk {
         void assemble(assemble_set& set_data);
         void finalize(eosio::checksum256& identifier, std::string& ipfs_hash);
         void mintavatar(eosio::name& minter, eosio::name& avatar_name, eosio::name& scope);
+        void setowner(eosio::name& owner, eosio::name& new_owner, eosio::name& avatar_name, eosio::name& scope);
         using assemble_action = eosio::action_wrapper<"assemble"_n, &avatarmk_c::assemble>;
 
         //notifications
@@ -277,6 +278,7 @@ namespace avatarmk {
                 action(finalize, identifier, ipfs_hash),
                 action(mintavatar, minter, avatar_name, scope),
                 action(receiverand, assoc_id, random_value),
+                action(setowner, owner, new_owner, avatar_name, scope),
                 
                 #if defined(DEBUG)
                 action(test, id),

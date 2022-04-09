@@ -64,8 +64,8 @@ namespace avatarmk {
         avatar_mint_price amp = calculate_mint_price(*itr, edition_cfg.avatar_floor_mint_price);
         sub_balance(minter, amp.price);
 
-        if (minter == itr->creator) {
-            //don't reward the template creator if he is the minter
+        if (minter == itr->creator || itr->creator == get_self()) {
+            //don't reward the template creator if he is the minter or if the owner is self.
             add_balance(get_self(), amp.price, get_self());
         }
         else {
@@ -90,6 +90,16 @@ namespace avatarmk {
         const std::vector<eosio::asset> tokens_to_back;
         const auto data = make_tuple(get_self(), cfg.collection_name, cfg.avatar_schema, itr->template_id, minter, immutable_data, mutable_data, tokens_to_back);
         eosio::action(eosio::permission_level{get_self(), "active"_n}, atomic_contract, "mintasset"_n, data).send();
+    }
+
+    void avatarmk_c::setowner(eosio::name& owner, eosio::name& new_owner, eosio::name& avatar_name, eosio::name& scope)
+    {
+        require_auth(owner);
+        avatars_table _avatars(get_self(), scope.value);
+        auto itr = _avatars.require_find(avatar_name.value, "Avatar with this name doesn't exist in this scope.");
+        eosio::check(itr->creator == owner, "this avatar isn't owned by owner.");
+        eosio::check(eosio::is_account(new_owner), "new_owner isn't a valid account.");
+        _avatars.modify(itr, eosio::same_payer, [&](auto& n) { n.creator = new_owner; });
     }
 
     void avatarmk_c::assemble(assemble_set& set_data)
