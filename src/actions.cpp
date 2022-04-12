@@ -185,6 +185,11 @@ namespace avatarmk {
         });
         //delete queue entry, not needed anymore.
         q_idx.erase(queue_entry);
+
+        //update template counter in editions table
+        editions_table _editions(get_self(), get_self().value);
+        auto edition_itr = _editions.require_find(scope.value, "Scope is not a valid edition");
+        _editions.modify(edition_itr, eosio::same_payer, [&](auto& n) { n.avatar_template_count += 1; });
     }
 
     void avatarmk_c::packadd(eosio::name& edition_scope, uint64_t& template_id, eosio::asset& base_price, eosio::asset& floor_price, std::string& pack_name)
