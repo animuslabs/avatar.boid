@@ -2,7 +2,6 @@
 // #include "atomicassets.hpp"
 #include <eosio/asset.hpp>
 #include <eosio/eosio.hpp>
-#include <eosio/singleton.hpp>
 #include <eosio/system.hpp>
 #include <eosio/crypto.hpp>
 #include <eosio/transaction.hpp>
