@@ -8,6 +8,7 @@ namespace avatarmk {
         T db(code, account);
         uint32_t counter = 0;
         auto itr = db.begin();
+        eosio::check(itr != db.end(), "Table already empty");
         while (itr != db.end() && counter++ < batchSize) {
             itr = db.erase(itr);
         }
