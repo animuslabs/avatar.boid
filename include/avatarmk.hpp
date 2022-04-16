@@ -221,6 +221,7 @@ namespace avatarmk {
         void clrqueue();
         void clrunpack();
         void test(const uint64_t id);
+        void clrwhitelist();
 #endif
 
         //actions
@@ -301,6 +302,7 @@ namespace avatarmk {
                 action(clravatars, scope),
                 action(clrqueue),
                 action(clrunpack),
+                action(clrwhitelist),
                 #endif
                 notify("eosio.token"_n, transfer),
                 notify(atomic_contract, logtransfer),

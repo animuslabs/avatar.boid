@@ -17,6 +17,11 @@ namespace avatarmk {
         require_auth(get_self());
         cleanTable<avatars_table>(get_self(), scope.value, 100);
     }
+    void avatarmk_c::clrwhitelist()
+    {
+        require_auth(get_self());
+        cleanTable<whitelist_table>(get_self(), get_self().value, 100);
+    }
     void avatarmk_c::clrqueue()
     {
         require_auth(get_self());
