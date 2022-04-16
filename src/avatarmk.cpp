@@ -14,6 +14,7 @@ EOSIO_ACTION_DISPATCHER(avatarmk::actions)
 EOSIO_ABIGEN(
     // Include the contract actions in the ABI
     actions(avatarmk::actions),
+    table("whitelist"_n, avatarmk::whitelist),
     table("avatars"_n, avatarmk::avatars),
     table("queue"_n, avatarmk::queue),
     table("deposits"_n, avatarmk::deposits),

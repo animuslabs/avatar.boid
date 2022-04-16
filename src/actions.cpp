@@ -4,6 +4,28 @@
 
 namespace avatarmk {
 
+    void avatarmk_c::whitelistadd(const eosio::name& account)
+    {
+        eosio::check(has_auth(get_self()) || has_auth(account), "Need authorization of account or contract");
+
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+        eosio::check(cfg.whitelist_enabled, "Whitelist is disabled");
+
+        whitelist_table _whitelist(get_self(), get_self().value);
+        auto itr = _whitelist.find(account.value);
+        eosio::check(itr == _whitelist.end(), "Account already added to whitelist");
+        _whitelist.emplace(get_self(), [&](auto& n) { n.account = account; });
+    }
+
+    void avatarmk_c::whitelistdel(const eosio::name& account)
+    {
+        eosio::check(has_auth(get_self()) || has_auth(account), "Need authorization of account or contract");
+        whitelist_table _whitelist(get_self(), get_self().value);
+        auto itr = _whitelist.require_find(account.value, "Account not found in whitelist");
+        _whitelist.erase(itr);
+    };
+
     void avatarmk_c::editionset(eosio::name& edition_scope, eosio::asset& avatar_floor_mint_price, eosio::asset& avatar_template_price)
     {
         //warning no input validation!
@@ -77,12 +99,14 @@ namespace avatarmk {
         }
 
         //atomic mint action
+        uint32_t new_mint_number = itr->mint + 1;
         const auto mutable_data = atomicassets::ATTRIBUTE_MAP{};
         auto immutable_data = atomicassets::ATTRIBUTE_MAP{};
-        immutable_data["mint"] = itr->mint + 1;
+        immutable_data["mint"] = new_mint_number;
+        immutable_data["name"] = itr->avatar_name.to_string() + " #" + std::to_string(new_mint_number);
 
         _avatars.modify(itr, eosio::same_payer, [&](auto& n) {
-            n.mint += 1;
+            n.mint = new_mint_number;
             n.modified = now;
             n.base_price = amp.next_base_price;
         });
@@ -158,7 +182,7 @@ namespace avatarmk {
         const uint32_t max_supply = queue_entry->set_data.max_mint;
         auto immutable_data = atomicassets::ATTRIBUTE_MAP{};
         //must match avatar schema!!!!!!!!
-        immutable_data["name"] = queue_entry->set_data.avatar_name.to_string();
+        //immutable_data["name"] = queue_entry->set_data.avatar_name.to_string();
         immutable_data["edition"] = scope.to_string();
         immutable_data["img"] = ipfs_hash;
         immutable_data["rarityScore"] = queue_entry->set_data.rarity_score;
@@ -217,11 +241,18 @@ namespace avatarmk {
     void avatarmk_c::buypack(eosio::name& buyer, eosio::name& edition_scope, uint64_t& template_id)
     {
         require_auth(buyer);
+
         packs_table _packs(get_self(), edition_scope.value);
         auto p_itr = _packs.require_find(template_id, "Pack with this template_id not found for this scope");
 
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
+
+        //check if buyer is whitelisted
+        if (cfg.whitelist_enabled) {
+            whitelist_table _whitelist(get_self(), get_self().value);
+            _whitelist.require_find(buyer.value, "Only whitelisted accounts can buy packs");
+        }
 
         //calculate price
         eosio::extended_asset p = {p_itr->base_price, extended_core_symbol.get_contract()};

@@ -83,15 +83,25 @@ namespace avatarmk {
     };
     EOSIO_REFLECT(assemble_set, creator, avatar_name, template_ids, rarity_score, identifier, max_mint, bodypart_names, scope, base_price)
 
+    struct whitelist {
+        eosio::name account;
+        uint64_t primary_key() const { return account.value; }
+    };
+    EOSIO_REFLECT(whitelist, account)
+    // clang-format off
+    typedef eosio::multi_index<"whitelist"_n, whitelist> whitelist_table;
+    // clang-format on
+
     struct config {
         bool freeze = false;
         bool auto_claim_packs = false;
+        bool whitelist_enabled = true;
         eosio::name collection_name = "boidavatars1"_n;
         eosio::name parts_schema = "avatarparts"_n;
         eosio::name avatar_schema = "testavatarsc"_n;
         eosio::name pack_schema = "partspacksch"_n;
     };
-    EOSIO_REFLECT(config, freeze, auto_claim_packs, collection_name, parts_schema, avatar_schema, pack_schema)
+    EOSIO_REFLECT(config, freeze, auto_claim_packs, whitelist_enabled, collection_name, parts_schema, avatar_schema, pack_schema)
     typedef eosio::singleton<"config"_n, config> config_table;
 
     struct pack_data {
@@ -214,6 +224,9 @@ namespace avatarmk {
 #endif
 
         //actions
+        void whitelistadd(const eosio::name& account);
+        void whitelistdel(const eosio::name& account);
+
         void setparts(const eosio::name& edition_scope, const std::vector<uint32_t> template_ids, std::vector<uint8_t>& rarity_scores);
         void receiverand(uint64_t& assoc_id, const eosio::checksum256& random_value);
 
@@ -280,6 +293,8 @@ namespace avatarmk {
                 action(mintavatar, minter, avatar_name, scope),
                 action(receiverand, assoc_id, random_value),
                 action(setowner, owner, new_owner, avatar_name, scope),
+                action(whitelistadd, account),
+                action(whitelistdel, account),
                 
                 #if defined(DEBUG)
                 action(test, id),
