@@ -9,7 +9,14 @@
 #include <numeric>
 #include <cmath>
 #include <token/token.hpp>
-
+#include "tables/config.hpp"
+#include "tables/whitelist.hpp"
+#include "tables/editions.hpp"
+#include "tables/packs.hpp"
+#include "tables/unpack.hpp"
+#include "tables/queue.hpp"
+#include "tables/deposits.hpp"
+#include "tables/avatars.hpp"
 #define DEBUG
 //for some reason it's not possible to include atomicassets.hpp in avatarmk.hpp.
 //hence the typedefs for ATTRIBUTE_MAP here.
@@ -63,155 +70,6 @@ namespace avatarmk {
         eosio::extended_asset price;
         eosio::asset next_base_price;
     };
-
-    struct namepair {
-        std::string bodypart;
-        std::string name;
-    };
-    EOSIO_REFLECT(namepair, bodypart, name)
-
-    struct assemble_set {
-        eosio::name creator;
-        eosio::name avatar_name;
-        std::vector<uint32_t> template_ids;
-        uint8_t rarity_score;
-        eosio::checksum256 identifier;
-        uint32_t max_mint;
-        std::vector<namepair> bodypart_names;  ///////////////////
-        eosio::name scope;
-        eosio::asset base_price;
-    };
-    EOSIO_REFLECT(assemble_set, creator, avatar_name, template_ids, rarity_score, identifier, max_mint, bodypart_names, scope, base_price)
-
-    struct whitelist {
-        eosio::name account;
-        uint64_t primary_key() const { return account.value; }
-    };
-    EOSIO_REFLECT(whitelist, account)
-    // clang-format off
-    typedef eosio::multi_index<"whitelist"_n, whitelist> whitelist_table;
-    // clang-format on
-
-    struct config {
-        bool freeze = false;
-        bool auto_claim_packs = false;
-        bool whitelist_enabled = true;
-        eosio::name collection_name = "boidavatars1"_n;
-        eosio::name parts_schema = "avatarparts"_n;
-        eosio::name avatar_schema = "testavatarsc"_n;
-        eosio::name pack_schema = "partspacksch"_n;
-    };
-    EOSIO_REFLECT(config, freeze, auto_claim_packs, whitelist_enabled, collection_name, parts_schema, avatar_schema, pack_schema)
-    typedef eosio::singleton<"config"_n, config> config_table;
-
-    struct pack_data {
-        eosio::name edition;
-        uint8_t pack_size;  //number of nfts in pack
-    };
-    EOSIO_REFLECT(pack_data, edition, pack_size)
-
-    struct unpack {
-        uint64_t pack_asset_id;
-        eosio::name owner;
-        pack_data pack_data;
-        std::vector<uint32_t> claimable_template_ids;
-        eosio::time_point_sec inserted;
-        uint64_t primary_key() const { return pack_asset_id; }
-        uint64_t by_owner() const { return owner.value; }
-    };
-    EOSIO_REFLECT(unpack, pack_asset_id, owner, pack_data, claimable_template_ids, inserted)
-    // clang-format off
-    typedef eosio::multi_index<"unpack"_n, unpack,
-    eosio::indexed_by<"byowner"_n, eosio::const_mem_fun<unpack, uint64_t, &unpack::by_owner>>
-    >unpack_table;
-    // clang-format on
-
-    //scoped by edition
-    struct packs {
-        uint64_t template_id;
-        eosio::asset base_price;
-        eosio::asset floor_price;
-        eosio::time_point_sec last_sold;
-        std::string pack_name;
-        uint64_t primary_key() const { return template_id; }
-    };
-    EOSIO_REFLECT(packs, template_id, base_price, floor_price, last_sold, pack_name)
-    // clang-format off
-    typedef eosio::multi_index<"packs"_n, packs >packs_table;
-    // clang-format on
-
-    struct editions {
-        eosio::name edition_scope;             //primary key, must be unique and function as identifier of different part groups (scope)
-        eosio::asset avatar_floor_mint_price;  // min price to mint an avatar from this edition
-        eosio::asset avatar_template_price;
-        uint64_t avatar_template_count;
-        std::vector<std::vector<uint32_t>> part_template_ids = {{}, {}, {}, {}, {}};  //index matches rarityscore -1
-
-        uint64_t primary_key() const { return edition_scope.value; }
-    };
-    EOSIO_REFLECT(editions, edition_scope, avatar_floor_mint_price, avatar_template_price, avatar_template_count, part_template_ids)
-    // clang-format off
-    typedef eosio::multi_index<"editions"_n, editions >editions_table;
-    // clang-format on
-
-    struct deposits {
-        uint64_t id;
-        eosio::extended_asset balance;
-        uint64_t primary_key() const { return id; }
-        uint128_t by_contr_sym() const { return (uint128_t{balance.contract.value} << 64) | balance.quantity.symbol.raw(); }
-    };
-    EOSIO_REFLECT(deposits, id, balance)
-    // clang-format off
-    typedef eosio::multi_index<"deposits"_n, deposits, 
-    eosio::indexed_by<"bycontrsym"_n, eosio::const_mem_fun<deposits, uint128_t, &deposits::by_contr_sym>>
-    > deposits_table;
-    // clang-format on
-
-    //scoped by edition
-    struct avatars {
-        eosio::name avatar_name;
-        uint32_t template_id;           //atomic assets template_id
-        eosio::name creator;            //creator of the template
-        eosio::checksum256 identifier;  //checksum from sorted vector containing all part_template_ids
-        uint8_t rarity;
-        uint32_t mint;                   //how many are minted
-        uint32_t max_mint;               //added for convenience
-        eosio::time_point_sec modified;  //timestamp that gets updated each time the row gets modified (assemble, finalize, mint)
-        eosio::asset base_price;
-        std::vector<uint32_t> bodyparts;
-
-        uint64_t primary_key() const { return avatar_name.value; }
-        uint64_t by_creator() const { return creator.value; }
-        eosio::checksum256 by_idf() const { return identifier; }
-    };
-    EOSIO_REFLECT(avatars, avatar_name, template_id, creator, identifier, rarity, mint, max_mint, modified, base_price, bodyparts)
-    // clang-format off
-    typedef eosio::multi_index<"avatars"_n, avatars,
-    eosio::indexed_by<"bycreator"_n, eosio::const_mem_fun<avatars, uint64_t, &avatars::by_creator>>,
-    eosio::indexed_by<"byidf"_n, eosio::const_mem_fun<avatars, eosio::checksum256, &avatars::by_idf>>
-    >avatars_table;
-    // clang-format on
-
-    ///////
-    struct queue {
-        eosio::name avatar_name;
-        eosio::checksum256 identifier;   //checksum from sorted vector containing all part_template_ids
-        eosio::name work;                //[assemble, potion, etc]
-        eosio::name scope;               //which pack
-        assemble_set set_data;           //can make this a variant for future work types with different payload
-        eosio::time_point_sec inserted;  //timestamp that gets updated each time the row gets modified (assemble, finalize, mint)
-
-        uint64_t primary_key() const { return avatar_name.value; }
-        eosio::checksum256 by_idf() const { return identifier; }
-        uint64_t by_scope() const { return scope.value; }
-    };
-    EOSIO_REFLECT(queue, avatar_name, identifier, work, scope, set_data, inserted);
-    // clang-format off
-    typedef eosio::multi_index<"queue"_n, queue,
-    eosio::indexed_by<"byidf"_n, eosio::const_mem_fun<queue, eosio::checksum256, &queue::by_idf>>,
-    eosio::indexed_by<"byscope"_n, eosio::const_mem_fun<queue, uint64_t, &queue::by_scope>>
-    >queue_table;
-    // clang-format on
 
     struct avatarmk_c : public eosio::contract {
         using eosio::contract::contract;
