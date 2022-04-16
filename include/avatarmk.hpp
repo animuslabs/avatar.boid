@@ -8,6 +8,7 @@
 #include <numeric>
 #include <cmath>
 #include <token/token.hpp>
+
 #include "tables/config.hpp"
 #include "tables/whitelist.hpp"
 #include "tables/editions.hpp"
@@ -155,12 +156,13 @@ namespace avatarmk {
                 action(whitelistdel, account),
                 
                 #if defined(DEBUG)
-                action(test, id),
-                action(clravatars, scope),
-                action(clrqueue),
-                action(clrunpack),
-                action(clrwhitelist),
+                    action(test, id),
+                    action(clravatars, scope),
+                    action(clrqueue),
+                    action(clrunpack),
+                    action(clrwhitelist),
                 #endif
+                notify("boidcomtoken"_n, transfer),
                 notify("eosio.token"_n, transfer),
                 notify(atomic_contract, logtransfer),
                 notify(atomic_contract, lognewtempl)
