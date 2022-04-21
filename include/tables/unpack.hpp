@@ -5,8 +5,9 @@ namespace avatarmk {
     struct pack_data {
         eosio::name edition;
         uint8_t pack_size;  //number of nfts in pack
+        std::vector<uint8_t> rarity_distribution;
     };
-    EOSIO_REFLECT(pack_data, edition, pack_size)
+    EOSIO_REFLECT(pack_data, edition, pack_size, rarity_distribution)
 
     struct unpack {
         uint64_t pack_asset_id;

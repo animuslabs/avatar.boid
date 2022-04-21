@@ -90,7 +90,12 @@ namespace avatarmk {
         void receiverand(uint64_t& assoc_id, const eosio::checksum256& random_value);
 
         void setconfig(std::optional<config> cfg);
-        void packadd(eosio::name& edition_scope, uint64_t& template_id, eosio::asset& base_price, eosio::asset& floor_price, std::string& pack_name);
+        void packadd(eosio::name& edition_scope,
+                     uint64_t& template_id,
+                     eosio::asset& base_price,
+                     eosio::asset& floor_price,
+                     std::string& pack_name,
+                     std::vector<uint8_t>& rarity_distribution);
         void packdel(eosio::name& edition_scope, uint64_t& template_id);
         void editionset(eosio::name& edition_scope, eosio::asset& avatar_floor_mint_price, eosio::asset& avatar_template_price);
         void editiondel(eosio::name& edition_scope);
@@ -130,14 +135,18 @@ namespace avatarmk {
         void burn_nfts(std::vector<uint64_t>& asset_ids);
         eosio::checksum256 get_trx_id();
         void register_part(const eosio::name& edition_scope, const uint32_t& template_id, const uint8_t& rarity_score);
-        bool in_range(unsigned low, unsigned high, unsigned x) { return ((x - low) <= (high - low)); }
+        bool in_range(unsigned low, unsigned high, unsigned x)
+        {
+            if (low > high) return false;
+            return ((x - low) <= (high - low));
+        }
     };
 
     // clang-format off
     EOSIO_ACTIONS(
                 avatarmk_c,
                 "avatarmk"_n,
-                action(packadd, edition_scope, template_id, base_price, floor_price, pack_name),
+                action(packadd, edition_scope, template_id, base_price, floor_price, pack_name, rarity_distribution),
                 action(packdel, edition_scope, template_id),
                 action(buypack, buyer, edition_scope, template_id),
                 action(claimpack, owner, pack_asset_id),

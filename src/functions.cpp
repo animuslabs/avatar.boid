@@ -59,6 +59,10 @@ namespace avatarmk {
         editions_table _editions(get_self(), get_self().value);
         _editions.get(result.edition.value, "Pack received with unkown edition.");
 
+        packs_table _packs(get_self(), result.edition.value);
+        auto p_itr = _packs.require_find(asset.template_id, "Pack with this template_id not found in packs table.");
+        result.rarity_distribution = p_itr->rarity_distribution;
+
         return result;
     }
 

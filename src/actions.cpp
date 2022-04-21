@@ -216,17 +216,25 @@ namespace avatarmk {
         _editions.modify(edition_itr, eosio::same_payer, [&](auto& n) { n.avatar_template_count += 1; });
     }
 
-    void avatarmk_c::packadd(eosio::name& edition_scope, uint64_t& template_id, eosio::asset& base_price, eosio::asset& floor_price, std::string& pack_name)
+    void avatarmk_c::packadd(eosio::name& edition_scope,
+                             uint64_t& template_id,
+                             eosio::asset& base_price,
+                             eosio::asset& floor_price,
+                             std::string& pack_name,
+                             std::vector<uint8_t>& rarity_distribution)
     {
         require_auth(get_self());
         packs_table _packs(get_self(), edition_scope.value);
         auto p_itr = _packs.find(template_id);
         eosio::check(p_itr == _packs.end(), "Pack with this template_id already in table");
+        eosio::check(std::accumulate(rarity_distribution.begin(), rarity_distribution.end(), 0) == 100, "Sum of rarity distribitions must equal 100");
+        eosio::check(rarity_distribution.size() == 5, "There must be a rarity chance specified for each rarity score 1-5");
         _packs.emplace(get_self(), [&](auto& n) {
             n.template_id = template_id;
             n.base_price = base_price;
             n.floor_price = floor_price;
             n.pack_name = pack_name;
+            n.rarity_distribution = rarity_distribution;
         });
     }
     void avatarmk_c::packdel(eosio::name& edition_scope, uint64_t& template_id)
@@ -309,22 +317,30 @@ namespace avatarmk {
 
         RandomnessProvider RP(random_value);
         //draw cards
+        //std::vector<uint8_t> rd = {5, 10, 20, 25, 40};  //rarity_distribution -> sum must be equal to 100
+        std::vector<uint8_t> rd = itr->pack_data.rarity_distribution;
+
+        uint8_t rd1 = rd[0];
+        uint8_t rd2 = rd[0] + rd[1];
+        uint8_t rd3 = rd[0] + rd[1] + rd[2];
+        uint8_t rd4 = rd[0] + rd[1] + rd[2] + rd[3];
+
         for (int i = 0; i < itr->pack_data.pack_size; i++) {
             int rarity_index = 1;
             uint32_t r = RP.get_rand(100);
-            if (in_range(1, 5, r)) {  //5% chance
+            if (in_range(1, rd1, r)) {
                 rarity_index = 5;
             }
-            else if (in_range(6, 15, r)) {  //10% chance
+            else if (in_range(rd1 + 1, rd2, r)) {
                 rarity_index = 4;
             }
-            else if (in_range(16, 35, r)) {  //20% chance
+            else if (in_range(rd2 + 1, rd3, r)) {
                 rarity_index = 3;
             }
-            else if (in_range(36, 60, r)) {  //25% chance
+            else if (in_range(rd3 + 1, rd4, r)) {
                 rarity_index = 2;
             }
-            else if (in_range(61, 100, r)) {  //40% chance
+            else if (in_range(rd4 + 1, 100, r)) {
                 rarity_index = 1;
             }
             auto r2 = RP.get_rand(edition_cfg.part_template_ids[rarity_index - 1].size());
