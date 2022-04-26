@@ -34,7 +34,21 @@ const nftMetadata = {
       {name:'edition', type:'string'},
       {name:'size', type:'uint8'},
       {name:'img', type:'image'}
-
+    ],
+    small:[
+      { key: "name", value: ["string", "Small Pack"] },
+      { key: "edition", value: ["string", "cartoon"] },
+      { key: "size", value: ["uint8", 10] },
+    ],
+    medium:[
+      { key: "name", value: ["string", "Medium Pack"] },
+      { key: "edition", value: ["string", "cartoon"] },
+      { key: "size", value: ["uint8", 20] },
+    ],
+    large:[
+      { key: "name", value: ["string", "Large Pack"] },
+      { key: "edition", value: ["string", "cartoon"] },
+      { key: "size", value: ["uint8", 30] },
     ]
   },
   genesis: {
