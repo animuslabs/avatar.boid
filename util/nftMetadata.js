@@ -1,12 +1,40 @@
 const nftMetadata = {
-  cartoonparts: {
+  part: {
     schema: [
       { name: 'name', type: 'string' },
-      { name: 'rarity', type: 'string' },
+      { name: 'edition', type: 'string' },
+      { name: 'rarityScore', type: 'uint8' },
       { name: 'bodypart', type: 'string' },
+      { name: 'info', type: 'string' },
       { name: 'url', type: 'string' },
-      { name: 'card', type: 'ipfs' },
-      { name: 'img', type: 'ipfs' },
+      { name: 'img', type: 'image' }
+    ]
+  },
+  avatar:{
+    schema:[
+      {name:'name', type:'string'},
+      {name:'edition', type:'string'},
+      {name:'rarityScore', type: 'uint8' },
+      {name:'mint', type: 'uint64' },
+      {name:'head', type:'string'},
+      {name:'eyes', type:'string'},
+      {name:'mouth', type:'string'},
+      {name:'top', type:'string'},//old hair
+      {name:'torso', type:'string'},//old top
+      {name:'legs', type:'string'},//old bottom
+      {name:'big-wings', type:'string'},
+      {name:'small-wings', type:'string'},
+      {name:'bodyparts', type:'uint32[]'},
+      {name:'img', type:'image'}
+    ]
+  },
+  pack:{
+    schema:[
+      {name:'name', type:'string'},
+      {name:'edition', type:'string'},
+      {name:'size', type:'uint8'},
+      {name:'img', type:'image'}
+
     ]
   },
   genesis: {

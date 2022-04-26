@@ -263,7 +263,7 @@ namespace avatarmk {
         }
 
         //calculate price
-        eosio::extended_asset p = {p_itr->base_price, extended_core_symbol.get_contract()};
+        eosio::extended_asset p = {p_itr->base_price, extended_payment_symbol.get_contract()};
         sub_balance(buyer, p);
         add_balance(get_self(), p, get_self());
 

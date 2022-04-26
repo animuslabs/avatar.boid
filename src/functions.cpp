@@ -7,7 +7,7 @@ namespace avatarmk {
     avatar_mint_price avatarmk_c::calculate_mint_price(const avatars& avatar, const eosio::asset& avatar_floor_mint_price)
     {
         avatar_mint_price result;
-        // int core_precision_pow = pow(10, core_symbol.precision());
+        // int core_precision_pow = pow(10, payment_symbol.precision());
         const auto sec_passed = (eosio::current_time_point() - avatar.modified).to_seconds();
         const auto days_passed = std::floor(sec_passed / day_sec);
 
@@ -15,7 +15,7 @@ namespace avatarmk {
         if (days_passed == 0) {
             //base price increases by 10% each time a mint happens before a day passes from the previous mint
             double nbp = avatar.base_price.amount * 1.10;
-            result.next_base_price = {static_cast<int64_t>(nbp), core_symbol};
+            result.next_base_price = {static_cast<int64_t>(nbp), payment_symbol};
         }
         else {
             result.next_base_price = avatar_floor_mint_price * avatar.rarity;
@@ -26,9 +26,9 @@ namespace avatarmk {
         const double r = 0.01 * (5 / avatar.rarity);                     //rare avatars will decay slower
         const auto decay_step = days_passed <= 7 ? 0 : days_passed - 7;  //start decay after 1 week
         const uint64_t p = (uint64_t)(pv * pow(1 - r, decay_step));
-        eosio::asset mint_price{static_cast<int64_t>(p), core_symbol};
+        eosio::asset mint_price{static_cast<int64_t>(p), payment_symbol};
         mint_price = std::max(mint_price, avatar_floor_mint_price);  //mint price can't be smaller than floor
-        result.price = {mint_price, extended_core_symbol.get_contract()};
+        result.price = {mint_price, extended_payment_symbol.get_contract()};
 
         return result;
     }
@@ -54,7 +54,7 @@ namespace avatarmk {
         auto t = templates.get(asset.template_id, "Template not found");
         auto des_data = atomicassets::deserialize(t.immutable_serialized_data, pack_schema.format);
 
-        result.pack_size = std::get<uint8_t>(des_data["size2"]);
+        result.pack_size = std::get<uint8_t>(des_data["size"]);
         result.edition = eosio::name(std::get<std::string>(des_data["edition"]));
         editions_table _editions(get_self(), get_self().value);
         _editions.get(result.edition.value, "Pack received with unkown edition.");

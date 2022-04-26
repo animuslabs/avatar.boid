@@ -59,8 +59,8 @@ typedef std::variant<int8_t,
 typedef std::map<std::string, ATOMIC_ATTRIBUTE> ATTRIBUTE_MAP;
 namespace avatarmk {
 
-    inline constexpr eosio::symbol core_symbol{"WAX", 8};
-    inline constexpr eosio::extended_symbol extended_core_symbol{core_symbol, "eosio.token"_n};
+    inline constexpr eosio::symbol payment_symbol{"WAX", 8};
+    inline constexpr eosio::extended_symbol extended_payment_symbol{payment_symbol, "eosio.token"_n};
     inline constexpr auto atomic_contract = "atomicassets"_n;
     inline constexpr auto rng_contract = "orng.wax"_n;
     inline constexpr int day_sec = 86400;
