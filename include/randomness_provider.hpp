@@ -24,7 +24,7 @@ class RandomnessProvider {
         return value;
     }
 
-    uint32_t get_rand(uint32_t max_value)
+    uint32_t get_rand_exclude_zero(uint32_t max_value)
     {
         uint32_t res = 0;
         while (res == 0) {
@@ -33,6 +33,8 @@ class RandomnessProvider {
         }
         return res;
     }
+
+    uint32_t get_rand(uint32_t max_value) { return get_uint64() % ((uint64_t)max_value); }
 
    private:
     void regenerate_raw_values()

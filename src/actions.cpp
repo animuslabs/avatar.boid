@@ -327,7 +327,7 @@ namespace avatarmk {
 
         for (int i = 0; i < itr->pack_data.pack_size; i++) {
             int rarity_index = 1;
-            uint32_t r = RP.get_rand(100);
+            uint32_t r = RP.get_rand_exclude_zero(100);
             if (in_range(1, rd1, r)) {
                 rarity_index = 5;
             }
