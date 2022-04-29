@@ -263,7 +263,7 @@ namespace avatarmk {
         }
 
         //calculate price
-        eosio::extended_asset p = {p_itr->base_price, extended_payment_symbol.get_contract()};
+        eosio::extended_asset p = {p_itr->base_price, cfg.payment_token.get_contract()};
         sub_balance(buyer, p);
         add_balance(get_self(), p, get_self());
 
@@ -343,7 +343,7 @@ namespace avatarmk {
             else if (in_range(rd4 + 1, 100, r)) {
                 rarity_index = 1;
             }
-            auto r2 = RP.get_rand(edition_cfg.part_template_ids[rarity_index - 1].size());
+            auto r2 = RP.get_rand(edition_cfg.part_template_ids[rarity_index - 1].size() - 1);
             result.push_back(edition_cfg.part_template_ids[rarity_index - 1][r2]);
         }
 

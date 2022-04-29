@@ -39,7 +39,7 @@ namespace avatarmk {
                 editions_table _editions(get_self(), get_self().value);
                 auto edition = _editions.get(assemble_set.scope.value, "edition doesn't exists");
                 if (edition.avatar_template_price.amount > 0) {
-                    eosio::extended_asset atp(edition.avatar_template_price, extended_payment_symbol.get_contract());
+                    eosio::extended_asset atp(edition.avatar_template_price, cfg.payment_token.get_contract());
                     sub_balance(from, atp);
                 }
 
