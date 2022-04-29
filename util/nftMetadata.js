@@ -15,7 +15,7 @@ const nftMetadata = {
       {name:'name', type:'string'},
       {name:'edition', type:'string'},
       {name:'rarityScore', type: 'uint8' },
-      {name:'mint', type: 'uint64' },
+      {name:'mint', type: 'uint32' },
       {name:'head', type:'string'},
       {name:'eyes', type:'string'},
       {name:'mouth', type:'string'},
