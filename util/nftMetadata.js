@@ -28,93 +28,101 @@ const nftMetadata = {
       {name:'img', type:'image'}
     ]
   },
-  pack:{
-    schema:[
-      {name:'name', type:'string'},
-      {name:'edition', type:'string'},
-      {name:'size', type:'uint8'},
-      {name:'img', type:'image'}
+  pack: {
+    schema: [
+      { name: 'name', type: 'string' },
+      { name: 'edition', type: 'string' },
+      { name: 'size', type: 'uint8' },
+      { name: 'info', type: 'string' },
+      { name: 'chance1', type: 'uint8' },
+      { name: 'chance2', type: 'uint8' },
+      { name: 'chance3', type: 'uint8' },
+      { name: 'chance4', type: 'uint8' },
+      { name: 'chance5', type: 'uint8' },
+      { name: 'url', type: 'string' },
+      { name: 'img', type: 'image' }
     ],
-    small:[
+    small: [
       { key: "name", value: ["string", "Small Pack"] },
       { key: "edition", value: ["string", "cartoon"] },
       { key: "size", value: ["uint8", 10] },
-      { key: "img", value: ["image", 0000000000000000000000000000000000000000000000000000000000000000000000000000000000] },
-    
+      {
+        key: 'info', value: ["string",
+          "This small pack contains 10 random Boid Avatar Part NFTs. When the pack is opened the random cards will be revealed. Chance1-5 corresponds to the percentage chance that a part card in this pack is of a particular rarity score.  Open this pack at avatar.boid.com/packs/open."]
+      },
+      { key: "chance1", value: ["uint8", 50] },
+      { key: "chance2", value: ["uint8", 30] },
+      { key: "chance3", value: ["uint8", 15] },
+      { key: "chance4", value: ["uint8", 4] },
+      { key: "chance5", value: ["uint8", 1] },
+      { key: "url", value: ["string", "https://avatar.boid.com/packs/open"] },
+      { key: "img", value: ["string", "QmQMeEY9tFxt4PBnnvbQqP8KWMGmBgtTVC4Y5UYLUbB3Fy"] },
     ],
-    medium:[
+    medium: [
       { key: "name", value: ["string", "Medium Pack"] },
       { key: "edition", value: ["string", "cartoon"] },
       { key: "size", value: ["uint8", 20] },
-      { key: "img", value: ["image", 0000000000000000000000000000000000000000000000000000000000000000000000000000000000] },
+      {
+        key: 'info', value: ["string",
+          "This medium pack contains 20 random Boid Avatar Part NFTs. Chance1-5 corresponds to the percentage chance that a part card in this pack is of a particular rarity score.  Open this pack at avatar.boid.com/packs/open."]
+      },
+      { key: "chance1", value: ["uint8", 50] },
+      { key: "chance2", value: ["uint8", 30] },
+      { key: "chance3", value: ["uint8", 15] },
+      { key: "chance4", value: ["uint8", 4] },
+      { key: "chance5", value: ["uint8", 1] },
+      { key: "url", value: ["string", "https://avatar.boid.com/packs/open"] },
+      { key: "img", value: ["string", "QmPFWJcKQaXsHsewsYHQFo7HG5u98vawHf386SAovJrP1h"] },
     ],
-    large:[
+    large: [
       { key: "name", value: ["string", "Large Pack"] },
       { key: "edition", value: ["string", "cartoon"] },
       { key: "size", value: ["uint8", 30] },
-      { key: "img", value: ["image", 0000000000000000000000000000000000000000000000000000000000000000000000000000000000] },
+      {
+        key: 'info', value: ["string",
+          "This large pack contains 30 random Boid Avatar Part NFTs. Chance1-5 corresponds to the percentage chance that a part card in this pack is of a particular rarity score.  Open this pack at avatar.boid.com/packs/open."]
+      },
+      { key: "chance1", value: ["uint8", 50] },
+      { key: "chance2", value: ["uint8", 30] },
+      { key: "chance3", value: ["uint8", 15] },
+      { key: "chance4", value: ["uint8", 4] },
+      { key: "chance5", value: ["uint8", 1] },
+      { key: "url", value: ["string", "https://avatar.boid.com/packs/open"] },
+      { key: "img", value: ["string", "QmStJeCUYNX1PGYk9HdgLvwbz7gyx6BKWGPc5DnXg6K284"] },
+    ],
+    rare: [
+      { key: "name", value: ["string", "Rare Pack"] },
+      { key: "edition", value: ["string", "cartoon"] },
+      { key: "size", value: ["uint8", 5] },
+      {
+        key: 'info', value: ["string",
+          "This rare pack contains 5 random Boid Avatar part NFTs.  Chance1-5 corresponds to the percentage chance that a part card in this pack is of a particular rarity score.  Open this pack at avatar.boid.com/packs/open."]
+      },
+      { key: "chance1", value: ["uint8", 0] },
+      { key: "chance2", value: ["uint8", 10] },
+      { key: "chance3", value: ["uint8", 50] },
+      { key: "chance4", value: ["uint8", 35] },
+      { key: "chance5", value: ["uint8", 5] },
+      { key: "url", value: ["string", "https://avatar.boid.com/packs/open"] },
+      { key: "img", value: ["string", "QmXzmEFQ1CGcUpiKtp7jstoqwdkfzS3xeGM9Sjc8QEx5sk"] },
+    ],
+    ultrarare: [
+      { key: "name", value: ["string", "Ultra Rare Pack"] },
+      { key: "edition", value: ["string", "cartoon"] },
+      { key: "size", value: ["uint8", 5] },
+      {
+        key: 'info', value: ["string",
+          "This ultra rare pack contains 5 random Boid Avatar Part NFTs. Chance1-5 corresponds to the percentage chance that a part card in this pack is of a particular rarity score.  Open this pack at avatar.boid.com/packs/open."]
+      },
+      { key: "chance1", value: ["uint8", 0] },
+      { key: "chance2", value: ["uint8", 0] },
+      { key: "chance3", value: ["uint8", 50] },
+      { key: "chance4", value: ["uint8", 40] },
+      { key: "chance5", value: ["uint8", 10] },
+      { key: "url", value: ["string", "https://avatar.boid.com/packs/open"] },
+      { key: "img", value: ["string", "Qmd8ogTWzwjq5TTK7SEdWzkJNudYKvH6zYUYhYaWMraQzJ"] },
     ]
   },
-  genesis: {
-    schema: [
-      { name: 'name', type: 'string' },
-      { name: 'rarity', type: 'string' },
-      { name: 'details', type: 'string' },
-      { name: 'url', type: 'string' },
-      { name: 'video', type: 'ipfs' },
-    ],
-    bronze: [
-      { key: "name", value: ["string", "EOS PowerUp Genesis Bronze"] },
-      { key: "rarity", value: ["string", "Bronze"] },
-      { key: "details", value: ["string", "This Bronze Genesis NFT is awarded to you in recognition of your early support of EOS PowerUp."] },
-      { key: "url", value: ["string", "https://eospowerup.io/nft"] },
-      { key: "video", value: ["string", "QmNcncNUjyetvWHWGFcBeWsC8uZVvuidYrshNCRAcS6jrT"] },
-    ],
-    silver: [
-      { key: "name", value: ["string", "EOS PowerUp Genesis Silver"] },
-      { key: "rarity", value: ["string", "Silver"] },
-      { key: "details", value: ["string", "This Silver Genesis NFT is awarded to you in recognition of your early support of EOS PowerUp."] },
-      { key: "url", value: ["string", "https://eospowerup.io/nft"] },
-      { key: "video", value: ["string", "QmUiAzVE4WeA3behh16ZdDSxgJEQSeQ56NhGyFBy7ZzXbj"] },
-    ],
-    gold: [
-      { key: "name", value: ["string", "EOS PowerUp Genesis Gold"] },
-      { key: "rarity", value: ["string", "Gold"] },
-      { key: "details", value: ["string", "This Gold Genesis NFT is awarded to you in recognition of your early support of EOS PowerUp."] },
-      { key: "url", value: ["string", "https://eospowerup.io/nft"] },
-      { key: "video", value: ["string", "QmRjyxDXxxsA4eVkt2q7xkq9QVaeGUnBRWaxY13Ac7pEgc"] },
-    ],
-  },
-  elements: {
-    schema: [
-      { name: 'name', type: 'string' },
-      { name: 'rarity', type: 'string' },
-      { name: 'details', type: 'string' },
-      { name: 'url', type: 'string' },
-      { name: 'video', type: 'ipfs' },
-    ],
-    bronze: [
-      { key: "name", value: ["string", "EOS PowerUp Utility Bronze"] },
-      { key: "rarity", value: ["string", "Bronze"] },
-      { key: "details", value: ["string", "This Bronze Utility NFT unlocks additional free PowerUps on the eospowerup.io homepage."] },
-      { key: "url", value: ["string", "https://eospowerup.io/nft"] },
-      { key: "video", value: ["string", "QmNuTcoZzu9kVRmTxCaprund9vVXofJYnGYEeyCEeTU8dD"] },
-    ],
-    silver: [
-      { key: "name", value: ["string", "EOS PowerUp Utility Silver"] },
-      { key: "rarity", value: ["string", "Silver"] },
-      { key: "details", value: ["string", "This Silver Utility NFT unlocks referral link functionality on the eospowerup.io service."] },
-      { key: "url", value: ["string", "https://eospowerup.io/nft"] },
-      { key: "video", value: ["string", "QmRohf2G82CPVoevY3NuCFUtvJqc8oDb3nUwAYj57iqy5k"] },
-    ],
-    gold: [
-      { key: "name", value: ["string", "EOS PowerUp Utility Gold"] },
-      { key: "rarity", value: ["string", "Gold"] },
-      { key: "details", value: ["string", "This Gold Utility NFT removes all platform fees when receiving PowerUps from the eospowerup.io automated PowerUp service."] },
-      { key: "url", value: ["string", "https://eospowerup.io/nft"] },
-      { key: "video", value: ["string", "QmVPEQSAoC8qy5kmYDyY8MfWH71uUjb3hbRWdRGiNLF7HM"] },
-    ],
-  }
 }
 
 module.exports = nftMetadata

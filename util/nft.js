@@ -1,19 +1,19 @@
 
 const conf = require('./eosioConfig')
 const env = require('./.env.js')
-const {api, tapos, doAction, getFullTable} = require('./lib/eosjs')()
+const { api, tapos, doAction, getFullTable } = require('./lib/eosjs')()
 const activeChain = process.env.CHAIN || env.defaultChain
-const defaultParams = {scope: conf.accountName[activeChain], code: conf.accountName[activeChain]}
+const defaultParams = { scope: conf.accountName[activeChain], code: conf.accountName[activeChain] }
 const meta = require('./nftMetadata')
 const defaultCollectionData = [
-  {key: 'name', value: ['string', 'Boid Avatar NFTs']},
-  {key: 'img', value: ['string', 'QmZ4w4grmzJVDEr2mr9NNgegmsjzBJtyhw7TmbkPzJS1Pv']},
-  {key: 'description', value: ['string', 'Avatar NFTs for the Boid ecosystem.']},
-  {key: 'url', value: ['string', 'https://boid.com']},
+  { key: 'name', value: ['string', 'Boid Avatar NFTs'] },
+  { key: 'img', value: ['string', 'QmZ4w4grmzJVDEr2mr9NNgegmsjzBJtyhw7TmbkPzJS1Pv'] },
+  { key: 'description', value: ['string', 'Avatar NFTs for the Boid ecosystem.'] },
+  { key: 'url', value: ['string', 'https://boid.com'] },
 ]
 const methods = {
   async mintMany(account = defaultParams.code, new_asset_owner = account) {
-    const authorization = [{actor: account, permission: 'active'}]
+    const authorization = [{ actor: account, permission: 'active' }]
     const actions = []
     const data = {
       authorized_minter: account,
@@ -27,24 +27,24 @@ const methods = {
     }
     let i = 0
     while (i < 33) {
-      actions.push({account: 'atomicassets', name: 'mintasset', data, authorization})
+      actions.push({ account: 'atomicassets', name: 'mintasset', data, authorization })
       i++
     }
-    const result = await api.transact({actions}, tapos).catch(err => console.error(err))
+    const result = await api.transact({ actions }, tapos).catch(err => console.error(err))
     console.log(result)
   },
   async burnAll(account = defaultParams.code) {
-    const result = await getFullTable({code: 'atomicassets', scope: account, table: 'assets'})
+    const result = await getFullTable({ code: 'atomicassets', scope: account, table: 'assets' })
     console.log(result.length)
-    const authorization = [{actor: account, permission: 'active'}]
+    const authorization = [{ actor: account, permission: 'active' }]
     const actions = []
     for (const nft of result) {
-      const data = {account: 'atomicassets', name: 'burnasset', data: {asset_owner: account, asset_id: nft.asset_id}, authorization}
+      const data = { account: 'atomicassets', name: 'burnasset', data: { asset_owner: account, asset_id: nft.asset_id }, authorization }
       actions.push(data)
       // Console.log(data)
     }
     if (actions.length == 0) throw ('no NFTs to burn')
-    const txresult = await api.transact({actions}, tapos)
+    const txresult = await api.transact({ actions }, tapos)
     console.log(txresult.transactionId)
   },
   async transfer(from, to, asset, memo) {
@@ -66,7 +66,7 @@ const methods = {
   async createCollection() {
     await doAction('createcol', {
       author: defaultParams.code,
-      collection_name: 'boidavatars1',
+      collection_name: 'boidavatars3',
       allow_notify: true,
       authorized_accounts: [defaultParams.code],
       notify_accounts: [defaultParams.code],
@@ -78,30 +78,30 @@ const methods = {
     await doAction('setcoldata', {
       collection_name: 'powerup.nfts',
       data: [
-        {key: 'name', value: ['string', 'EOS PowerUp NFTs']},
-        {key: 'img', value: ['string', 'QmbncqcDy6pdNH6J7qTtdkmYrhyQ9BfaUwE4bbUPXURpE8']},
-        {key: 'description', value: ['string', 'NFTs created by eospowerup.io.']},
-        {key: 'url', value: ['string', 'https://eospowerup.io']},
+        { key: 'name', value: ['string', 'EOS PowerUp NFTs'] },
+        { key: 'img', value: ['string', 'QmbncqcDy6pdNH6J7qTtdkmYrhyQ9BfaUwE4bbUPXURpE8'] },
+        { key: 'description', value: ['string', 'NFTs created by eospowerup.io.'] },
+        { key: 'url', value: ['string', 'https://eospowerup.io'] },
       ],
     }, 'atomicassets', defaultParams.code)
   },
   async createSchema() {
     await doAction('createschema', {
       authorized_creator: defaultParams.code,
-      collection_name: 'boidavatars1',
-      schema_name: 'cartoonparts',
-      schema_format: meta.cartoonparts.schema,
+      collection_name: 'boidavatars2',
+      schema_name: 'avatarparts',
+      schema_format: meta.part.schema,
     }, 'atomicassets', defaultParams.code)
   },
   async createTemplate() {
     await doAction('createtempl', {
       authorized_creator: defaultParams.code,
-      collection_name: 'powerup.nfts',
-      schema_name: 'elements',
+      collection_name: 'boidavatars1',
+      schema_name: 'partpack',
       transferable: true,
       burnable: true,
-      max_supply: 0,
-      immutable_data: meta.elements.gold,
+      max_supply: 5000,
+      immutable_data: meta.pack.ultrarare,
     }, 'atomicassets', defaultParams.code)
   },
   async mint() {
