@@ -73,6 +73,8 @@ namespace avatarmk {
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
 
+        eosio::check(is_whitelisted(minter, cfg), "Only whitelisted accounts can mint avatars");
+
         eosio::time_point_sec now(eosio::current_time_point());
 
         if (itr->mint == 0 && now < itr->modified + 3600) {
@@ -257,10 +259,11 @@ namespace avatarmk {
         auto const cfg = _config.get_or_create(get_self(), config());
 
         //check if buyer is whitelisted
-        if (cfg.whitelist_enabled) {
-            whitelist_table _whitelist(get_self(), get_self().value);
-            _whitelist.require_find(buyer.value, "Only whitelisted accounts can buy packs");
-        }
+        // if (cfg.whitelist_enabled) {
+        //     whitelist_table _whitelist(get_self(), get_self().value);
+        //     _whitelist.require_find(buyer.value, "Only whitelisted accounts can buy packs");
+        // }
+        eosio::check(is_whitelisted(buyer, cfg), "Only whitelisted accounts can buy packs");
 
         //calculate price
         eosio::extended_asset p = {p_itr->base_price, cfg.payment_token.get_contract()};
@@ -291,6 +294,8 @@ namespace avatarmk {
 
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
+
+        eosio::check(is_whitelisted(owner, cfg), "Only whitelisted accounts can claim packs");
 
         const auto mutable_data = atomicassets::ATTRIBUTE_MAP{};
         const auto immutable_data = atomicassets::ATTRIBUTE_MAP{};

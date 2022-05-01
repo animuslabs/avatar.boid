@@ -32,6 +32,7 @@ namespace avatarmk {
         if (to == get_self()) {
             if (memo.substr(0, 8) == "assemble") {
                 //validate_assemble_set will assert when not a valid set
+                eosio::check(is_whitelisted(from, cfg), "Only whitelisted accounts can assemble parts");
                 auto assemble_set = validate_assemble_set(asset_ids, cfg);
                 assemble_set.creator = from;
                 assemble_set.avatar_name = eosio::name(memo.substr(9));  //assemble:avatarname
@@ -53,6 +54,7 @@ namespace avatarmk {
                 //burn received assets
             }
             else if (memo == std::string("unpack")) {
+                eosio::check(is_whitelisted(from, cfg), "Only whitelisted accounts can unpack packs");
                 eosio::check(asset_ids.size() == 1, "Only can unpack 1 pack at the same time.");
                 //get pack info
                 auto asset_id = asset_ids[0];

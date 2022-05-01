@@ -158,4 +158,16 @@ namespace avatarmk {
         _editions.modify(itr, eosio::same_payer, [&](auto& n) { n.part_template_ids[rarity_index].push_back(template_id); });
     }
 
+    bool avatarmk_c::is_whitelisted(const eosio::name& account, const config& cfg)
+    {
+        if (cfg.whitelist_enabled) {
+            whitelist_table _whitelist(get_self(), get_self().value);
+            auto itr = _whitelist.find(account.value);
+            return itr != _whitelist.end();
+        }
+        else {
+            return true;
+        }
+    }
+
 }  // namespace avatarmk

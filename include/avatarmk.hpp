@@ -129,6 +129,8 @@ namespace avatarmk {
         void add_balance(const eosio::name& owner, const eosio::extended_asset& value, const eosio::name& ram_payer = eosio::name(0));
         void sub_balance(const eosio::name& owner, const eosio::extended_asset& value);
 
+        bool is_whitelisted(const eosio::name& account, const config& cfg);
+
         void burn_nfts(std::vector<uint64_t>& asset_ids);
         eosio::checksum256 get_trx_id();
         void register_part(const eosio::name& edition_scope, const uint32_t& template_id, const uint8_t& rarity_score);
