@@ -304,16 +304,16 @@ namespace avatarmk {
 
     void avatarmk_c::receiverand(uint64_t& assoc_id, const eosio::checksum256& random_value)
     {
-        eosio::check(has_auth(get_self()) || has_auth(rng_contract), "Need authorization of owner or contract");
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+
+        eosio::check(has_auth(get_self()) || has_auth(cfg.rng), "Need authorization of owner or contract");
         std::vector<uint32_t> result;
         unpack_table _unpack(get_self(), get_self().value);
         auto itr = _unpack.require_find(assoc_id, "error");
 
         editions_table _editions(get_self(), get_self().value);
         editions edition_cfg = _editions.get(itr->pack_data.edition.value, "Edition not found");
-
-        config_table _config(get_self(), get_self().value);
-        auto const cfg = _config.get_or_create(get_self(), config());
 
         RandomnessProvider RP(random_value);
         //draw cards

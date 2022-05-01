@@ -70,7 +70,7 @@ namespace avatarmk {
                 uint64_t signing_value;
                 memcpy(&signing_value, tx_id.data(), sizeof(signing_value));
                 const auto data = std::make_tuple(asset_id, signing_value, get_self());
-                eosio::action({get_self(), "active"_n}, rng_contract, "requestrand"_n, data).send();
+                eosio::action({get_self(), "active"_n}, cfg.rng, "requestrand"_n, data).send();
                 burn_nfts(asset_ids);
             }
         }

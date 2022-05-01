@@ -60,7 +60,6 @@ typedef std::map<std::string, ATOMIC_ATTRIBUTE> ATTRIBUTE_MAP;
 namespace avatarmk {
 
     inline constexpr auto atomic_contract = "atomicassets"_n;
-    inline constexpr auto rng_contract = "orng.wax"_n;
     inline constexpr int day_sec = 86400;
 
     //used as return value by mint price calculation

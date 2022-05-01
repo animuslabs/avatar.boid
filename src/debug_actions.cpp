@@ -35,12 +35,12 @@ namespace avatarmk {
     }
     void avatarmk_c::test(const uint64_t id)
     {
-        require_auth(get_self());
-        const auto tx_id = get_trx_id();
-        uint64_t signing_value;
-        memcpy(&signing_value, tx_id.data(), sizeof(signing_value));
-        const auto data = std::make_tuple(id, signing_value, get_self());
-        eosio::action({get_self(), "active"_n}, rng_contract, "requestrand"_n, data).send();
+        // require_auth(get_self());
+        // const auto tx_id = get_trx_id();
+        // uint64_t signing_value;
+        // memcpy(&signing_value, tx_id.data(), sizeof(signing_value));
+        // const auto data = std::make_tuple(id, signing_value, get_self());
+        // eosio::action({get_self(), "active"_n}, cfg.r, "requestrand"_n, data).send();
     }
 
 }  // namespace avatarmk
