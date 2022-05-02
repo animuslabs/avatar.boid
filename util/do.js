@@ -10,10 +10,23 @@ const methods = {
     await doAction('setconfig', {})
   },
   async setconfig() {
-    await doAction('setconfig', { cfg: { freeze: false, auto_claim_packs: false, whitelist_enabled: false, collection_name: "boidavatars4", parts_schema: "avatarparts", avatar_schema: "boidavatars", pack_schema: "partpacks" } })
+    await doAction('setconfig', { cfg:
+      { freeze: false,
+        auto_claim_packs: false,
+        whitelist_enabled: false,
+        collection_name: "boidavatars4",
+        parts_schema: "avatarparts",
+        avatar_schema: "boidavatar2",
+        pack_schema: "partpacks",
+        rng:"orng.wax",
+        payment_token:{contract:"eosio.token",sym:"8,WAX"}
+      } })
   },
   async clravatars(scope) {
     await doAction('clravatars', { scope })
+  },
+  async clrunpack(scope) {
+    await doAction('clrunpack', { })
   },
   async packdel(edition_scope, template_id) {
     await doAction('packdel', { edition_scope, template_id })
