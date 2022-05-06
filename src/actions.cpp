@@ -85,19 +85,22 @@ namespace avatarmk {
         editions edition_cfg = _editions.get(scope.value, "Scope is not a valid edition");
 
         //billing logic
-        avatar_mint_price amp = calculate_mint_price(*itr, edition_cfg.avatar_floor_mint_price);
-        sub_balance(minter, amp.price);
+        avatar_mint_price amp;
+        if (minter != cfg.moderator) {
+            amp = calculate_mint_price(*itr, edition_cfg.avatar_floor_mint_price);
+            sub_balance(minter, amp.price);
 
-        if (minter == itr->creator || itr->creator == get_self()) {
-            //don't reward the template creator if he is the minter or if the owner is self.
-            add_balance(get_self(), amp.price, get_self());
-        }
-        else {
-            double pct_cut = 0.5;  //50%
-            auto contract_share = eosio::extended_asset((uint64_t)(amp.price.quantity.amount * pct_cut), amp.price.get_extended_symbol());
-            auto user_reward = amp.price - contract_share;
-            add_balance(itr->creator, user_reward, get_self());
-            add_balance(get_self(), contract_share, get_self());
+            if (minter == itr->creator || itr->creator == get_self()) {
+                //don't reward the template creator if he is the minter or if the owner is self.
+                add_balance(get_self(), amp.price, get_self());
+            }
+            else {
+                double pct_cut = 0.5;  //50%
+                auto contract_share = eosio::extended_asset((uint64_t)(amp.price.quantity.amount * pct_cut), amp.price.get_extended_symbol());
+                auto user_reward = amp.price - contract_share;
+                add_balance(itr->creator, user_reward, get_self());
+                add_balance(get_self(), contract_share, get_self());
+            }
         }
 
         //atomic mint action
@@ -109,8 +112,10 @@ namespace avatarmk {
 
         _avatars.modify(itr, eosio::same_payer, [&](auto& n) {
             n.mint = new_mint_number;
-            n.modified = now;
-            n.base_price = amp.next_base_price;
+            if (minter != cfg.moderator) {
+                n.modified = now;
+                n.base_price = amp.next_base_price;
+            }
         });
 
         const std::vector<eosio::asset> tokens_to_back;
@@ -263,11 +268,12 @@ namespace avatarmk {
         eosio::check(is_whitelisted(buyer, cfg), "Only whitelisted accounts can buy packs");
 
         //calculate price
-        eosio::extended_asset p = {p_itr->base_price, cfg.payment_token.get_contract()};
-        sub_balance(buyer, p);
-        add_balance(get_self(), p, get_self());
-
-        _packs.modify(p_itr, eosio::same_payer, [&](auto& n) { n.last_sold = eosio::time_point_sec(eosio::current_time_point()); });
+        if (buyer != cfg.moderator) {
+            eosio::extended_asset p = {p_itr->base_price, cfg.payment_token.get_contract()};
+            sub_balance(buyer, p);
+            add_balance(get_self(), p, get_self());
+            _packs.modify(p_itr, eosio::same_payer, [&](auto& n) { n.last_sold = eosio::time_point_sec(eosio::current_time_point()); });
+        }
 
         const auto mutable_data = atomicassets::ATTRIBUTE_MAP{};
         auto immutable_data = atomicassets::ATTRIBUTE_MAP{};

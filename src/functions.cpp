@@ -172,7 +172,7 @@ namespace avatarmk {
 
     void avatarmk_c::check_contract_is_frozen(const config& cfg)
     {
-        if (!has_auth(get_self())) {
+        if (!has_auth(get_self()) || !has_auth(cfg.moderator)) {
             eosio::check(!cfg.freeze, "Contract is in maintenance. Please try again later.");
         }
     }
