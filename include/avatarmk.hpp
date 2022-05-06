@@ -130,6 +130,7 @@ namespace avatarmk {
         void sub_balance(const eosio::name& owner, const eosio::extended_asset& value);
 
         bool is_whitelisted(const eosio::name& account, const config& cfg);
+        void check_contract_is_frozen(const config& cfg);
 
         void burn_nfts(std::vector<uint64_t>& asset_ids);
         eosio::checksum256 get_trx_id();

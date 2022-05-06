@@ -73,7 +73,7 @@ namespace avatarmk {
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
 
-        eosio::check(is_whitelisted(minter, cfg), "Only whitelisted accounts can mint avatars");
+        check_contract_is_frozen(cfg);
 
         eosio::time_point_sec now(eosio::current_time_point());
 
@@ -258,11 +258,8 @@ namespace avatarmk {
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
 
-        //check if buyer is whitelisted
-        // if (cfg.whitelist_enabled) {
-        //     whitelist_table _whitelist(get_self(), get_self().value);
-        //     _whitelist.require_find(buyer.value, "Only whitelisted accounts can buy packs");
-        // }
+        check_contract_is_frozen(cfg);
+
         eosio::check(is_whitelisted(buyer, cfg), "Only whitelisted accounts can buy packs");
 
         //calculate price
@@ -294,6 +291,8 @@ namespace avatarmk {
 
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
+
+        check_contract_is_frozen(cfg);
 
         eosio::check(is_whitelisted(owner, cfg), "Only whitelisted accounts can claim packs");
 
