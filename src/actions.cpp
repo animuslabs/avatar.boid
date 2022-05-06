@@ -6,10 +6,11 @@ namespace avatarmk {
 
     void avatarmk_c::whitelistadd(const eosio::name& account)
     {
-        eosio::check(has_auth(get_self()) || has_auth(account), "Need authorization of account or contract");
-
         config_table _config(get_self(), get_self().value);
         auto const cfg = _config.get_or_create(get_self(), config());
+
+        require_privileged_account(cfg);
+
         eosio::check(cfg.whitelist_enabled, "Whitelist is disabled");
 
         whitelist_table _whitelist(get_self(), get_self().value);
@@ -20,7 +21,11 @@ namespace avatarmk {
 
     void avatarmk_c::whitelistdel(const eosio::name& account)
     {
-        eosio::check(has_auth(get_self()) || has_auth(account), "Need authorization of account or contract");
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+
+        require_privileged_account(cfg);
+
         whitelist_table _whitelist(get_self(), get_self().value);
         auto itr = _whitelist.require_find(account.value, "Account not found in whitelist");
         _whitelist.erase(itr);
@@ -29,7 +34,12 @@ namespace avatarmk {
     void avatarmk_c::editionset(eosio::name& edition_scope, eosio::asset& avatar_floor_mint_price, eosio::asset& avatar_template_price)
     {
         //warning no input validation!
-        require_auth(get_self());
+        // require_auth(get_self());
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+
+        require_privileged_account(cfg);
+
         editions_table _editions(get_self(), get_self().value);
         auto itr = _editions.find(edition_scope.value);
 
@@ -51,7 +61,11 @@ namespace avatarmk {
     }
     void avatarmk_c::editiondel(eosio::name& edition_scope)
     {
-        require_auth(get_self());
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+
+        require_privileged_account(cfg);
+
         editions_table _editions(get_self(), get_self().value);
         auto itr = _editions.require_find(edition_scope.value, "Edition with this scope not registered");
         _editions.erase(itr);
@@ -59,8 +73,14 @@ namespace avatarmk {
 
     void avatarmk_c::setconfig(std::optional<config> cfg)
     {
-        require_auth(get_self());
         config_table _config(get_self(), get_self().value);
+        if (_config.exists()) {
+            auto const existing_cfg = _config.get();
+            require_privileged_account(existing_cfg);
+        }
+        else {
+            require_auth(get_self());
+        }
         cfg ? _config.set(cfg.value(), get_self()) : _config.remove();
     }
 
@@ -164,7 +184,11 @@ namespace avatarmk {
     void avatarmk_c::finalize(eosio::checksum256& identifier, std::string& ipfs_hash)
     {
         //finalize will remove from queue
-        require_auth(get_self());
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+
+        require_privileged_account(cfg);
+
         eosio::check(ipfs_hash.size() > 0, "ipfs_hash required");  //this validation can be done better
 
         queue_table _queue(get_self(), get_self().value);
@@ -178,9 +202,6 @@ namespace avatarmk {
         eosio::check(a_idx.find(identifier) == a_idx.end(), "Avatar with this identifier already finalized.");
 
         //create template inline action
-        config_table _config(get_self(), get_self().value);
-        auto const cfg = _config.get_or_create(get_self(), config());
-
         const eosio::name authorized_creator = get_self();
         const eosio::name collection_name = cfg.collection_name;
         const eosio::name schema_name = cfg.avatar_schema;
@@ -230,7 +251,11 @@ namespace avatarmk {
                              std::string& pack_name,
                              std::vector<uint8_t>& rarity_distribution)
     {
-        require_auth(get_self());
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+
+        require_privileged_account(cfg);
+
         packs_table _packs(get_self(), edition_scope.value);
         auto p_itr = _packs.find(template_id);
         eosio::check(p_itr == _packs.end(), "Pack with this template_id already in table");
@@ -246,7 +271,11 @@ namespace avatarmk {
     }
     void avatarmk_c::packdel(eosio::name& edition_scope, uint64_t& template_id)
     {
-        require_auth(get_self());
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+
+        require_privileged_account(cfg);
+
         packs_table _packs(get_self(), edition_scope.value);
         auto p_itr = _packs.find(template_id);
         eosio::check(p_itr != _packs.end(), "Pack with this template_id not found");
@@ -286,7 +315,11 @@ namespace avatarmk {
 
     void avatarmk_c::claimpack(eosio::name& owner, uint64_t& pack_asset_id)
     {
-        eosio::check(has_auth(get_self()) || has_auth(owner), "Need authorization of owner or contract");
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+
+        eosio::check(has_auth(get_self()) || has_auth(owner) || has_auth(cfg.moderator), "Need authorization of owner, contract or moderator");
+
         unpack_table _unpack(get_self(), get_self().value);
 
         auto itr = _unpack.find(pack_asset_id);
@@ -294,9 +327,6 @@ namespace avatarmk {
         eosio::check(itr->owner == owner, "you are not the owner of this pack");
         eosio::check(itr->claimable_template_ids.size() != 0, "pack not ready to claim yet. waiting for oracle to draw random cards");
         eosio::check(itr->claimable_template_ids.size() == itr->pack_data.pack_size, "Claimable templates count doesn't equal pack_size");
-
-        config_table _config(get_self(), get_self().value);
-        auto const cfg = _config.get_or_create(get_self(), config());
 
         check_contract_is_frozen(cfg);
 
@@ -318,6 +348,7 @@ namespace avatarmk {
         auto const cfg = _config.get_or_create(get_self(), config());
 
         eosio::check(has_auth(get_self()) || has_auth(cfg.rng), "Need authorization of owner or contract");
+
         std::vector<uint32_t> result;
         unpack_table _unpack(get_self(), get_self().value);
         auto itr = _unpack.require_find(assoc_id, "error");
@@ -370,7 +401,11 @@ namespace avatarmk {
 
     void avatarmk_c::setparts(const eosio::name& edition_scope, const std::vector<uint32_t> template_ids, std::vector<uint8_t>& rarity_scores)
     {
-        require_auth(get_self());
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+
+        require_privileged_account(cfg);
+
         editions_table _editions(get_self(), get_self().value);
         auto itr = _editions.find(edition_scope.value);
         eosio::check(itr != _editions.end(), "configure edition before creating new part templates.");

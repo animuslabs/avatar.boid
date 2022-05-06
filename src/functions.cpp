@@ -177,4 +177,14 @@ namespace avatarmk {
         }
     }
 
+    void avatarmk_c::require_privileged_account(const config& cfg)
+    {
+        if (is_account(cfg.moderator)) {
+            eosio::check(eosio::has_auth(get_self()) || eosio::has_auth(cfg.moderator), "Need authorization of moderator or contract");
+        }
+        else {
+            require_auth(get_self());
+        }
+    }
+
 }  // namespace avatarmk
