@@ -158,4 +158,33 @@ namespace avatarmk {
         _editions.modify(itr, eosio::same_payer, [&](auto& n) { n.part_template_ids[rarity_index].push_back(template_id); });
     }
 
+    bool avatarmk_c::is_whitelisted(const eosio::name& account, const config& cfg)
+    {
+        if (cfg.whitelist_enabled) {
+            whitelist_table _whitelist(get_self(), get_self().value);
+            auto itr = _whitelist.find(account.value);
+            return itr != _whitelist.end();
+        }
+        else {
+            return true;
+        }
+    }
+
+    void avatarmk_c::check_contract_is_frozen(const config& cfg)
+    {
+        if (!has_auth(get_self()) || !has_auth(cfg.moderator)) {
+            eosio::check(!cfg.freeze, "Contract is in maintenance. Please try again later.");
+        }
+    }
+
+    void avatarmk_c::require_privileged_account(const config& cfg)
+    {
+        if (is_account(cfg.moderator)) {
+            eosio::check(eosio::has_auth(get_self()) || eosio::has_auth(cfg.moderator), "Need authorization of moderator or contract");
+        }
+        else {
+            require_auth(get_self());
+        }
+    }
+
 }  // namespace avatarmk

@@ -60,7 +60,6 @@ typedef std::map<std::string, ATOMIC_ATTRIBUTE> ATTRIBUTE_MAP;
 namespace avatarmk {
 
     inline constexpr auto atomic_contract = "atomicassets"_n;
-    inline constexpr auto rng_contract = "orng.wax"_n;
     inline constexpr int day_sec = 86400;
 
     //used as return value by mint price calculation
@@ -129,6 +128,10 @@ namespace avatarmk {
         //internal accounting
         void add_balance(const eosio::name& owner, const eosio::extended_asset& value, const eosio::name& ram_payer = eosio::name(0));
         void sub_balance(const eosio::name& owner, const eosio::extended_asset& value);
+
+        bool is_whitelisted(const eosio::name& account, const config& cfg);
+        void check_contract_is_frozen(const config& cfg);
+        void require_privileged_account(const config& cfg);
 
         void burn_nfts(std::vector<uint64_t>& asset_ids);
         eosio::checksum256 get_trx_id();
