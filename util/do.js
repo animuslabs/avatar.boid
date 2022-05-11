@@ -9,23 +9,27 @@ const methods = {
   async clrcfg(param1, param2) {
     await doAction('setconfig', {})
   },
+  async clrqueue() {
+    await doAction('clrqueue')
+  },
   async setconfig() {
     await doAction('setconfig', { cfg:
       { freeze: false,
+        moderator:"imjohnatboid",
         auto_claim_packs: false,
         whitelist_enabled: false,
-        collection_name: "boidavatars4",
+        collection_name: "boidavatar13",
         parts_schema: "avatarparts",
-        avatar_schema: "boidavatar2",
+        avatar_schema: "boidavatars",
         pack_schema: "partpacks",
-        rng:"orng.wax",
+        rng:"boidrng12345",
         payment_token:{contract:"eosio.token",sym:"8,WAX"}
       } })
   },
   async clravatars(scope) {
     await doAction('clravatars', { scope })
   },
-  async clrunpack(scope) {
+  async clrunpack() {
     await doAction('clrunpack', { })
   },
   async packdel(edition_scope, template_id) {

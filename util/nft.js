@@ -66,7 +66,7 @@ const methods = {
   async createCollection() {
     await doAction('createcol', {
       author: defaultParams.code,
-      collection_name: 'boidavatars3',
+      collection_name: 'boidavatar11',
       allow_notify: true,
       authorized_accounts: [defaultParams.code],
       notify_accounts: [defaultParams.code],
@@ -88,7 +88,7 @@ const methods = {
   async createSchema() {
     await doAction('createschema', {
       authorized_creator: defaultParams.code,
-      collection_name: 'boidavatars2',
+      collection_name: 'boidavatars5',
       schema_name: 'avatarparts',
       schema_format: meta.part.schema,
     }, 'atomicassets', defaultParams.code)

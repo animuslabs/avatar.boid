@@ -5,6 +5,13 @@ const activeChain = process.env.CHAIN || env.defaultChain
 const contractAccount = conf.accountName[activeChain]
 const contract = require('./do.js')
 const meta = require('./nftMetadata')
+const collectionName = 'boidavatar13'
+const defaultCollectionData = [
+  { key: 'name', value: ['string', 'Boid Avatar NFTs'] },
+  { key: 'img', value: ['string', 'QmZ4w4grmzJVDEr2mr9NNgegmsjzBJtyhw7TmbkPzJS1Pv'] },
+  { key: 'description', value: ['string', 'Avatar NFTs for the Boid ecosystem.'] },
+  { key: 'url', value: ['string', 'https://avatar.boid.com'] },
+]
 
 const methods = {
   async updateAuth(pubkey) {
@@ -36,8 +43,19 @@ const methods = {
     }
     await doAction('powerup', data, 'eosio', account)
   },
+  async createCollection() {
+    await doAction('createcol', {
+      author: contractAccount,
+      collection_name: collectionName,
+      allow_notify: true,
+      authorized_accounts: [contractAccount],
+      notify_accounts: [contractAccount],
+      market_fee: 0.1,
+      data: defaultCollectionData,
+    }, 'atomicassets', contractAccount)
+  },
   async createSchemas() {
-    const collection_name = 'boidavatars4'
+    const collection_name = collectionName
     const schemas = [
       {
         name: 'avatarparts',
@@ -70,7 +88,7 @@ const methods = {
     console.log(result.transaction_id)
   },
   async createPackTemplates(){
-    const collection_name = 'boidavatars4'
+    const collection_name = collectionName
     const schema_name = 'partpacks'
     const templates = [
       {
@@ -120,31 +138,31 @@ const methods = {
     const packs = [
       {
         name:"Small",
-        template_id:415587,
+        template_id:421672,
         price:"0.10000000 WAX",
         rarity_distribution:[1, 4, 15, 30, 50]
       },
       {
         name:"Medium",
-        template_id:415588,
+        template_id:421673,
         price:"0.15000000 WAX",
         rarity_distribution:[1, 4, 15, 30, 50]
       },
       {
         name:"Large",
-        template_id:415589,
+        template_id:421674,
         price:"0.22000000 WAX",
         rarity_distribution:[1, 4, 15, 30, 50]
       },
       {
         name:"Rare",
-        template_id:415590,
+        template_id:421675,
         price:"0.55000000 WAX",
         rarity_distribution:[5, 35, 50, 10, 0]
       },
       {
         name:"Ultra Rare",
-        template_id:415591,
+        template_id:421676,
         price:"0.99000000 WAX",
         rarity_distribution:[10, 40, 50, 0, 0]
       },
