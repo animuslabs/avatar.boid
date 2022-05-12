@@ -124,7 +124,7 @@ namespace avatarmk {
         result.rarity_score = std::floor(std::accumulate(rarities.begin(), rarities.end(), 0) / 8);
         //result.rarity_score = *std::max_element(rarities.begin(), rarities.end());
         result.max_mint = 10 * pow(6 - result.rarity_score, 2);
-        result.base_price = edition_cfg.avatar_floor_mint_price * result.rarity_score;
+        result.base_price = edition_cfg.avatar_floor_mint_price * pow(result.rarity_score, 2);
 
         return result;
     };
