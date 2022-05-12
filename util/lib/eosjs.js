@@ -86,8 +86,8 @@ function init(keys, apiurl) {
   console.log(apiurl)
   rpc = new JsonRpc(apiurl, { fetch })
   api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() })
-
-  return { api, rpc, tapos, doAction, formatBloksTransaction, getFullTable }
+  const authorization = [{ actor: contractAccount, permission: 'active' }]
+  return { api, rpc, tapos, doAction, formatBloksTransaction, getFullTable, authorization }
 }
 
 module.exports = init
