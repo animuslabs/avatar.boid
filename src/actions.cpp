@@ -128,7 +128,9 @@ namespace avatarmk {
         const auto mutable_data = atomicassets::ATTRIBUTE_MAP{};
         auto immutable_data = atomicassets::ATTRIBUTE_MAP{};
         immutable_data["mint"] = new_mint_number;
-        immutable_data["name"] = itr->avatar_name.to_string() + " #" + std::to_string(new_mint_number);
+        std::string name_string = itr->avatar_name.to_string();
+        name_string[0] = std::toupper(name_string[0]);
+        immutable_data["name"] = name_string + " #" + std::to_string(new_mint_number);
 
         _avatars.modify(itr, eosio::same_payer, [&](auto& n) {
             n.mint = new_mint_number;
