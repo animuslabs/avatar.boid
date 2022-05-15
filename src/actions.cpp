@@ -1,5 +1,5 @@
-#include "avatarmk.hpp"
 #include "atomicassets.hpp"
+#include "avatarmk.hpp"
 #include "randomness_provider.hpp"
 
 namespace avatarmk {
@@ -282,6 +282,18 @@ namespace avatarmk {
         auto p_itr = _packs.find(template_id);
         eosio::check(p_itr != _packs.end(), "Pack with this template_id not found");
         _packs.erase(p_itr);
+    }
+    void avatarmk_c::avatardel(eosio::name& edition_scope, eosio::name& avatar_template_name)
+    {
+        config_table _config(get_self(), get_self().value);
+        auto const cfg = _config.get_or_create(get_self(), config());
+
+        require_privileged_account(cfg);
+
+        avatars_table _avatars(get_self(), edition_scope.value);
+        auto p_itr = _avatars.find(avatar_template_name.value);
+        eosio::check(p_itr != _avatars.end(), "Avatar with this name not found");
+        _avatars.erase(p_itr);
     }
 
     void avatarmk_c::buypack(eosio::name& buyer, eosio::name& edition_scope, uint64_t& template_id)

@@ -1,22 +1,22 @@
 #pragma once
 // #include "atomicassets.hpp"
+#include <cmath>
 #include <eosio/asset.hpp>
+#include <eosio/crypto.hpp>
 #include <eosio/eosio.hpp>
 #include <eosio/system.hpp>
-#include <eosio/crypto.hpp>
 #include <eosio/transaction.hpp>
 #include <numeric>
-#include <cmath>
 #include <token/token.hpp>
 
+#include "tables/avatars.hpp"
 #include "tables/config.hpp"
-#include "tables/whitelist.hpp"
+#include "tables/deposits.hpp"
 #include "tables/editions.hpp"
 #include "tables/packs.hpp"
-#include "tables/unpack.hpp"
 #include "tables/queue.hpp"
-#include "tables/deposits.hpp"
-#include "tables/avatars.hpp"
+#include "tables/unpack.hpp"
+#include "tables/whitelist.hpp"
 #define DEBUG
 //for some reason it's not possible to include atomicassets.hpp in avatarmk.hpp.
 //hence the typedefs for ATTRIBUTE_MAP here.
@@ -94,6 +94,7 @@ namespace avatarmk {
                      std::string& pack_name,
                      std::vector<uint8_t>& rarity_distribution);
         void packdel(eosio::name& edition_scope, uint64_t& template_id);
+        void avatardel(eosio::name& edition_scope, eosio::name& avatar_template_name);
         void editionset(eosio::name& edition_scope, eosio::asset& avatar_floor_mint_price, eosio::asset& avatar_template_price);
         void editiondel(eosio::name& edition_scope);
         void withdraw(const eosio::name& owner, const eosio::extended_asset& value);
@@ -149,6 +150,7 @@ namespace avatarmk {
                 "avatarmk"_n,
                 action(packadd, edition_scope, template_id, base_price, floor_price, pack_name, rarity_distribution),
                 action(packdel, edition_scope, template_id),
+                action(avatardel, edition_scope, avatar_template_name),
                 action(buypack, buyer, edition_scope, template_id),
                 action(claimpack, owner, pack_asset_id),
                 action(editionset, edition_scope, avatar_floor_mint_price, avatar_template_price),
@@ -164,7 +166,7 @@ namespace avatarmk {
                 action(setowner, owner, new_owner, avatar_name, scope),
                 action(whitelistadd, account),
                 action(whitelistdel, account),
-                
+
                 #if defined(DEBUG)
                     action(test, id),
                     action(clravatars, scope),
