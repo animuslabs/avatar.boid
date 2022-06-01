@@ -15,22 +15,32 @@ const methods = {
   async setconfig() {
     await doAction('setconfig', { cfg:
       { freeze: false,
-        moderator:"imjohnatboid",
+        moderator:"nft.boid",
         auto_claim_packs: false,
         whitelist_enabled: false,
-        collection_name: "boidavatar13",
+        collection_name: "avatar.boid",
         parts_schema: "avatarparts",
         avatar_schema: "boidavatars",
         pack_schema: "partpacks",
-        rng:"boidrng12345",
-        payment_token:{contract:"eosio.token",sym:"8,WAX"}
+        rng:"rng.boid",
+        payment_token:{contract:"boidcomtoken",sym:"4,BOID"}
       } })
   },
   async clravatars(scope) {
     await doAction('clravatars', { scope })
   },
+  async editionset() {
+    await doAction('editionset', {
+      edition_scope:"cartoon",
+      avatar_floor_mint_price:"1000.0000 BOID",
+      avatar_template_price:"100000.0000 BOID"
+    })
+  },
   async clrunpack() {
     await doAction('clrunpack', { })
+  },
+  async whitelistadd(account) {
+    await doAction('whitelistadd', { account })
   },
   async packdel(edition_scope, template_id) {
     await doAction('packdel', { edition_scope, template_id })

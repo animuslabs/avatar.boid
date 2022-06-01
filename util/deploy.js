@@ -21,8 +21,8 @@ const methods = {
     const eosjs = require('./lib/eosjs')(env.keys[chain], conf.endpoints[chain][0])
     const authorization = [{ actor: conf.accountName[chain], permission: 'active' }]
     console.log('Deploying to:', chain)
-    let abiData = { actions: [setAbiAction(`build/artifacts/${conf.contractName}.abi`, authorization)] }
-    let wasmData = { actions: [setCodeAction(`build/artifacts/${conf.contractName}.wasm`, authorization)] }
+    let abiData = { actions: [setAbiAction(`../build/artifacts/${conf.contractName}.abi`, authorization)] }
+    let wasmData = { actions: [setCodeAction(`../build/artifacts/${conf.contractName}.wasm`, authorization)] }
     if (target == 'abi') return pushAbi(chain, eosjs, abiData)
     else if (target == 'wasm') return pushWasm(chain, eosjs, wasmData)
     else {

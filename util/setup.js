@@ -5,11 +5,11 @@ const activeChain = process.env.CHAIN || env.defaultChain
 const contractAccount = conf.accountName[activeChain]
 const contract = require('./do.js')
 const meta = require('./nftMetadata')
-const collectionName = 'boidavatar13'
+const collectionName = 'avatar.boid'
 const defaultCollectionData = [
   { key: 'name', value: ['string', 'Boid Avatar NFTs'] },
   { key: 'img', value: ['string', 'QmZ4w4grmzJVDEr2mr9NNgegmsjzBJtyhw7TmbkPzJS1Pv'] },
-  { key: 'description', value: ['string', 'Avatar NFTs for the Boid ecosystem.'] },
+  { key: 'description', value: ['string', 'Avatar NFTs for the Boid universe.'] },
   { key: 'url', value: ['string', 'https://avatar.boid.com'] },
 ]
 
@@ -23,6 +23,17 @@ const methods = {
       "waits": []
     }
     await doAction('updateauth', { account: contractAccount, auth, parent: 'owner', permission: 'active' }, 'eosio', contractAccount)
+  },
+  async addWorkerPermission(pubkey) {
+    if (!pubkey) pubkey = "EOS6FoTSwiKk27SJ1kANdJFmso3KbECASAMDpEka4dG9p1ub6GqiH"
+    const auth = {
+      "threshold": 1,
+      "keys": [{ key: pubkey, weight: 1 }],
+      "accounts": [],
+      "waits": []
+    }
+    await doAction('updateauth', { account: contractAccount, auth, parent: 'active', permission: 'avataroracle' }, 'eosio', contractAccount)
+    await doAction('linkauth', { account: contractAccount, code:'avatar.boid',type:"finalize",requirement:'avataroracle' }, 'eosio', contractAccount)
   },
   async buyRam(bytes) {
     const data = {
@@ -138,32 +149,32 @@ const methods = {
     const packs = [
       {
         name:"Small",
-        template_id:421672,
-        price:"0.10000000 WAX",
+        template_id:5303,
+        price:"50000.0000 BOID",
         rarity_distribution:[1, 4, 15, 30, 50]
       },
       {
         name:"Medium",
-        template_id:421673,
-        price:"0.15000000 WAX",
+        template_id:5304,
+        price:"95000.0000 BOID",
         rarity_distribution:[1, 4, 15, 30, 50]
       },
       {
         name:"Large",
-        template_id:421674,
-        price:"0.22000000 WAX",
+        template_id:5305,
+        price:"135000.0000 BOID",
         rarity_distribution:[1, 4, 15, 30, 50]
       },
       {
         name:"Rare",
-        template_id:421675,
-        price:"0.55000000 WAX",
+        template_id:5306,
+        price:"200000.0000 BOID",
         rarity_distribution:[5, 35, 50, 10, 0]
       },
       {
         name:"Ultra Rare",
-        template_id:421676,
-        price:"0.99000000 WAX",
+        template_id:5307,
+        price:"250000.0000 BOID",
         rarity_distribution:[10, 40, 50, 0, 0]
       },
     ]
@@ -186,6 +197,9 @@ const methods = {
     const result = await api.transact({ actions }, tapos)
     console.log(result.transaction_id)
   },
+  async assempleSets(){
+
+  }
 }
 
 
