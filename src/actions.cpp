@@ -109,20 +109,12 @@ namespace avatarmk {
         if (minter != cfg.moderator) {
             amp = calculate_mint_price(*itr, edition_cfg.avatar_floor_mint_price);
             sub_balance(minter, amp.price);
-
-            if (minter == itr->creator || itr->creator == get_self()) {
-                //don't reward the template creator if he is the minter or if the owner is self.
-                add_balance(get_self(), amp.price, get_self());
-            }
-            else {
-                double pct_cut = 0.5;  //50%
-                auto contract_share = eosio::extended_asset((uint64_t)(amp.price.quantity.amount * pct_cut), amp.price.get_extended_symbol());
-                auto user_reward = amp.price - contract_share;
-                add_balance(itr->creator, user_reward, get_self());
-                add_balance(get_self(), contract_share, get_self());
-            }
+            double pct_cut = 0.75;
+            auto contract_share = eosio::extended_asset((uint64_t)(amp.price.quantity.amount * pct_cut), amp.price.get_extended_symbol());
+            auto user_reward = amp.price - contract_share;
+            add_balance(itr->creator, user_reward, get_self());
+            add_balance(get_self(), contract_share, get_self());
         }
-
         //atomic mint action
         uint32_t new_mint_number = itr->mint + 1;
         const auto mutable_data = atomicassets::ATTRIBUTE_MAP{};
