@@ -104,17 +104,26 @@ const methods = {
       immutable_data: meta.pack.ultrarare,
     }, 'atomicassets', defaultParams.code)
   },
-  async mint() {
+  async mint(template_id,new_asset_owner = "nft.boid") {
     await doAction('mintasset', {
       authorized_minter: defaultParams.code,
       collection_name: defaultParams.code,
-      schema_name: 'elements',
-      template_id: '3650',
-      new_asset_owner: 'imjohnatboid',
+      schema_name: 'avatarparts',
+      template_id,
+      new_asset_owner,
       immutable_data: [],
       mutable_data: [],
       tokens_to_back: [],
     }, 'atomicassets', defaultParams.code)
+  },
+  async mintRange(start, end) {
+    start = parseInt(start)
+    end = parseInt(end)
+    if (isNaN(start) || isNaN(end) || start > end) throw (new Error("invlaid input"))
+    const range = end - start
+    for (let i = 0; i < range; i++) {
+      await this.mint(start+i,"nft.boid")
+    }
   },
   async burn(asset_owner, asset_id) {
     const data = {
